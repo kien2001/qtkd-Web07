@@ -1,0 +1,61 @@
+.btn-icon-text-color {
+    width: 118px;
+    height: 32px;
+    font-weight: 600;
+    color: #FFFFFF;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-combo {
+    display: flex;
+}
+
+.btn-icon-text-color>div:hover {
+    background-color: #2B4EEE;
+}
+
+.btn-content {
+    border-radius: 4px 0 0 4px;
+    background-color: #4262F0;
+    padding: 8px 16px 8px 32px;
+    width: 86px;
+    height: inherit;
+    background-repeat: no-repeat;
+    background-position-x: 8px;
+    background-position-y: center;
+    background-size: 14px 14px;
+    display: flex;
+    align-items: center;
+}
+
+.btn-addition {
+    width: 32px;
+    height: inherit;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
+    padding: 8px;
+}
+
+.btn-combo-component {
+    margin-left: 1px;
+    border-radius: 0 4px 4px 0;
+    background-color: #4262F0;
+}
+
+.icon-arrow-down-white {
+    background-image: url("../../img/arrow-down-white.svg");
+}
+
+.icon-arrow-down {
+    background-image: url("../../img/arrow-down.svg");
+}
+
+.icon-add {
+    background-image: url("../../img/add.svg");
+}
+
+.icon-3dot3line {
+    background-image: url("../../img/3dot3line.svg");
+}

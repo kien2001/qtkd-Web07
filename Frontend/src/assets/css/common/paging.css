@@ -1,0 +1,58 @@
+.paging {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #dddddd;
+    padding: 10px;
+}
+
+.paging-left {}
+
+.paging-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: inherit;
+    gap: 10px;
+}
+
+.paging-center-right {
+    min-width: 175px;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.paging-center-right>div {
+    align-self: center;
+    background-size: 16px 16px;
+}
+
+.paging-center-right>span {
+    margin: 0 6px;
+}
+
+.btn-nav {
+    border-radius: 50%;
+}
+
+.btn-nav:hover {
+    background-color: #bbbbbb;
+}
+
+.btn-first {
+    background-image: url(../../img/btn-firstpage.svg);
+}
+
+.btn-prev {
+    background-image: url(../../img/btn-prev-page.svg);
+}
+
+.btn-next {
+    background-image: url(../../img/btn-next-page.svg);
+}
+
+.btn-last {
+    background-image: url(../../img/btn-lastpage.svg);
+}

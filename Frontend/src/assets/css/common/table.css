@@ -1,0 +1,80 @@
+/* .tbody {
+   width: fit-content;
+} */
+.table-container {
+    grid-row: 1/2;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 37px auto;
+}
+
+.tr {
+    display: grid;
+    grid-template-columns: 16px 16px 100px 80px 150px 150px 150px 150px 200px 200px 100px 150px 150px 150px 150px 150px 150px 150px 120px 150px 150px 150px 100px 200px;
+    padding: 0 16px;
+    height: 37px;
+    line-height: 37px;
+    text-align: start;
+    border-bottom: 1px solid #D3D7DE;
+    box-sizing: border-box;
+    grid-gap: 5px 16px;
+    width: fit-content;
+}
+
+.tbody>.tr:hover {
+    background-color: #E7EBFC;
+    cursor: pointer;
+}
+
+.table-header {
+    grid-row: 1/2;
+    overflow: hidden;
+    position: relative;
+    border: 0px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    background-color: #F0F2F4;
+    font-weight: 700;
+}
+
+.table-content {
+    grid-row: 2/3;
+    position: relative;
+    overflow: auto;
+    width: 100%;
+}
+
+.table-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.table-button-right {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.table-button-left-text {
+    font-family: Latin Bold;
+}
+
+.td,
+.th {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.call-background {
+    padding-left: 20px;
+    background-repeat: no-repeat;
+    background-position-x: 0;
+    background-position-y: center;
+    background-size: 16px 16px;
+    background-image: url("../../img/call-background.svg");
+}

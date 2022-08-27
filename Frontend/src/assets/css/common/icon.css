@@ -1,0 +1,50 @@
+.icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
+    width: 16px;
+    height: 16px;
+    align-self: center;
+}
+
+.icon-small {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-checkbox {
+    background-image: url("../../img/checkbox-normal.svg");
+}
+
+.icon-checkbox:hover {
+    background-image: url("../../img/checkbox-hover.svg");
+}
+
+.icon-checkbox-checked {
+    background-image: url("../../img/checkbox-checked.svg");
+}
+
+.icon-all-checked {
+    background-image: url("../../img/de-select.svg");
+}
+
+.icon-document-background {
+    background-image: url("../../img/document-background.svg");
+}
+
+.icon-rectangle-add {
+    background-image: url("../../img/rectangle-add.svg");
+}
+
+.icon-edit {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
+    width: 16px;
+    height: 16px;
+    align-self: center;
+    background-image: url("../../img/edit.svg");
+}
+.icon-edit:hover{
+    background-image: url("../../img/blue-active/edit.svg");
+}

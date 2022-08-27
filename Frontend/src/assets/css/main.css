@@ -1,0 +1,79 @@
+@import url(./common/input.css);
+@import url(./common/icon.css);
+@import url(./common/btn-icon.css);
+@import url(./common/btn-icon-text.css);
+@import url(./common/btn-icon-text-color.css);
+@import url(./common/table.css);
+@import url(./common/paging.css);
+@import url(./common/drop-down.css);
+
+@font-face {
+    font-family: Roboto V20;
+    src: url("../fonts/roboto-v20-vietnamese_latin-regular.woff2");
+}
+
+body {
+    font-family: 'Roboto V20';
+    font-size: 13px;
+}
+
+html,
+body {
+    overflow: hidden;
+}
+
+#app {
+    display: grid;
+    grid-template-columns:  1fr;
+    grid-template-rows: 76px calc(100vh - 76px);
+    grid-template-areas:
+        "header "
+        " main ";
+}
+
+.main {
+    grid-area: main;
+}
+
+/* .sidebar-left {
+    grid-area: sideBarLeft;
+}
+
+.function {
+    grid-area: function;
+}
+
+.sidebar-right {
+    grid-area: sideBarRight;
+} */
+
+.header {
+    grid-area: header;
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #c0c0c0 #ffffff;
+    scroll-behavior: smooth;
+    user-select: none;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 16px;
+    scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    border-radius: 10px;
+    border: 5px solid #ffffff;
+    background-clip: padding-box;
+    height: 10px;
+}
