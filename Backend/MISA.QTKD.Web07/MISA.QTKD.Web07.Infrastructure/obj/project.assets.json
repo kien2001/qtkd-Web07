@@ -2129,11 +2129,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Microsoft Visual Studio\\2022\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Infrastructure\\MISA.QTKD.Web07.Infrastructure.csproj",
+      "projectUniqueName": "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Infrastructure\\MISA.QTKD.Web07.Infrastructure.csproj",
       "projectName": "MISA.QTKD.Web07.Infrastructure",
-      "projectPath": "E:\\Microsoft Visual Studio\\2022\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Infrastructure\\MISA.QTKD.Web07.Infrastructure.csproj",
+      "projectPath": "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Infrastructure\\MISA.QTKD.Web07.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\kienl\\.nuget\\packages\\",
-      "outputPath": "E:\\Microsoft Visual Studio\\2022\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Infrastructure\\obj\\",
+      "outputPath": "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\kienl\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2150,8 +2150,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "E:\\Microsoft Visual Studio\\2022\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Core\\MISA.QTKD.Web07.Core.csproj": {
-              "projectPath": "E:\\Microsoft Visual Studio\\2022\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Core\\MISA.QTKD.Web07.Core.csproj"
+            "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Core\\MISA.QTKD.Web07.Core.csproj": {
+              "projectPath": "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Core\\MISA.QTKD.Web07.Core.csproj"
             }
           }
         }

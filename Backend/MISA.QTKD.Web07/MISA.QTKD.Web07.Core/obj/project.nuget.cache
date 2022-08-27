@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wAaKKGlxnao1j65mPZAzZMp2ej4JJegz0Ld3RiV7PxtdzLODXP5qGhTR4yqtc7wqGKkJQayHdTH6DMQM6vCNEQ==",
+  "dgSpecHash": "rWp+KQe1mKc0ORAuPvDqNVUOdqHhoqLIv0E6qN4L7chmPRjHeIyCGYiIqo1WxXeQs/P1F2TEww0kL06nPLUr7g==",
   "success": true,
-  "projectFilePath": "E:\\Microsoft Visual Studio\\2022\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Core\\MISA.QTKD.Web07.Core.csproj",
+  "projectFilePath": "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Core\\MISA.QTKD.Web07.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kienl\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\kienl\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",

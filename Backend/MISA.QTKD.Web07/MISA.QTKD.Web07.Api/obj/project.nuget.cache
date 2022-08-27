@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+7F1reJ+ybkrp1EY3G0RtVzKwkResmQSCOvZVTlBMhU7tzxlFdnX5Ek48BRbdP3X47e0+M3O9GS4a2/0tvWiZQ==",
+  "dgSpecHash": "7gA73cajsj2meRhQHlG7lTuX6OZzy9chGeL4Jz5pOiaar0qzPW32ct19mtT5OdYHIP/gVK75rvoMqjI6tITWeQ==",
   "success": true,
-  "projectFilePath": "E:\\Microsoft Visual Studio\\2022\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Api\\MISA.QTKD.Web07.Api.csproj",
+  "projectFilePath": "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Api\\MISA.QTKD.Web07.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kienl\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\kienl\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.8\\microsoft.aspnetcore.jsonpatch.6.0.8.nupkg.sha512",
