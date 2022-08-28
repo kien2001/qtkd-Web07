@@ -99,8 +99,17 @@ export default {
     showForm() {
       return this.$store.state.isShowForm
     },
+    // lấy trạng thái của isDeleted
     getIsDeleted() {
       return this.$store.state.isDeleted
+    },
+    // lấy trạng thái của isInserted
+    getIsInserted() {
+      return this.$store.state.isInserted
+    },
+    // lấy trạng thái của isUpdated
+    getIsUpdated() {
+      return this.$store.state.isUpdated
     },
     getEditMultipleForm() {
       return this.$store.state.editMultipleRow
@@ -198,6 +207,48 @@ export default {
         })
         // reset mảng listchecked
         this.listChecked = []
+        // gọi lại api để lấy dữ liệu customer mới nhất
+        this.isLoading = true;
+        this.pageCurrent = 1
+        const offSet = (this.pageCurrent - 1) * this.numberPerPage
+        const responsePaging = await axios(`${rootApi}Customers?pageSize=${this.numberPerPage}&pageIndex=${offSet}&keyword=${this.getKeyWordSearch}`).then(res => res.data).catch(error => error.response.data)
+        this.isLoading = false;
+        if (!responsePaging.flag) {
+          console.log(responsePaging.userMsg)
+        } else {
+          console.log(responsePaging)
+          const { totalCount, customers } = responsePaging.data
+          this.customerList = [...customers]
+          this.totalCount = totalCount
+        }
+      }
+    },
+    // xử lý khi insert thành công
+    async getIsUpdated(newValue) {
+      if (newValue) {
+        // reset lại biến isUpdated
+        this.$store.commit('setIsUpdated', false)
+        // gọi lại api để lấy dữ liệu customer mới nhất
+        this.isLoading = true;
+        this.pageCurrent = 1
+        const offSet = (this.pageCurrent - 1) * this.numberPerPage
+        const responsePaging = await axios(`${rootApi}Customers?pageSize=${this.numberPerPage}&pageIndex=${offSet}&keyword=${this.getKeyWordSearch}`).then(res => res.data).catch(error => error.response.data)
+        this.isLoading = false;
+        if (!responsePaging.flag) {
+          console.log(responsePaging.userMsg)
+        } else {
+          console.log(responsePaging)
+          const { totalCount, customers } = responsePaging.data
+          this.customerList = [...customers]
+          this.totalCount = totalCount
+        }
+      }
+    },
+    // xử lý khi insert thành công
+    async getIsInserted(newValue) {
+      if (newValue) {
+        // reset lại biến isInserted
+        this.$store.commit('setIsInserted', false)
         // gọi lại api để lấy dữ liệu customer mới nhất
         this.isLoading = true;
         this.pageCurrent = 1

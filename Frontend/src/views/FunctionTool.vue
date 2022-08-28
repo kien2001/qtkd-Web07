@@ -48,6 +48,7 @@ import { rootApi } from '@/js/config'
 import exportToExcelPro from '@/js/exportToExcel'
 import { fieldOptions } from '../js/config'
 import CustomerTable from '@/entities/CustomerTable'
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '@/js/common'
 export default {
   name: 'FunctionTool',
   data() {
@@ -79,20 +80,17 @@ export default {
     $(window).click(this.exit)
   },
   methods: {
-    // viết hoa chữ cái đầu
-    capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    // viết thường chữ cái đầu
-    lowerCaseFirstLetter(string) {
-      return string.charAt(0).toLowerCase() + string.slice(1);
-    },
+    
     // tắt thẻ div show detail option
     exit(e) {
       if ($(e.target).attr('class') !== $(this.$refs.function).find('.btn-icon.more-option').attr('class')) {
         this.showOptionList = false
       }
     },
+    /**
+     * Delete nhiều hàng
+     * Created by LVKIEN 28/08/2022
+     */
     async deleteRow() {
       const resDeleteRows = await axios.post(`${rootApi}Customers/ListCustomerId`, this.getListIdChecked)
         .then(res => res.data)
@@ -109,12 +107,12 @@ export default {
       let resultData = []
       const customerTable = new CustomerTable();
       const keyCustomerTableArr = Object.keys(customerTable)
-      const keyLowerArr = keyCustomerTableArr.map(key => this.lowerCaseFirstLetter(key) )
+      const keyLowerArr = keyCustomerTableArr.map(key => lowerCaseFirstLetter(key) )
       if (this.$store.state.listCheckedCustomer?.length > 0 ){
         this.$store.state.listCheckedCustomer.forEach(checkedCustomer=>{
           const customerTable = new CustomerTable(); 
           keyLowerArr.forEach(key=>{
-            customerTable[this.capitalizeFirstLetter(key)] = checkedCustomer[key]
+            customerTable[capitalizeFirstLetter(key)] = checkedCustomer[key]
           })
           if (checkedCustomer.lastMiddleName){
             customerTable.FullName = `${checkedCustomer.lastMiddleName.trim()} ${checkedCustomer.firstName.trim() }`

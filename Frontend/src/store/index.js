@@ -3,24 +3,14 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     isShowForm: false,
-    dropDownSelected: {
-      vocative: {},
-      departmentName: {},
-      positionName: {},
-      sourceName: {},
-      typeName: {},
-      revenueName: {},
-      country: {},
-      city: {},
-      district: {},
-      ward: {}
-    },
     listIdChecked: [],
     isDeleted: false, // check xem đã delete thành công hay chưa
+    isInserted: false, // check xem đã insert thành công hay chưa
+    isUpdated: false, // check xem đã update thành công hay chưa
     editForm:true,
     editMultipleRow: false,
     listCheckedCustomer:[],
-    conditionSearch:null
+    conditionSearch:""
   },
   getters: {
   },
@@ -45,6 +35,14 @@ export default createStore({
     setIsDeleted (state, payload) {
       this.state.isDeleted = payload
     },
+    // set value isUpdated
+    setIsUpdated (state, payload) {
+      this.state.isUpdated = payload
+    },
+    // set value isInserted
+    setIsInserted (state, payload) {
+      this.state.isInserted = payload
+    },
     resetListIdChecked () {
       this.state.listIdChecked = []
     },
@@ -53,16 +51,6 @@ export default createStore({
     },
     setFormState (state, payload) {
       this.state.isShowForm = payload
-    },
-    setDropDownSelect (state, payload) {
-      const key = Object.keys(payload)[0]
-      this.state.dropDownSelected[key] = { ...payload[key] }
-    },
-    resetDropdown () {
-      const arrKey = Object.keys(this.state.dropDownSelected)
-      arrKey.forEach((item) => {
-        this.state.dropDownSelected[item] = {}
-      })
     }
   },
   actions: {

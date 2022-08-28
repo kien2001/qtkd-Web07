@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       showNoValue: false,
-      showLoading:true,
+      showLoading:false,
       selected: {},
       optionsShown: false,
       searchFilter: "",
@@ -88,17 +88,9 @@ export default {
   methods: {
     selectOption(option) {
       this.optionsShown = false;
-      const idInput = $(this.$refs.input).attr("id");
       this.selected = option;
       this.searchFilter = option.name;
-      if (this.showInput) {
-        this.$store.commit("setDropDownSelect", { [idInput]: { id: option.id, name: option.name } });
-        this.$emit("selected", this.$store.state.dropDownSelected);
-      }
-      else {
-        console.log(this.selected.id);
-        this.$emit("selected", this.selected.id);
-      }
+      this.$emit("selected", this.selected.id === 0 ? "" : this.selected.name);
     },
     setOptions(values) {
       this.options = values;
@@ -173,7 +165,6 @@ export default {
       else {
         this.searchFilter = this.selected.name;
       }
-      this.$emit("selected", this.selected.name);
       this.optionsShown = false;
       $(this.$refs["dropdown-header"]).css("border-color", "#D3D7DE");
     }

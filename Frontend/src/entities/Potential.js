@@ -2,7 +2,7 @@ class Potential {
   constructor () {
     // this.PotentialId = ''
     this.PotentialName = ''
-    this.PotentialCode
+    this.PotentialCode = ''
   }
 
   setInsertPotential (potentialName, potentialCode) {

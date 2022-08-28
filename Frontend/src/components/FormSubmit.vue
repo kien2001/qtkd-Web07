@@ -25,40 +25,42 @@
             <div class="context-item">
               <div class="context-label">Xưng hô</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" id="vocative" :showInput="true" placeholder="-Không chọn-"
-                  :fetchDataWhenClick="false" name="Vocatives" ref="vocative" />
+                <DropDown id="vocative" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                  name="Vocatives" ref="vocative" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Họ và đệm</div>
               <div class="context-input">
-                <InputFormVue id="lastMiddleName" @changeName="setLastMiddleName" ref="lastMiddleName" />
+                <InputFormVue class="inputForm" id="lastMiddleName" @changeName="setLastMiddleName"
+                  ref="lastMiddleName" />
               </div>
             </div>
             <div class="context-item" required>
               <div class="context-label">Tên</div>
               <div class="context-input">
-                <InputFormVue id="firstName" @changeName="setFirstName" ref="firstName" />
+                <InputFormVue class="inputForm" id="firstName" @changeName="setFirstName" ref="firstName" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Họ và tên</div>
               <div class="context-input">
-                <InputFormVue id="fullName" :isDisabled="true" :handleFullName="handleFullName" ref="fullName" />
+                <InputFormVue class="inputForm" id="fullName" :isDisabled="true" :handleFullName="handleFullName"
+                  ref="fullName" />
               </div>
             </div>
             <div class=" context-item">
               <div class="context-label">Phòng ban</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" :fetchDataWhenClick="false" id="departmentName"
-                  :showInput="true" placeholder="-Không chọn-" name="Departments" ref="department" />
+                <DropDown :fetchDataWhenClick="false" id="departmentName" :showInput="true" placeholder="-Không chọn-"
+                  name="Departments" ref="departmentId" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Chức danh</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" :fetchDataWhenClick="false" id="positionName" :showInput="true"
-                  placeholder="-Không chọn-" name="Positions" ref="position" />
+                <DropDown :fetchDataWhenClick="false" id="positionName" :showInput="true" placeholder="-Không chọn-"
+                  name="Positions" ref="positionId" />
               </div>
             </div>
             <div class="context-item">
@@ -67,7 +69,7 @@
                 <Tooltip tooltipText="Điện thoại di động" />
               </div>
               <div class="context-input">
-                <InputFormVue id="customerPhoneNum" />
+                <InputFormVue class="inputForm" id="customerPhoneNum" ref="customerPhoneNum" />
               </div>
             </div>
             <div class="context-item">
@@ -76,23 +78,23 @@
                 <Tooltip tooltipText="Điện thoại cơ quan" />
               </div>
               <div class="context-input">
-                <InputFormVue id="companyPhoneNum" />
+                <InputFormVue class="inputForm" id="companyPhoneNum" ref="companyPhoneNum" />
               </div>
             </div>
-            <div class="context-item" v-if="editForm">
+            <div class=" context-item" v-if="editForm">
               <div class="context-label">
                 ĐT khác
                 <Tooltip tooltipText="Điện thoại khác" />
               </div>
               <div class="context-input">
-                <InputFormVue id="otherPhoneNum" />
+                <InputFormVue class="inputForm" id="otherPhoneNum" ref="otherPhoneNum" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Nguồn gốc</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" id="sourceName" :showInput="true" placeholder="-Không chọn-"
-                  :fetchDataWhenClick="false" name="Sources" ref="source" />
+                <DropDown id="sourceName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                  name="Sources" ref="sourceId" />
 
               </div>
             </div>
@@ -120,32 +122,32 @@
             <div class="context-item">
               <div class="context-label">Zalo</div>
               <div class="context-input">
-                <InputFormVue id="zalo" />
+                <InputFormVue class="inputForm" id="zalo" ref="zalo" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Tổ chức</div>
               <div class="context-input">
-                <InputFormVue id="organizationName" />
+                <InputFormVue class="inputForm" id="organizationName" ref="organizationName" />
               </div>
             </div>
-            <div class="context-item">
+            <div class=" context-item">
               <div class="context-label">Email cá nhân</div>
               <div class="context-input">
-                <InputFormVue id="customerEmail" />
+                <InputFormVue class="inputForm" id="customerEmail" ref="customerEmail" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Email cơ quan</div>
               <div class="context-input">
-                <InputFormVue id="companyEmail" />
+                <InputFormVue class="inputForm" id="companyEmail" ref="companyEmail" />
               </div>
             </div>
             <div class="context-item" v-if="editForm"></div>
             <div class="context-item">
               <div class="context-label">Mã số thuế</div>
               <div class="context-input">
-                <InputFormVue id="taxCode" />
+                <InputFormVue class="inputForm" id="taxCode" ref="taxCode" />
               </div>
             </div>
           </div>
@@ -156,8 +158,8 @@
             <div class="context-item">
               <div class="context-label">Giới tính</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" id="genderName" :showInput="true" placeholder="-Không chọn-"
-                  :fetchDataWhenClick="false" name="Genders" ref="gender" />
+                <DropDown id="genderName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                  name="Genders" ref="gender" />
               </div>
             </div>
             <div class="context-item">
@@ -169,7 +171,7 @@
             <div class="context-item">
               <div class="context-label">Facebook</div>
               <div class="context-input">
-                <InputFormVue id="facebook" />
+                <InputFormVue class="inputForm" id="facebook" ref="facebook" />
               </div>
             </div>
           </div>
@@ -181,13 +183,13 @@
               <div class="context-item">
                 <div class="context-label">Tài khoản ngân hàng</div>
                 <div class="context-input">
-                  <InputFormVue id="bankAccount" />
+                  <InputFormVue class="inputForm" id="bankAccount" ref="bankAccount" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Mở tại ngân hàng</div>
                 <div class="context-input">
-                  <InputFormVue id="bankName" />
+                  <InputFormVue class="inputForm" id="bankName" ref="bankName" />
                 </div>
               </div>
               <div class="context-item">
@@ -199,8 +201,8 @@
               <div class="context-item">
                 <div class="context-label">Loại hình</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="typeName" :showInput="true" placeholder="-Không chọn-"
-                    :fetchDataWhenClick="false" name="Types" />
+                  <DropDown id="typeName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                    name="Types" ref="typeId" />
                 </div>
               </div>
               <div class="context-item">
@@ -222,8 +224,8 @@
               <div class="context-item">
                 <div class="context-label">Doanh thu</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="revenueName" :showInput="true" placeholder="-Không chọn-"
-                    :fetchDataWhenClick="false" name="Revenues" />
+                  <DropDown id="revenueName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                    name="Revenues" ref="revenueId" />
                 </div>
               </div>
             </div>
@@ -234,43 +236,42 @@
               <div class="context-item">
                 <div class="context-label">Quốc gia</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="country" :showInput="true" placeholder="-Không chọn-"
-                    :fetchDataWhenClick="false" name="Countries" />
+                  <DropDown id="country" @selected="getSelectedCountry" :showInput="true" placeholder="-Không chọn-"
+                    :fetchDataWhenClick="false" name="Countries" ref="countryId" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Tỉnh/Thành phố</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="city" @click="handleShowCities" :showInput="true"
-                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Cities" ref="city" />
-
+                  <DropDown id="city" @selected="getSelectedCity" @click="handleShowCities" :showInput="true"
+                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Cities" ref="cityId" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Quận/Huyện</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="district" @click="handleShowDistricts" :showInput="true"
-                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Districts" ref="district" />
+                  <DropDown id="district" @selected="getSelectedDistrict" @click="handleShowDistricts" :showInput="true"
+                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Districts" ref="districtId" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Phường/Xã</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="ward" @click="handleShowWards" :showInput="true"
-                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Wards" ref="ward" />
+                  <DropDown id="ward" @selected="getSelectedWard" @click="handleShowWards" :showInput="true"
+                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Wards" ref="wardId" />
 
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Số nhà, Đường phố</div>
                 <div class="context-input">
-                  <InputFormVue id="homeNumber" @changeName="setHomeNumber" />
+                  <InputFormVue class="inputForm" id="homeNumber" ref="homeNumber" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Mã vùng</div>
                 <div class="context-input">
-                  <InputFormVue id="postalCode" />
+                  <InputFormVue class="inputForm" id="postalCode" ref="postalCode" />
                 </div>
               </div>
               <div class="context-item">
@@ -307,7 +308,7 @@
               <div class="context-item">
                 <div class="context-label">Mã tiềm năng</div>
                 <div class="context-input">
-                  <InputFormVue id="potentialCode" ref="potential-code" />
+                  <InputFormVue class="inputForm" id="potentialCode" ref="potentialCode" />
                 </div>
               </div>
             </div>
@@ -486,25 +487,29 @@
 <script>
 import $ from 'jquery'
 import axios from 'axios'
-import { rootApi } from '@/js/config'
+import { rootApi, dropdownField } from '@/js/config'
+import StatusCode from '../entities/StatusCode'
 import Customer from '../entities/Customer'
 import Organization from '../entities/Organization'
 import Address from '../entities/Address'
 import Potential from '../entities/Potential'
 import handleClickFilterItem from '../js/checkbox'
+import { handleTransferObject } from '../js/common'
 import InputFormVue from './InputForm.vue'
 import DatePicker from './DatePicker.vue'
 export default {
   name: 'FormSubmit',
   data() {
     return {
-      dropdownSelected: {},
       lastMiddleName: '',
       firstName: '',
-      homeNumber: '',
       addressName: '',
       createdAccountAt: '',
       dateOfBirth: '',
+      countryName: '',
+      cityName: '',
+      districtName: '',
+      wardName: '',
       errorField: {
         firstName: '',
         potentialCode: ''
@@ -529,14 +534,14 @@ export default {
       this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
       this.$refs.vocative.currentValue = { id: this.customerEdit.vocative || 0, name: this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn" }
 
-      this.$refs.department.oldSearchFilter = this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn"
-      this.$refs.department.currentValue = { id: this.customerEdit.departmentId || 0, name: this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn" }
+      this.$refs.departmentId.oldSearchFilter = this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn"
+      this.$refs.departmentId.currentValue = { id: this.customerEdit.departmentId || 0, name: this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn" }
 
-      this.$refs.position.oldSearchFilter = this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn"
-      this.$refs.position.currentValue = { id: this.customerEdit.positionId || 0, name: this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn" }
+      this.$refs.positionId.oldSearchFilter = this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn"
+      this.$refs.positionId.currentValue = { id: this.customerEdit.positionId || 0, name: this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn" }
 
-      this.$refs.source.oldSearchFilter = this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn"
-      this.$refs.source.currentValue = { id: this.customerEdit.sourceId || 0, name: this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn" }
+      this.$refs.sourceId.oldSearchFilter = this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn"
+      this.$refs.sourceId.currentValue = { id: this.customerEdit.sourceId || 0, name: this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn" }
 
       this.$refs.gender.oldSearchFilter = this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn'
       this.$refs.gender.currentValue = { id: this.customerEdit.gender || 0, name: this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn' }
@@ -587,7 +592,7 @@ export default {
         $(e.target).next('span').remove()
       })
     })
-    // xử lý hiển thị cho checkbox
+    // xử lý hiển thị cho checkbox(liên quan đến mặt hình ảnh)
     $('#sharingUse').parent('.context-input').css('display', 'block')
     $('#disableMail').parent('.context-input').css('display', 'block')
     $('#disableCall').parent('.context-input').css('display', 'block')
@@ -598,82 +603,91 @@ export default {
       if (!data.flag) {
         console.log(data.userMgs)
       } else {
-        console.log(data.data)
-        console.log(this.$refs['potential-code'])
 
-        this.$refs['potential-code'].name = data.data
+        this.$refs['potentialCode'].name = data.data
       }
     }
-
+    console.log(this.$refs.cityId.selected.name)
   },
   computed: {
     handleFullName() {
       return `${this.lastMiddleName} ${this.firstName}`
-    },
-    getCountry() {
-      return this.dropdownSelected?.country?.id
-    },
-    getCity() {
-      return this.dropdownSelected?.city?.id
-    },
-    getDistrict() {
-      return this.dropdownSelected?.district?.id
-    },
-    getWard() {
-      return this.dropdownSelected?.ward?.id
     }
   },
   watch: {
-    getCountry() {
-      console.log(1)
-      this.dropdownSelected.city = {}
-      this.$refs.city.setOptions([])
+    countryName() {
+      // this.countryName = ""
+      this.cityName = ""
+      this.districtName = ""
+      this.wardName = ""
+      let addressArr = []
+      this.$refs.cityId.selected = {}
+      this.$refs.cityId.setOptions([])
 
-      this.dropdownSelected.district = {}
-      this.$refs.district.setOptions([])
+      this.$refs.districtId.selected = {}
+      this.$refs.districtId.setOptions([])
 
-      this.dropdownSelected.ward = {}
-      this.$refs.ward.setOptions([])
-      if (this.dropdownSelected?.country?.id !== 0) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
+      this.$refs.wardId.selected = {}
+      this.$refs.wardId.setOptions([])
+
+      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
+
     },
-    getCity() {
-      this.dropdownSelected.district = {}
-      this.$refs.district.setOptions([])
+    cityName() {
+      this.districtName = ""
+      this.wardName = ""
+      let addressArr = []
 
-      this.dropdownSelected.ward = {}
-      this.$refs.ward.setOptions([])
+      this.$refs.districtId.selected = {}
+      this.$refs.districtId.setOptions([])
 
-      if (this.dropdownSelected?.city?.id !== 0) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
-    },
-    getDistrict() {
-      this.dropdownSelected.ward = {}
-      this.$refs.ward.setOptions([])
+      this.$refs.wardId.selected = {}
+      this.$refs.wardId.setOptions([])
 
-      if (this.dropdownSelected?.district?.id !== 0) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
+      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
+
     },
-    getWard() {
-      if (this.dropdownSelected?.ward?.id) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
+    districtName() {
+      this.wardName = ""
+      let addressArr = []
+
+      this.$refs.wardId.selected = {}
+      this.$refs.wardId.setOptions([])
+
+      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
     },
-    homeNumber() {
-      const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-      this.addressName = templateAddressName.trim()
+    wardName() {
+      let addressArr = []
+
+      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
     }
   },
   components: { InputFormVue, DatePicker },
   template: 'FormSubmit',
   methods: {
+    getSelectedCountry(selected) {
+      this.countryName = selected
+    },
+    getSelectedCity(selected) {
+      this.cityName = selected
+    },
+    getSelectedDistrict(selected) {
+      this.districtName = selected
+    },
+    getSelectedWard(selected) {
+      this.wardName = selected
+    },
+    getSelectedWard(selected) {
+      this.wardName = selected
+    },
     // set object customerEdit
     setCustomerEdit(customer) {
       this.customerEdit = customer
@@ -687,13 +701,18 @@ export default {
     // lấy về dữ liệu cho Combobox
     async getDataComboBox(prefix) {
       let result = null;
-      const response = await axios.get(`${rootApi}${prefix}`).then(res => res.data).catch(error => error.response.data)
-      if (response.flag) {
+      try {
+        const response = await axios.get(`${rootApi}${prefix}`).then(res => res.data).catch(error => error.response.data)
+        if (response.flag) {
+          result = this.formatDataComboBox(response.data)
 
-        result = this.formatDataComboBox(response.data)
+        } else {
+          console.log(response.userMsg);
+        }
+      } catch (error) {
+        console.log(error);
 
-      } else {
-        console.log(response.userMsg);
+        result = null;
       }
       return result;
     },
@@ -718,20 +737,17 @@ export default {
     setFirstName(value) {
       this.firstName = value
     },
-    setHomeNumber(value) {
-      this.homeNumber = value
-    },
     // Xử lý hiển thị tỉnh thành phố chỉ khi chọn quốc gia
     handleShowCities() {
-      this.handleGetAddress('country', 'city', 'Cities', 'Bạn chưa chọn quốc gia')
+      this.handleGetAddress('countryId', 'cityId', 'Cities', 'Bạn chưa chọn quốc gia')
     },
     // Xử lý hiển thị quận/huyện chỉ khi chọn tỉnh thành phố
     handleShowDistricts() {
-      this.handleGetAddress('city', 'district', 'Districts', 'Bạn chưa chọn tỉnh/thành phố')
+      this.handleGetAddress('cityId', 'districtId', 'Districts', 'Bạn chưa chọn tỉnh/thành phố')
     },
     // Xử lý hiển thị xã/ phường chỉ khi chọn quận/huyện
     handleShowWards() {
-      this.handleGetAddress('district', 'ward', 'Wards', 'Bạn chưa chọn quận/huyện')
+      this.handleGetAddress('districtId', 'wardId', 'Wards', 'Bạn chưa chọn quận/huyện')
     },
     // xử lý format dữ liệu của tên tiềm năng, ngành nghề, lĩnh vực khi lưu vào database
     handleDataWhenSave(data) {
@@ -743,55 +759,49 @@ export default {
       }
       return result === '' ? null : result
     },
-    // xử lý hiển thị khu vực khi bấm chọn, không chọn được khu vực con khi chưa chọn cha
+    /**
+     * xử lý hiển thị khu vực khi bấm chọn, không chọn được khu vực con khi chưa chọn cha
+     * @param {*} parentAreaName 
+     * @param {*} areaName 
+     * @param {*} areaNames 
+     * @param {*} actionFail 
+     * Created by LVKIEN 28/08/2022
+     */
     async handleGetAddress(parentAreaName, areaName, areaNames, actionFail) {
       try {
-        if (this.dropdownSelected[parentAreaName] && this.dropdownSelected[parentAreaName].id && this.dropdownSelected[parentAreaName].id !== 0) {
-          this.$refs.city.showLoading=true
-          this.$refs.district.showLoading=true
-          this.$refs.ward.showLoading=true
-          let areaArray = await axios(`${rootApi}${areaNames}?${parentAreaName}Id=${this.dropdownSelected[parentAreaName].id}`).then(res => res.data).catch(error => error.response.data)
-          this.$refs.city.showLoading = false
-          this.$refs.district.showLoading = false
-          this.$refs.ward.showLoading = false
-          if (areaArray.flag) {
-            areaArray = areaArray.data
+        if (this.$refs[parentAreaName] && this.$refs[parentAreaName].selected.id && this.$refs[parentAreaName].selected.id !== 0) {
+          this.$refs.cityId.showLoading = true
+          this.$refs.districtId.showLoading = true
+          this.$refs.wardId.showLoading = true
+          let areaResponse = await axios(`${rootApi}${areaNames}?${parentAreaName}=${this.$refs[parentAreaName].selected.id}`).then(res => res.data).catch(error => error.response.data)
+          this.$refs.cityId.showLoading = false
+          this.$refs.districtId.showLoading = false
+          this.$refs.wardId.showLoading = false
+          if (areaResponse.flag) {
+            areaResponse = areaResponse.data
           } else {
-            this.$refs.city.showNoValue = true
-            this.$refs.district.showNoValue = true
-            this.$refs.ward.showNoValue = true
-            console.log(areaArray.userMsg)
+
+            console.log(areaResponse.userMsg)
+
+
+            this.$refs.cityId.showNoValue = true
+            this.$refs.districtId.showNoValue = true
+            this.$refs.wardId.showNoValue = true
           }
-          if (areaArray.length > 0) {
-            this.$refs[areaName].setOptions(this.handleTransferObject(areaArray))
+          if (areaResponse.length > 0) {
+            this.$refs[areaName].setOptions(handleTransferObject(areaResponse))
           }
-          // else {
-          //   console.log(areaArray);
-          // }
         } else {
-          this[areaName] = []
-          this.$refs.city.optionsShown = false
-          this.$refs.district.optionsShown = false
-          this.$refs.ward.optionsShown = false
+          this.$refs.cityId.optionsShown = false
+          this.$refs.districtId.optionsShown = false
+          this.$refs.wardId.optionsShown = false
+
+          this.$refs[areaName].oldSearchFilter = false
+          this.$refs[areaName].selected = {}
           alert(actionFail)
         }
       } catch (error) {
         console.log(error)
-      }
-    },
-    // set giá trị hiện tại của dropdown
-    validateSelection(selected) {
-      if (typeof selected === 'object') {
-        this.dropdownSelected.department = selected?.departmentName
-        this.dropdownSelected.vocative = selected?.vocative
-        this.dropdownSelected.position = selected?.positionName
-        this.dropdownSelected.source = selected?.sourceName
-        this.dropdownSelected.type = selected?.typeName
-        this.dropdownSelected.country = selected?.country
-        this.dropdownSelected.revenue = selected?.revenueName
-        this.dropdownSelected.city = selected?.city
-        this.dropdownSelected.district = selected?.district
-        this.dropdownSelected.ward = selected?.ward
       }
     },
     checkRequiredField(e) {
@@ -803,19 +813,7 @@ export default {
         $(e.target).next('span').remove()
       }
     },
-    // format dữ liệu theo định dạng của dropdown theo dạng mảng: {id:, name:}
-    handleTransferObject(objectArr) {
-      const objectKeys = Object.keys(objectArr[0])
-      console.log(objectArr);
-      let initResult = [{ id: 0, name: '-Không chọn-' }]
-      const result = objectArr.map(item => {
-        const resultObject = { id: item[objectKeys[0]], name: item[objectKeys[1]] }
 
-        return resultObject
-      })
-      initResult = [...initResult, ...result]
-      return initResult
-    },
     // format kiểu datetime từ backend thành format của frontend
     formatDateTime(dateString) {
       const rawResult = dateString.slice(0, 10)
@@ -834,129 +832,161 @@ export default {
       if (this.$route.name === "TiemNang") {
         this.$store.commit('setFormState', false)
         this.$store.commit('setEditForm', false)
-
       }
+    },
+    // ánh xạ dữ liệu vào đúng thuộc tính object
+    handleMappingData(object) {
+      const inputArr = $(".inputForm").toArray()
+      const inputValueArr = inputArr.map(input => {
+        return { [$(input).attr("id")]: $(input).val() }
+      })
+      const keysObject = Object.keys(object)
+      keysObject.forEach(key => {
+        const lowerCaseKey = this.lowerCaseFirstLetter(key);
+        inputValueArr.forEach(input => {
+          if (input[lowerCaseKey]) {
+            object[key] = input[lowerCaseKey]
+          }
+        })
+      })
+      const dropdownValueArr = dropdownField.map(dropdown => {
+        if (this.$refs[dropdown]) {
+          return { [dropdown]: this.$refs[dropdown].selected.id || null }
+        }
+      })
+      keysObject.forEach(key => {
+        const lowerCaseKey = this.lowerCaseFirstLetter(key);
+        dropdownValueArr.forEach(dropdown => {
+          if (dropdown[lowerCaseKey]) {
+            object[key] = dropdown[lowerCaseKey]
+          }
+        })
+      })
     },
     // lấy dữ liệu form và gọi API
     // 15/08/2022 LVKien
     async saveForm() {
+      console.log(this.getDistrict);
       this.errorField.firstName = ''
-
       const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
       const customer = new Customer()
-
       if (!this.editForm) {
-        const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
-        const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
-        // set lại giá trị lỗi
-        this.errorField.potentialCode = ''
-        // Lấy dữ liệu các ô input trong form
-        const formMainItems = $('.form-main-item').toArray()
-        const arrayResult = formMainItems.map(item => {
-          // lấy tất cả các ô input trong form
-          const inputChild = $(item).children('.form-main-context').children('.context-item').children('.context-input').children(':not([disabled], .dropdown)').toArray()
-          const inputChildValue = inputChild.map(itemChild => {
-            const idItemChild = $(itemChild).attr('id')
-            if ($(itemChild).attr('id') === 'sharingUse') {
-              return { [idItemChild]: !!$(itemChild).attr('checked') }
-            }
-            return { [idItemChild]: $(itemChild).val() }
-          })
-          const idPartition = $(item).attr('id')
-          return { [idPartition]: inputChildValue }
-        })
-        const address = new Address()
-        const organization = new Organization()
-        const potential = new Potential()
-        console.log(arrayResult);
-        customer.setInsertCustomer(this.dropdownSelected.vocative?.id || '', arrayResult[1]['customer-partition'][0].lastMiddleName, arrayResult[1]['customer-partition'][1].firstName, this.dropdownSelected.department?.id || '', this.dropdownSelected.position?.id || '', arrayResult[1]['customer-partition'][2].customerPhoneNum, arrayResult[1]['customer-partition'][3].companyPhoneNum, this.dropdownSelected.source?.id || '', arrayResult[1]['customer-partition'][5].zalo, arrayResult[1]['customer-partition'][6].customerEmail, arrayResult[1]['customer-partition'][7].companyEmail, arrayResult[1]['customer-partition'][8].taxCode, arrayResult[4]['description-partition'][0].description, arrayResult[5]['system-partition'][0].sharingUse)
-        address.setInsertAddress(arrayResult[3]['address-partition'][2].addressName, arrayResult[3]['address-partition'][0].homeNumber, arrayResult[3]['address-partition'][1].postalCode, this.dropdownSelected.country?.id || '', this.dropdownSelected.city?.id || '', this.dropdownSelected.district?.id || '', this.dropdownSelected.ward?.id || '')
-        organization.setInsertOrganization(arrayResult[2]['organization-partition'][0].bankAccount, arrayResult[2]['organization-partition'][1].bankName, this.formatDate(this.createdAccountAt), this.dropdownSelected.type?.id || '', domainNames, careerNames, this.dropdownSelected.revenue?.id || '')
-        potential.setInsertPotential(potentialNames, arrayResult[5]['system-partition'][1].potentialCode)
-        this.formatData(potential)
-        this.formatData(address)
-        this.formatData(organization)
-        this.formatData(customer)
-        console.log(customer, potential, address, organization)
-        let resPotential, resAddress, resOrganization
-        if (!customer.FirstName || customer.FirstName === '') {
-          this.errorField.firstName = 'Tên không được phép để trống'
-        } else {
-          this.errorField.firstName = ''
-          if (!this.checkEmptyObject(potential)) {
-            resPotential = await axios.post(`${rootApi}Potentials`, potential).then(res => res.data).catch(error => error.response.data)
-            if (resPotential.flag) {
-              console.log(resPotential)
-            } else {
-              // Nếu trùng mã tiềm năng
-              if (resPotential?.devMsg === 'E002') {
-                this.errorField.potentialCode = resPotential?.userMsg
-              } else {
-                this.errorField.potentialCode = ''
-              }
-            }
-          }
-        }
-
-        // nếu ko có lỗi
-        if (this.checkEmptyObject(this.errorField)) {
-          if (!this.checkEmptyObject(address)) {
-            resAddress = await axios.post(`${rootApi}Addresses`, address).then(res => res.data).catch(error => error.response.data)
-            if (resAddress.flag) {
-              console.log(resAddress)
-            } else {
-              console.log(resAddress.devMsg)
-            }
-          }
-          if (!this.checkEmptyObject(organization)) {
-            resOrganization = await axios.post(`${rootApi}Organizations`, organization).then(res => res.data).catch(error => error.response.data)
-            if (resOrganization.flag) {
-              console.log(resOrganization)
-            } else {
-              console.log(resOrganization.devMsg)
-            }
-          }
-          // nếu ít nhất 1 trong 3 resPotential resAddress resOrganization thành công, gán các giá trị cho customer
-          if (resPotential.flag || resAddress.flag || resOrganization.flag) {
-            customer.PotentialId = resPotential?.data.toString() || null
-            customer.AddressId = resAddress?.data || null
-            customer.OrganizationId = resOrganization?.data || null
-            console.log(customer)
-            const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
-            if (resCustomer.flag) {
-              alert('Thành công')
-            } else {
-              console.log(resCustomer.data)
-            }
-            // nếu ko nhập address, potential, organization thì thêm luôn customer
-          } else {
-            const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
-            if (resCustomer.flag) {
-              alert('Thành công')
-            } else {
-              console.log(resCustomer.data)
-            }
-          }
-          // nếu có lỗi
-        } else {
-          // xử lý hiển thị lỗi
-          const potentialCodeField = $(this.$refs.container).find('#potentialCode')
-          const firstNameField = $(this.$refs.container).find('#firstName')
-          if (this.errorField.firstName !== '') {
-            $(firstNameField).next('span').remove()
-            $(firstNameField).after(`<span style="color:red"}}>${this.errorField.firstName}</span>`)
-          } else {
-            $(firstNameField).next('span').remove()
-          }
-          if (this.errorField.potentialCode !== '') {
-            $(potentialCodeField).next('span').remove()
-            $(potentialCodeField).after(`<span style="color:red"}}>${this.errorField.potentialCode}</span>`)
-          } else {
-            $(potentialCodeField).next('span').remove()
-          }
-        }
+        await this.saveInsertForm(customer, potentialNames)
       } else {
-        this.saveEditForm(customer, potentialNames)
+        await this.saveEditForm(customer, potentialNames)
+      }
+    },
+    async saveInsertForm(customer, potentialNames) {
+      const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
+      const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
+      // set lại giá trị lỗi
+      this.errorField.potentialCode = ''
+      // Lấy dữ liệu các ô input trong form
+
+      const address = new Address()
+      const organization = new Organization()
+      const potential = new Potential()
+
+      organization.Career = careerNames
+      organization.Domain = domainNames
+      organization.CreatedAccountAt = this.formatDate(this.createdAccountAt)
+
+      potential.PotentialName = potentialNames
+
+      customer.Description = $("#addressName").val()
+      customer.SharingUse = !!$("#sharingUse").attr("checked")
+
+      address.AddressName = $("#addressName").val()
+
+      this.handleMappingData(customer)
+      this.handleMappingData(address)
+      this.handleMappingData(organization)
+      this.handleMappingData(potential)
+
+      this.formatData(potential)
+      this.formatData(address)
+      this.formatData(organization)
+      this.formatData(customer)
+
+      console.log(customer, potential, address, organization)
+      let resPotential, resAddress, resOrganization
+      if (!customer.FirstName || customer.FirstName === '') {
+        this.errorField.firstName = 'Tên không được phép để trống'
+      } else {
+        this.errorField.firstName = ''
+        if (!this.checkEmptyObject(potential)) {
+          resPotential = await axios.post(`${rootApi}Potentials`, potential).then(res => res.data).catch(error => error.response.data)
+          if (resPotential.flag) {
+            console.log(resPotential)
+          } else {
+            // Nếu trùng mã tiềm năng
+            if (resPotential?.devMsg === StatusCode.ErrorCode.DuplicatePotentialCode) {
+              this.errorField.potentialCode = resPotential?.userMsg
+            } else {
+              this.errorField.potentialCode = ''
+            }
+          }
+        }
+      }
+
+      // nếu ko có lỗi
+      if (this.checkEmptyObject(this.errorField)) {
+        if (!this.checkEmptyObject(address)) {
+          resAddress = await axios.post(`${rootApi}Addresses`, address).then(res => res.data).catch(error => error.response.data)
+          if (resAddress.flag) {
+            console.log(resAddress)
+          } else {
+            console.log(resAddress.devMsg)
+          }
+        }
+        if (!this.checkEmptyObject(organization)) {
+          resOrganization = await axios.post(`${rootApi}Organizations`, organization).then(res => res.data).catch(error => error.response.data)
+          if (resOrganization.flag) {
+            console.log(resOrganization)
+          } else {
+            console.log(resOrganization.devMsg)
+          }
+        }
+        // nếu ít nhất 1 trong 3 resPotential resAddress resOrganization thành công, gán các giá trị cho customer
+        if (resPotential.flag || resAddress.flag || resOrganization.flag) {
+          customer.PotentialId = resPotential?.data.toString() || null
+          customer.AddressId = resAddress?.data || null
+          customer.OrganizationId = resOrganization?.data || null
+          console.log(customer)
+          const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
+          if (resCustomer.flag) {
+            alert('Thành công')
+          } else {
+            console.log(resCustomer.data)
+          }
+          // nếu ko nhập address, potential, organization thì thêm luôn customer
+        } else {
+          const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
+          if (resCustomer.flag) {
+            alert('Thành công')
+
+            this.$store.commit("setIsInserted", true)
+          } else {
+            console.log(resCustomer.data)
+          }
+        }
+        // nếu có lỗi
+      } else {
+        // xử lý hiển thị lỗi
+        const potentialCodeField = $(this.$refs.container).find('#potentialCode')
+        const firstNameField = $(this.$refs.container).find('#firstName')
+        if (this.errorField.firstName !== '') {
+          $(firstNameField).next('span').remove()
+          $(firstNameField).after(`<span style="color:red"}}>${this.errorField.firstName}</span>`)
+        } else {
+          $(firstNameField).next('span').remove()
+        }
+        if (this.errorField.potentialCode !== '') {
+          $(potentialCodeField).next('span').remove()
+          $(potentialCodeField).after(`<span style="color:red"}}>${this.errorField.potentialCode}</span>`)
+        } else {
+          $(potentialCodeField).next('span').remove()
+        }
       }
     },
     async saveEditForm(customer, potentialNames) {
@@ -976,9 +1006,9 @@ export default {
           customer[id] = $(this.$refs.container).find(`#${lowerCaseId}`).val()
         })
         this.getValueDropdown("Vocative", customer)
-        this.getValueDropdown("Department", customer)
-        this.getValueDropdown("Position", customer)
-        this.getValueDropdown("Source", customer)
+        this.getValueDropdown("DepartmentId", customer)
+        this.getValueDropdown("PositionId", customer)
+        this.getValueDropdown("SourceId", customer)
         this.getValueDropdown("Gender", customer)
 
 
@@ -992,10 +1022,12 @@ export default {
         customer.ModifiedAt = this.customerEdit.modifiedAt
         this.formatData(customer)
         console.log(customer);
-        const resCustomer = await axios.put(`${rootApi}Customers/${customer.CustomerId}`,customer)
+        const resCustomer = await axios.put(`${rootApi}Customers/${customer.CustomerId}`, customer)
           .then(res => res.data).catch(error => error.response.data)
         if (resCustomer.flag) {
           alert('Thành công')
+
+          this.$store.commit("setIsUpdated", true)
         } else {
           console.log(resCustomer.data)
         }
@@ -1014,6 +1046,7 @@ export default {
     },
     getValueDropdown(capitalizeValue, customer) {
       const toLowerCaseValue = this.lowerCaseFirstLetter(capitalizeValue)
+      console.log(toLowerCaseValue);
       // nếu prop selected không có, tức là người dùng không sửa gì, lấy gtri current
       if (Object.keys(this.$refs[toLowerCaseValue].selected).length === 0) {
         customer[capitalizeValue] = this.$refs[toLowerCaseValue].currentValue.id
@@ -1044,7 +1077,6 @@ export default {
           }
         })
       }
-      // console.log(checkEmpty);
       return checkEmpty
     },
     formatData(data) {
