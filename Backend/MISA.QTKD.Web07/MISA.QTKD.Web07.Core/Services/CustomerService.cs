@@ -28,17 +28,15 @@ namespace Services
         /// <exception cref="ValidateException"></exception>
         public Result InsertService(Customer customer)
         {
-            Result result;
+            Result result = new();
             //1.2 Thông tin tên không được trống
             if (string.IsNullOrEmpty(customer.FirstName))
             {
 
-                result = new Result(data: null,
-                     devMsg: FailMessage.CodeError.EmptyFirstName,
-                     userMsg: FailMessage.MessageError.EmptyFirstName,
-                     flag: false
-                     );
-
+                result.Data = new { };
+                result.DevMsg= FailMessage.CodeError.EmptyFirstName;
+                result.UserMsg= FailMessage.MessageError.EmptyFirstName;
+                result.Flag= false;
             }
             else
             {

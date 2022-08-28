@@ -139,22 +139,26 @@ namespace Repository
                 {
                     NameCustomer name = HandleGetName(updatedMultiple.FieldUpdateValue);
 
-                    updateQuery = @"Update customer set FirstName = @FirstNameValue,LastMiddleName = @LastMiddleName where CustomerId in @ListId ;";
+                    updateQuery = @"Update customer set FirstName = @FirstNameValue,LastMiddleName = @LastMiddleName 
+                     , ModifiedAt = @ModifiedAt where CustomerId in @ListId ;";
                     parameters = new
                     {
                         FirstNameValue = name.FirstName,
                         LastMiddleName = name.LastMiddleName,
-                        ListId = stringIdList
+                        ListId = stringIdList,
+                        ModifiedAt = DateTime.Now
                     };
                 }
                 else
                 {
-                    updateQuery = $@"Update customer set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue where CustomerId in @ListId ;";
+                    updateQuery = $@"Update customer set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue 
+                    , ModifiedAt = @ModifiedAt where CustomerId in @ListId ;";
                     var resultString = String.Join(", ", stringIdList);
                     parameters = new
                     {
                         FieldUpdateValue = updatedMultiple.FieldUpdateValue,
-                        ListId = stringIdList
+                        ListId = stringIdList,
+                        ModifiedAt = DateTime.Now
                     };
                 }
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -198,7 +202,7 @@ namespace Repository
                 var pagingProc = "Proc_Customer_GetPaging";
                 var orConditions = new List<string>();
                 string whereClause = "";
-                if(keyword != "null")
+                if(keyword != null || keyword != "")
                 {
                     orConditions.Add($"FullName LIKE '%{keyword}%'");
                     orConditions.Add($"CustomerPhoneNum LIKE '%{keyword}%'");

@@ -58,34 +58,6 @@ namespace Repository
 
         }
 
-        /// <summary>
-        /// Xử lý lọc giá trị của các array thành duy nhất 1 giá trị
-        /// </summary>
-        /// <returns></returns>
-        /// Created by LVKIEN 23/08/2022
-
-        public static IEnumerable<string> FormatData(IEnumerable<string> array)
-        {
-            List<string> resultCareer = new();
-            foreach (var item in array)
-            {
-                if (item.Contains('\n'))
-                {
-                    string[] splitArray = item.Trim().Split('\n');
-                    foreach (var itemSplit in splitArray)
-                    {
-                        resultCareer.Add(itemSplit.Trim());
-                    }
-                }
-                else
-                {
-                    resultCareer.Add(item.Trim());
-                }
-            }
-
-            IEnumerable<string> resultArray = resultCareer.ToArray().Distinct();
-            return resultArray;
-        }
 
         /// <summary>
         /// Lấy dữ liệu ngành nghề của bảng Organization
@@ -112,7 +84,7 @@ namespace Repository
                 else
                 {
 
-                    IEnumerable<string> resultArray = FormatData(careerArray);
+                    IEnumerable<string> resultArray = CommonFunc.CommonFunc.FormatData(careerArray);
                     result.Data = resultArray;
                     result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
                     result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
@@ -153,7 +125,7 @@ namespace Repository
                 }
                 else
                 {
-                    IEnumerable<string> resultArray = FormatData(domainArray);
+                    IEnumerable<string> resultArray = CommonFunc.CommonFunc.FormatData(domainArray);
 
                     result.Data = resultArray;
                     result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;

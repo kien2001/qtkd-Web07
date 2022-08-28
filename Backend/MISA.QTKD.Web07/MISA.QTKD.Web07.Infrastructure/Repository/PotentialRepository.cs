@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Constants;
+﻿using Constants;
 using Dapper;
 using Entities;
-using Exceptions;
 using Infrastructure;
-using Microsoft.Extensions.Configuration;
 using MISA.QTKD.Web07.Core.Entities;
 using MySqlConnector;
 
@@ -199,7 +192,7 @@ namespace Repository
                 }
                 else
                 {
-                    IEnumerable<string> resultArray = FormatData(listPotential);
+                    IEnumerable<string> resultArray = CommonFunc.CommonFunc.FormatData(listPotential);
                     result.Data = resultArray;
                     result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
                     result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
@@ -218,33 +211,6 @@ namespace Repository
             return result;
         }
 
-        /// <summary>
-        /// Xử lý lọc giá trị của các array thành duy nhất 1 giá trị
-        /// </summary>
-        /// <returns></returns>
-        /// Created by LVKIEN 23/08/2022
-
-        public static IEnumerable<string> FormatData(IEnumerable<string> array)
-        {
-            List<string> resultCareer = new();
-            foreach (var item in array)
-            {
-                if (item.Contains('\n'))
-                {
-                    string[] splitArray = item.Trim().Split('\n');
-                    foreach (var itemSplit in splitArray)
-                    {
-                        resultCareer.Add(itemSplit.Trim());
-                    }
-                }
-                else
-                {
-                    resultCareer.Add(item.Trim());
-                }
-            }
-
-            IEnumerable<string> resultArray = resultCareer.ToArray().Distinct();
-            return resultArray;
-        }
+       
     }
 }
