@@ -121,12 +121,14 @@ namespace Repository
             try
             {
                 var stringIdList = updatedMultiple.ListId.ConvertAll<string>(g => g.ToString());
-                var updateQuery = $@"Update address set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue where AddressId in @ListId ;";
+                var updateQuery = $@"Update address set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue
+                  , ModifiedAt = @ModifiedAt where AddressId in @ListId ;";
                 var resultString = String.Join(", ", stringIdList);
                 var parameters = new
                 {
                     FieldUpdateValue = updatedMultiple.FieldUpdateValue,
-                    ListId = stringIdList
+                    ListId = stringIdList,
+                    ModifiedAt = DateTime.Now
                 };
 
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
