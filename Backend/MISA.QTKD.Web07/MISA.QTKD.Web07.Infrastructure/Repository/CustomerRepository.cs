@@ -20,52 +20,6 @@ namespace Repository
     public class CustomerRepository : ICustomerRepository
     {
         /// <summary>
-        /// Check trùng mã tiềm năng
-        /// </summary>
-        /// <param name="potentialId"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        /// Created by LVKIEn 18/05/2022
-        public Result CheckDuplicateCode(Guid potentialId)
-        {
-            Result result = new();
-            try
-            {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-
-                var sqlCheck = "Select PotentialId from customer where PotentialId = @PotentialId";
-                var dynamicParams = new DynamicParameters();
-                dynamicParams.Add("@PotentialId", potentialId);
-                var potentialIdDuplicate = mySqlConnection.QueryFirstOrDefault<string>(sql: sqlCheck, param: dynamicParams);
-                if (potentialIdDuplicate == null)
-                {
-                    result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.NotValue;
-                    result.UserMsg = FailMessage.MessageError.NotValue;
-                    result.Flag = false;
-                }
-                else
-                {
-                    result.Data = potentialIdDuplicate;
-                    result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
-                    result.Flag = true;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
-                result.Flag = false;
-            }
-            return result;
-
-        }
-
-
-        /// <summary>
         /// Xoá các bản ghi trong Customer
         /// </summary>
         /// <param name="listCustomerId"></param>
@@ -236,10 +190,21 @@ namespace Repository
                     var customerTable = multipleResults.Read<Customer>();
                     var totalCount = multipleResults.Read<long>().Single();
 
-                    result.Data = new { customers = customerTable, totalCount };
-                    result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
-                    result.Flag = true;
+                    if(totalCount == 0)
+                    {
+                        result.Data = new { };
+                        result.DevMsg = FailMessage.CodeError.NotFound;
+                        result.UserMsg = FailMessage.MessageError.NotFound;
+                        result.Flag = false;
+                    }
+                    else
+                    {
+                        result.Data = new { customers = customerTable, totalCount };
+                        result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
+                        result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
+                        result.Flag = true;
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -387,6 +352,8 @@ namespace Repository
                         v_PotentialName = customer.PotentialName,
                         v_OrganizationId = customer.OrganizationId,
                         v_OrganizatonName = customer.OrganizationName,
+                        v_CustomerId = customerId,
+
                         v_ModifiedAt = DateTime.Now
                     };
 
