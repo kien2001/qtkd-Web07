@@ -3,7 +3,6 @@
     display: flex;
     gap: 8px;
 }
-
 .item-icon {
     width: 16px;
     height: 16px;
@@ -16,67 +15,82 @@
     font-weight: 500px;
 }
 
-.icon-ngoinha {
+.icon-home {
+    background-image: url("../../img/blue-active/home.svg");
     background-image: url("../../img/home.svg");
 }
 
 .icon-tiemnang {
+    background-image: url("../../img/blue-active/tiemnang.svg");
     background-image: url("../../img/tiemnang.svg");
 }
 
 .icon-chaohang {
+    background-image: url("../../img/blue-active/chaohang.svg");
     background-image: url("../../img/chaohang.svg");
 }
 
 .icon-lienhe {
+    background-image: url("../../img/blue-active/lienhe.svg");
     background-image: url("../../img/lienhe.svg");
 }
 
 .icon-khachhang {
+    background-image: url("../../img/blue-active/khachhang.svg");
     background-image: url("../../img/khachhang.svg");
 }
 
 .icon-cohoi {
+    background-image: url("../../img/blue-active/cohoi.svg");
     background-image: url("../../img/cohoi.svg");
 }
 
 .icon-baogia {
+    background-image: url("../../img/blue-active/baogia.svg");
     background-image: url("../../img/baogia.svg");
 }
 
 .icon-donhang {
+    background-image: url("../../img/blue-active/giohang.svg");
     background-image: url("../../img/giohang.svg");
 }
 
 .icon-hoadon {
+    background-image: url("../../img/blue-active/hoadon.svg");
     background-image: url("../../img/hoadon.svg");
 }
 
 .icon-aocohoi {
+    background-image: url("../../img/blue-active/aocohoi.svg");
     background-image: url("../../img/aocohoi.svg");
 }
 
 .icon-hoatdong {
+    background-image: url("../../img/blue-active/hoatdong.svg");
     background-image: url("../../img/hoatdong.svg");
 }
 
 .icon-muctieu {
+    background-image: url("../../img/blue-active/muctieu.svg");
     background-image: url("../../img/muctieu.svg");
 }
 
 .icon-chiendich {
+    background-image: url("../../img/blue-active/chiendich.svg");
     background-image: url("../../img/chiendich.svg");
 }
 
 .icon-baocao {
+    background-image: url("../../img/blue-active/baocao.svg");
     background-image: url("../../img/baocao.svg");
 }
 
 .icon-khac {
+    background-image: url("../../img/blue-active/khac.svg");
     background-image: url("../../img/khac.svg");
 }
 
-.icon-ngoinha-active {
+.icon-home-active {
     background-image: url("../../img/blue-active/home.svg");
 }
 

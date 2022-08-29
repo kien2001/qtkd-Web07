@@ -1,5 +1,10 @@
 <template>
   <div class="form-submit-container" ref="container">
+    <ToastMessage :message="message" :state="state" ref="toast" />
+    <PopUp
+      :text="!editForm ? 'Bạn có chắc chắn muốn thêm tiềm năng này không?' : 'Bạn có chắc chắn muốn sửa các tiềm năng này không?' "
+      :colorBtn="!editForm ? '#4262F0' : '#31B491'" :colorHoverBtn="!editForm ? '#2B4EEE' : '#2EA888'" ref="showConfirm"
+      @handlePopUp="sendRequestInsert" />
     <div class="form-submit">
       <div class="form-header">
         <div class="header-title">
@@ -9,9 +14,9 @@
           <div class="edit-btn">Sửa bố cục</div>
         </div>
         <div class="header-btn">
-          <KienButton name="Huỷ bỏ" color="#fff" @clickBtn="closeForm" colorHover="#D0D8FB" />
-          <KienButton name="Lưu và thêm" color="#fff" colorHover="#D0D8FB" />
-          <KienButton name="Lưu" color="#4262F0" colorHover="#2B4EEE" @clickBtn="saveForm" colorText="#FFFFFF" />
+          <Button name="Huỷ bỏ" color="#fff" @clickBtn="closeForm" colorHover="#D0D8FB" />
+          <Button name="Lưu và thêm" color="#fff" colorHover="#D0D8FB" @clickBtn="saveAndAddForm" />
+          <Button name="Lưu" color="#4262F0" colorHover="#2B4EEE" @clickBtn="saveForm" colorText="#FFFFFF" />
         </div>
       </div>
       <div class="form-main">
@@ -45,8 +50,8 @@
             <div class="context-item">
               <div class="context-label">Họ và tên</div>
               <div class="context-input">
-                <InputFormVue class="inputForm" id="fullName" :isDisabled="true" :handleFullName="handleFullName"
-                  ref="fullName" />
+                <InputFormVue class="inputForm" id="fullName" :isDisabled="true" ref="fullName" />
+                <!-- :handleFullName="handleFullName" -->
               </div>
             </div>
             <div class=" context-item">
@@ -317,7 +322,9 @@
 
       </div>
     </div>
+
   </div>
+  <Loading v-if="isLoading" />
 
 </template>
 
@@ -463,6 +470,7 @@
 }
 
 .context-input {
+  position: relative;
   flex-basis: 70%;
   display: flex;
   flex-direction: column;
@@ -490,6 +498,7 @@ import axios from 'axios'
 import { rootApi, dropdownField } from '@/js/config'
 import StatusCode from '../entities/StatusCode'
 import Customer from '../entities/Customer'
+import CustomerUpdate from '../entities/CustomerUpdate'
 import Organization from '../entities/Organization'
 import Address from '../entities/Address'
 import Potential from '../entities/Potential'
@@ -497,10 +506,13 @@ import handleClickFilterItem from '../js/checkbox'
 import { handleTransferObject } from '../js/common'
 import InputFormVue from './InputForm.vue'
 import DatePicker from './DatePicker.vue'
+import PopUp from './PopUp.vue'
 export default {
   name: 'FormSubmit',
   data() {
     return {
+      message: '',
+      state: '',
       lastMiddleName: '',
       firstName: '',
       addressName: '',
@@ -510,15 +522,13 @@ export default {
       cityName: '',
       districtName: '',
       wardName: '',
-      errorField: {
-        firstName: '',
-        potentialCode: ''
-      },
+      errorField: [],
       prefixPotentialName: "Potentials/PotentialNames",
       prefixCareerName: "Organizations/Careers",
       prefixDomainName: "Organizations/Domains",
       editForm: this.$store.state.editForm,
-      customerEdit: this.$parent.customerEdit
+      customerEdit: this.$parent.customerEdit,
+      isLoading:false
     }
   },
   async mounted() {
@@ -528,68 +538,15 @@ export default {
       $(item).click(this.checkInput)
       $(item).css("background-color", "#fff!important")
     })
-    if (this.editForm) {
-      console.log(this.customerEdit);
+    
+    this.mountDataEditForm()
 
-      this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
-      this.$refs.vocative.currentValue = { id: this.customerEdit.vocative || 0, name: this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn" }
-
-      this.$refs.departmentId.oldSearchFilter = this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn"
-      this.$refs.departmentId.currentValue = { id: this.customerEdit.departmentId || 0, name: this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn" }
-
-      this.$refs.positionId.oldSearchFilter = this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn"
-      this.$refs.positionId.currentValue = { id: this.customerEdit.positionId || 0, name: this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn" }
-
-      this.$refs.sourceId.oldSearchFilter = this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn"
-      this.$refs.sourceId.currentValue = { id: this.customerEdit.sourceId || 0, name: this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn" }
-
-      this.$refs.gender.oldSearchFilter = this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn'
-      this.$refs.gender.currentValue = { id: this.customerEdit.gender || 0, name: this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn' }
-      $(this.$refs.container).find("#lastMiddleName").val(this.customerEdit.lastMiddleName)
-      $(this.$refs.container).find("#firstName").val(this.customerEdit.firstName)
-      // xử lý khi có họ và đệm hay ko
-      if (!this.customerEdit.lastMiddleName) {
-        this.firstName = this.customerEdit.firstName?.trim()
-        $(this.$refs.container).find("#fullName").val(this.customerEdit.firstName?.trim())
-      } else {
-        this.firstName = this.customerEdit.firstName?.trim()
-        this.lastMiddleName = this.customerEdit.lastMiddleName?.trim()
-        $(this.$refs.container).find("#fullName").val(this.customerEdit.lastMiddleName?.trim().concat(' ' + this.customerEdit.firstName?.trim()))
-      }
-      $(this.$refs.container).find("#customerPhoneNum").val(this.customerEdit.customerPhoneNum)
-      $(this.$refs.container).find("#companyPhoneNum").val(this.customerEdit.companyPhoneNum)
-      $(this.$refs.container).find("#otherPhoneNum").val(this.customerEdit.otherPhoneNum)
-      $(this.$refs.container).find("#zalo").val(this.customerEdit.zalo)
-      $(this.$refs.container).find("#organizationName").val(this.customerEdit.organizationName)
-      $(this.$refs.container).find("#customerEmail").val(this.customerEdit.customerEmail)
-      $(this.$refs.container).find("#companyEmail").val(this.customerEdit.companyEmail)
-      $(this.$refs.container).find("#taxCode").val(this.customerEdit.taxCode)
-      this.customerEdit.disableCall && $(this.$refs.container).find("#disableCall").trigger("click")
-      this.customerEdit.disableMail && $(this.$refs.container).find("#disableMail").trigger("click")
-      if (this.customerEdit.potentialName) {
-        const potentialArray = this.customerEdit.potentialName.split("\n ").map(item => {
-          if (item !== '') {
-            return item.trim()
-          }
-        }).filter(element => {
-          return element !== undefined;
-        });
-        this.$refs.potentialNames.value = this.formatDataComboBox(potentialArray);
-      }
-      $(this.$refs.container).find("#facebook").val(this.customerEdit.facebook)
-
-      // format dateOfBirth
-      if (this.customerEdit?.dateOfBirth) {
-        this.$refs.dateOfBirth.setDate(this.formatDateTime(this.customerEdit.dateOfBirth))
-      }
-    }
-
-    const requiredFields = $('.context-item[required]>.context-input>input').toArray()
+    const requiredFields = $('.context-item[required] .input-text').toArray()
     requiredFields.forEach(field => {
       $(field).blur(this.checkRequiredField)
       $(field).focus(function (e) {
         $(e.target).css('border-color', '#D3D7DE')
-        $(e.target).next('span').remove()
+        $(e.target).parent().next('span').remove()
       })
     })
     // xử lý hiển thị cho checkbox(liên quan đến mặt hình ảnh)
@@ -607,7 +564,6 @@ export default {
         this.$refs['potentialCode'].name = data.data
       }
     }
-    console.log(this.$refs.cityId.selected.name)
   },
   computed: {
     handleFullName() {
@@ -630,7 +586,7 @@ export default {
       this.$refs.wardId.selected = {}
       this.$refs.wardId.setOptions([])
 
-      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
       console.log(addressArr);
       this.addressName = addressArr.join(' ').trim()
 
@@ -646,7 +602,7 @@ export default {
       this.$refs.wardId.selected = {}
       this.$refs.wardId.setOptions([])
 
-      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
       console.log(addressArr);
       this.addressName = addressArr.join(' ').trim()
 
@@ -658,21 +614,102 @@ export default {
       this.$refs.wardId.selected = {}
       this.$refs.wardId.setOptions([])
 
-      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
       console.log(addressArr);
       this.addressName = addressArr.join(' ').trim()
     },
     wardName() {
       let addressArr = []
 
-      addressArr = [this.wardName, this.districtName, this.cityName, this.countryName]
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
       console.log(addressArr);
       this.addressName = addressArr.join(' ').trim()
+    },
+    firstName() {
+      $("#fullName").val(`${this.lastMiddleName} ${this.firstName}`);
+    },
+    lastMiddleName() {
+      $("#fullName").val(`${this.lastMiddleName} ${this.firstName}`);
+    },
+    // xử lý hiển thị lỗi
+    errorField(newValue) {
+      newValue.forEach(item => {
+        const keyErr = Object.keys(item)
+        const fieldError = $(this.$refs.container).find(`#${keyErr}`)
+        if (item[keyErr] !== '') {
+          $(fieldError).parent().next('span').remove()
+          $(fieldError).css('border-color', 'red')
+
+          $(fieldError).parent().after(`<span style="color:red"}}>${item[keyErr]}</span>`)
+        } else {
+          $(fieldError).parent().next('span').remove()
+          $(fieldError).css('border-color', '#D3D7DE')
+        }
+      })
     }
+    
   },
-  components: { InputFormVue, DatePicker },
+  components: { InputFormVue, DatePicker, PopUp },
   template: 'FormSubmit',
   methods: {
+    mountDataEditForm(){
+      if (this.editForm) {
+        console.log(this.customerEdit);
+
+        this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
+        this.$refs.vocative.currentValue = { id: this.customerEdit.vocative || 0, name: this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn" }
+
+        this.$refs.departmentId.oldSearchFilter = this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn"
+        this.$refs.departmentId.currentValue = { id: this.customerEdit.departmentId || 0, name: this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn" }
+
+        this.$refs.positionId.oldSearchFilter = this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn"
+        this.$refs.positionId.currentValue = { id: this.customerEdit.positionId || 0, name: this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn" }
+
+        this.$refs.sourceId.oldSearchFilter = this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn"
+        this.$refs.sourceId.currentValue = { id: this.customerEdit.sourceId || 0, name: this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn" }
+
+        this.$refs.gender.oldSearchFilter = this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn'
+        this.$refs.gender.currentValue = { id: this.customerEdit.gender || 0, name: this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn' }
+        $(this.$refs.container).find("#lastMiddleName").val(this.customerEdit.lastMiddleName)
+        $(this.$refs.container).find("#firstName").val(this.customerEdit.firstName)
+        // xử lý khi có họ và đệm hay ko
+        if (!this.customerEdit.lastMiddleName) {
+          this.firstName = this.customerEdit.firstName?.trim()
+          $(this.$refs.container).find("#fullName").val(this.customerEdit.firstName?.trim())
+        } else {
+          this.firstName = this.customerEdit.firstName?.trim()
+          this.lastMiddleName = this.customerEdit.lastMiddleName?.trim()
+          $(this.$refs.container).find("#fullName").val(this.customerEdit.lastMiddleName?.trim().concat(' ' + this.customerEdit.firstName?.trim()))
+        }
+        $(this.$refs.container).find("#customerPhoneNum").val(this.customerEdit.customerPhoneNum)
+        $(this.$refs.container).find("#companyPhoneNum").val(this.customerEdit.companyPhoneNum)
+        $(this.$refs.container).find("#otherPhoneNum").val(this.customerEdit.otherPhoneNum)
+        $(this.$refs.container).find("#zalo").val(this.customerEdit.zalo)
+        $(this.$refs.container).find("#organizationName").val(this.customerEdit.organizationName)
+        $(this.$refs.container).find("#customerEmail").val(this.customerEdit.customerEmail)
+        $(this.$refs.container).find("#companyEmail").val(this.customerEdit.companyEmail)
+        $(this.$refs.container).find("#taxCode").val(this.customerEdit.taxCode)
+        this.customerEdit.disableCall && $(this.$refs.container).find("#disableCall").trigger("click")
+        this.customerEdit.disableMail && $(this.$refs.container).find("#disableMail").trigger("click")
+        if (this.customerEdit.potentialName) {
+          const potentialArray = this.customerEdit.potentialName.split("\n ").map(item => {
+            if (item !== '') {
+              return item.trim()
+            }
+          }).filter(element => {
+            return element !== undefined;
+          });
+          this.$refs.potentialNames.value = this.formatDataComboBox(potentialArray);
+        }
+        $(this.$refs.container).find("#facebook").val(this.customerEdit.facebook)
+
+        // format dateOfBirth
+        if (this.customerEdit?.dateOfBirth) {
+          this.$refs.dateOfBirth.setDate(this.formatDateTime(this.customerEdit.dateOfBirth))
+        }
+      }
+    },
+
     getSelectedCountry(selected) {
       this.countryName = selected
     },
@@ -780,10 +817,10 @@ export default {
           if (areaResponse.flag) {
             areaResponse = areaResponse.data
           } else {
-
-            console.log(areaResponse.userMsg)
-
-
+            this.state = "fail"
+            this.message = areaResponse.userMsg
+            this.$refs.toast.isShow = true
+            
             this.$refs.cityId.showNoValue = true
             this.$refs.districtId.showNoValue = true
             this.$refs.wardId.showNoValue = true
@@ -798,19 +835,23 @@ export default {
 
           this.$refs[areaName].oldSearchFilter = false
           this.$refs[areaName].selected = {}
-          alert(actionFail)
+          this.state = "fail"
+          this.message = actionFail
+          this.$refs.toast.isShow = true
         }
       } catch (error) {
-        console.log(error)
+        this.state = "fail"
+        this.message = error
+        this.$refs.toast.isShow = true
       }
     },
     checkRequiredField(e) {
       if (!$(e.target).val()) {
         $(e.target).css('border-color', 'red')
-        $(e.target).after('<span style="color:red"}}>Tên không được phép để trống</span>')
+        $(e.target).parent().after('<span style="color:red"}}>Tên không được phép để trống</span>')
       } else {
         $(e.target).css('border-color', '#D3D7DE')
-        $(e.target).next('span').remove()
+        $(e.target).parent().next('span').remove()
       }
     },
 
@@ -831,7 +872,6 @@ export default {
     closeForm() {
       if (this.$route.name === "TiemNang") {
         this.$store.commit('setFormState', false)
-        this.$store.commit('setEditForm', false)
       }
     },
     // ánh xạ dữ liệu vào đúng thuộc tính object
@@ -849,38 +889,40 @@ export default {
           }
         })
       })
-      const dropdownValueArr = dropdownField.map(dropdown => {
-        if (this.$refs[dropdown]) {
-          return { [dropdown]: this.$refs[dropdown].selected.id || null }
-        }
-      })
-      keysObject.forEach(key => {
-        const lowerCaseKey = this.lowerCaseFirstLetter(key);
-        dropdownValueArr.forEach(dropdown => {
-          if (dropdown[lowerCaseKey]) {
-            object[key] = dropdown[lowerCaseKey]
+      if (!this.editForm){
+        const dropdownValueArr = dropdownField.map(dropdown => {
+          if (this.$refs[dropdown]) {
+            return { [dropdown]: this.$refs[dropdown].selected.id || null }
           }
         })
-      })
+        keysObject.forEach(key => {
+          const lowerCaseKey = this.lowerCaseFirstLetter(key);
+          dropdownValueArr.forEach(dropdown => {
+            if (dropdown[lowerCaseKey]) {
+              object[key] = dropdown[lowerCaseKey]
+            }
+          })
+        })
+      }
     },
     // lấy dữ liệu form và gọi API
     // 15/08/2022 LVKien
-    async saveForm() {
-      console.log(this.getDistrict);
-      this.errorField.firstName = ''
+    saveForm() {
+      this.$refs.showConfirm.isShow = true
+    },
+    async sendRequestInsert(){
+      this.errorField = [{ firstName: '' }, { potentialCode: '' }]
       const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
       const customer = new Customer()
       if (!this.editForm) {
         await this.saveInsertForm(customer, potentialNames)
       } else {
-        await this.saveEditForm(customer, potentialNames)
+        await this.saveEditForm(potentialNames)
       }
     },
     async saveInsertForm(customer, potentialNames) {
       const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
       const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
-      // set lại giá trị lỗi
-      this.errorField.potentialCode = ''
       // Lấy dữ liệu các ô input trong form
 
       const address = new Address()
@@ -911,9 +953,12 @@ export default {
       console.log(customer, potential, address, organization)
       let resPotential, resAddress, resOrganization
       if (!customer.FirstName || customer.FirstName === '') {
-        this.errorField.firstName = 'Tên không được phép để trống'
+        this.errorField = [...this.errorField, { firstName : 'Tên không được phép để trống' }]
+        this.state = "fail"
+        this.message = 'Tên không được phép để trống'
+        this.$refs.toast.isShow = true
       } else {
-        this.errorField.firstName = ''
+        this.errorField.forEach(item=>item.firstName==='')
         if (!this.checkEmptyObject(potential)) {
           resPotential = await axios.post(`${rootApi}Potentials`, potential).then(res => res.data).catch(error => error.response.data)
           if (resPotential.flag) {
@@ -921,16 +966,20 @@ export default {
           } else {
             // Nếu trùng mã tiềm năng
             if (resPotential?.devMsg === StatusCode.ErrorCode.DuplicatePotentialCode) {
-              this.errorField.potentialCode = resPotential?.userMsg
+              this.errorField = [...this.errorField, { potentialCode: resPotential?.userMsg }] 
+              this.state = "fail"
+              this.message = resPotential.userMsg
+              this.$refs.toast.isShow = true
             } else {
-              this.errorField.potentialCode = ''
+              this.errorField.forEach(item => item.potentialCode === '')
+
             }
           }
         }
       }
 
       // nếu ko có lỗi
-      if (this.checkEmptyObject(this.errorField)) {
+      if (this.checkEmptyError()) {
         if (!this.checkEmptyObject(address)) {
           resAddress = await axios.post(`${rootApi}Addresses`, address).then(res => res.data).catch(error => error.response.data)
           if (resAddress.flag) {
@@ -948,117 +997,135 @@ export default {
           }
         }
         // nếu ít nhất 1 trong 3 resPotential resAddress resOrganization thành công, gán các giá trị cho customer
-        if (resPotential.flag || resAddress.flag || resOrganization.flag) {
+        if (resPotential?.flag || resAddress?.flag || resOrganization?.flag) {
           customer.PotentialId = resPotential?.data.toString() || null
           customer.AddressId = resAddress?.data || null
           customer.OrganizationId = resOrganization?.data || null
           console.log(customer)
+          this.isLoading = true;
           const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
+          this.isLoading = false;
           if (resCustomer.flag) {
-            alert('Thành công')
+            this.state = "success"
+            this.message = "Thành công"
+            this.$refs.toast.isShow = true
+            this.$store.commit("setIsInserted", true)
+            this.closeForm()
           } else {
-            console.log(resCustomer.data)
+            this.state = "fail"
+            this.message = resCustomer.userMsg
+            this.$refs.toast.isShow = true
           }
           // nếu ko nhập address, potential, organization thì thêm luôn customer
         } else {
+          this.isLoading = true;
           const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
+          this.isLoading = false;
           if (resCustomer.flag) {
-            alert('Thành công')
+            this.state = "success"
+            this.message = "Thành công"
+            this.$refs.toast.isShow = true
 
             this.$store.commit("setIsInserted", true)
+            this.closeForm()
           } else {
-            console.log(resCustomer.data)
+            this.state = "fail"
+            this.message = resCustomer.userMsg
+            this.$refs.toast.isShow = true
           }
         }
-        // nếu có lỗi
-      } else {
-        // xử lý hiển thị lỗi
-        const potentialCodeField = $(this.$refs.container).find('#potentialCode')
-        const firstNameField = $(this.$refs.container).find('#firstName')
-        if (this.errorField.firstName !== '') {
-          $(firstNameField).next('span').remove()
-          $(firstNameField).after(`<span style="color:red"}}>${this.errorField.firstName}</span>`)
-        } else {
-          $(firstNameField).next('span').remove()
-        }
-        if (this.errorField.potentialCode !== '') {
-          $(potentialCodeField).next('span').remove()
-          $(potentialCodeField).after(`<span style="color:red"}}>${this.errorField.potentialCode}</span>`)
-        } else {
-          $(potentialCodeField).next('span').remove()
-        }
       }
     },
-    async saveEditForm(customer, potentialNames) {
+    async saveEditForm( potentialNames) {
+      const customerUpdate = new CustomerUpdate()
       if ($(this.$refs.container).find("#firstName").val() === '') {
-        this.errorField.firstName = 'Tên không được phép để trống'
+        this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
+        this.state = "fail"
+        this.message = "Tên không được phép để trống"
+        this.$refs.toast.isShow = true
       } else {
-        this.errorField.firstName = ''
+        this.errorField.forEach(item => item.firstName === '')
       }
       // xử lý khi không có lỗi
-      if (this.checkEmptyObject(this.errorField)) {
-        const fieldValues = $(this.$refs.container).find(".context-input").children("input:not([disabled])").toArray()
-        const idFieldInput = fieldValues.map(item => {
-          return this.capitalizeFirstLetter($(item).attr("id"))
-        })
-        idFieldInput.forEach(id => {
-          const lowerCaseId = this.lowerCaseFirstLetter(id)
-          customer[id] = $(this.$refs.container).find(`#${lowerCaseId}`).val()
-        })
-        this.getValueDropdown("Vocative", customer)
-        this.getValueDropdown("DepartmentId", customer)
-        this.getValueDropdown("PositionId", customer)
-        this.getValueDropdown("SourceId", customer)
-        this.getValueDropdown("Gender", customer)
+      if (this.checkEmptyError()) {
+        this.handleMappingData(customerUpdate)
+        this.getValueDropdown("Vocative", customerUpdate)
+        this.getValueDropdown("DepartmentId", customerUpdate)
+        this.getValueDropdown("PositionId", customerUpdate)
+        this.getValueDropdown("SourceId", customerUpdate)
+        this.getValueDropdown("Gender", customerUpdate)
 
-
-        customer.PotentialName = potentialNames;
-        customer.DisableCall = !!$(this.$refs.container).find("#disableCall").attr("checked")
-        customer.DisableMail = !!$(this.$refs.container).find("#disableMail").attr("checked")
-        customer.CustomerId = this.customerEdit.customerId
-        customer.DateOfBirth = this.formatDate(this.dateOfBirth)
-        customer.OrganizationId = this.customerEdit.organizationId
-        customer.PotentialId = this.customerEdit.potentialId
-        customer.ModifiedAt = this.customerEdit.modifiedAt
-        this.formatData(customer)
-        console.log(customer);
-        const resCustomer = await axios.put(`${rootApi}Customers/${customer.CustomerId}`, customer)
+        customerUpdate.PotentialName = potentialNames;
+        customerUpdate.DisableCall = !!$(this.$refs.container).find("#disableCall").attr("checked")
+        customerUpdate.DisableMail = !!$(this.$refs.container).find("#disableMail").attr("checked")
+        customerUpdate.CustomerId = this.customerEdit.customerId
+        customerUpdate.DateOfBirth = this.formatDate(this.dateOfBirth)
+        customerUpdate.OrganizationId = this.customerEdit.organizationId
+        customerUpdate.PotentialId = this.customerEdit.potentialId
+        customerUpdate.ModifiedAt = this.customerEdit.modifiedAt
+        this.formatData(customerUpdate)
+        console.log(customerUpdate);
+        this.isLoading = true;
+        const resCustomer = await axios.put(`${rootApi}Customers/${customerUpdate.CustomerId}`, customerUpdate)
           .then(res => res.data).catch(error => error.response.data)
+        this.isLoading = false;
         if (resCustomer.flag) {
-          alert('Thành công')
-
+          this.state = "success"
+          this.message = "Thành công"
+          this.$refs.toast.isShow = true
           this.$store.commit("setIsUpdated", true)
+          this.customerEdit = customerUpdate
+          this.closeForm()
         } else {
-          console.log(resCustomer.data)
-        }
-      }
-      // nếu có lỗi
-      else {
-        // xử lý hiển thị lỗi
-        const firstNameField = $(this.$refs.container).find('#firstName')
-        if (this.errorField.firstName !== '') {
-          $(firstNameField).next('span').remove()
-          $(firstNameField).after(`<span style="color:red"}}>${this.errorField.firstName}</span>`)
-        } else {
-          $(firstNameField).next('span').remove()
+          this.state = "fail"
+          this.message = resCustomer.userMsg
+          this.$refs.toast.isShow = true
         }
       }
     },
-    getValueDropdown(capitalizeValue, customer) {
+    async saveAndAddForm(){
+      this.$refs.showConfirm.isShow = true
+      await this.sendRequestInsert()
+      this.openForm()
+      
+    },
+    openForm() {
+      if (this.$route.name === "TiemNang") {
+        this.$store.commit('setFormState', true)
+      }
+    },
+    /**
+     * Lấy giá trị dropdown gán vào 1 object
+     * @param {*} capitalizeValue 
+     * @param {*} object 
+     * created by LVKIEN 28/08/2022
+     */
+    getValueDropdown(capitalizeValue, object) {
       const toLowerCaseValue = this.lowerCaseFirstLetter(capitalizeValue)
       console.log(toLowerCaseValue);
       // nếu prop selected không có, tức là người dùng không sửa gì, lấy gtri current
       if (Object.keys(this.$refs[toLowerCaseValue].selected).length === 0) {
-        customer[capitalizeValue] = this.$refs[toLowerCaseValue].currentValue.id
+        object[capitalizeValue] = this.$refs[toLowerCaseValue].currentValue.id
       } else {
         // nếu id !== 0, tức là người dùng ko click vào ô "Không chọn"
         if (this.$refs[toLowerCaseValue].selected.id !== 0) {
-          customer[capitalizeValue] = this.$refs[toLowerCaseValue].selected.id
+          object[capitalizeValue] = this.$refs[toLowerCaseValue].selected.id
           // nếu id === 0, tức là người dùng click vào ô "Không chọn"
         } else {
-          customer[capitalizeValue] = null;
+          object[capitalizeValue] = null;
         }
       }
+    },
+    checkEmptyError(){
+      let result = true;
+      for (const key in this.errorField) {
+        const itemKey = Object.keys(this.errorField[key]) 
+        if (this.errorField[key][itemKey] !== '') {
+          result = false
+          break;
+        }
+      }
+      return result;
     },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1087,6 +1154,9 @@ export default {
         }
       })
     }
+  },
+  unmounted(){
+    console.log(1);
   }
 }
 </script>

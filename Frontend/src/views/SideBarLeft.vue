@@ -19,8 +19,8 @@
             </div>
         </div>
         <div class="sidebar-left-footer" v-if="showButton">
-            <KienButton name="Bỏ lọc" color="#fff" colorHover="#D0D8FB" @clickBtn="removeAllFilters" />
-            <KienButton name="Áp dụng" color="#4262F0" colorHover="#2B4EEE" colorText="#FFFFFF" />
+            <Button name="Bỏ lọc" color="#fff" colorHover="#D0D8FB" @clickBtn="removeAllFilters" />
+            <Button name="Áp dụng" color="#4262F0" colorHover="#2B4EEE" colorText="#FFFFFF" />
         </div>
         <div class="btn-icon btn-toggle toggle-left" @click="handleClickToggle"></div>
     </div>
