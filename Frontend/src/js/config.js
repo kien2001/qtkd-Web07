@@ -3,6 +3,10 @@ export const rootApi = 'http://localhost:5057/api/v1/'
 // các trường dùng để cập nhật nhiều
 export const fieldOptions = ["Xưng hô", "Họ và tên", "Chức danh", "ĐT di động", "ĐT cơ quan", "Email cơ quan", "Email cá nhân", "Tổ chức", "Địa chỉ", "Tỉnh/Thành phố", "Quận/Huyện", "Phường/Xã", "Nguồn gốc", "Loại hình", "Lĩnh vực", "Mô tả", "Bố cục", "Chủ sở hữu", "Doanh thu", "Dùng chung", "Facebook"]
 
+export const dropdownField = [
+    "vocative", "departmentId", "positionId", "sourceId", "typeId", "revenueId", "countryId", "cityId", "districtId", "wardId"
+]
+
 //các trường tiếng việt mapping sang tiếng anh
 export const fieldMappingOptions =
     [{
@@ -13,7 +17,7 @@ export const fieldMappingOptions =
         name: "Họ và tên"
     },
     {
-        id: "Postion",
+        id: "Position",
         name: "Chức danh"
     },
     {

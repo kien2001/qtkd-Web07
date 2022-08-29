@@ -21,12 +21,17 @@
                 }" ref="domainNames" v-else />
             </div>
             <div class="box-footer">
-                <KienButton name="Huỷ bỏ" color="#fff" @clickBtn="closeUpdateMultipleForm" colorHover="#D0D8FB" />
-                <KienButton name="Cập nhật" color="#4262F0" colorHover="#2B4EEE" colorText="#FFFFFF"
-                    :disabled="isDisabled" @clickBtn="handleUpdateMultipleRow" />
+                <Button name="Huỷ bỏ" color="#fff" @clickBtn="closeUpdateMultipleForm" colorHover="#D0D8FB" />
+                <Button name="Cập nhật" color="#4262F0" colorHover="#2B4EEE" colorText="#FFFFFF" :disabled="isDisabled"
+                    @clickBtn="updateMultiple" />
             </div>
         </div>
     </div>
+    <PopUp text="Bạn có chắc chắn muốn sửa các tiềm năng này không?" colorBtn="#31B491" colorHoverBtn="#2EA888"
+        ref="showConfirm" @handlePopUp="sendRequestUpdateMultiple" />
+    <Loading v-if="isLoading" />
+    <ToastMessage :message="message" :state="state" ref="toast" />
+
 </template>
 
 <style scoped>
@@ -115,136 +120,168 @@
 import $ from 'jquery'
 import axios from 'axios'
 import InputForm from "./InputForm.vue";
-import KienButton from "./KienButton.vue";
-import { fieldOptions, fieldInputOptions, fieldDropdownOptions, rootApi, customerFields, addressFields, organizationFields } from '../js/config'
+import Button from "./Button.vue";
+import { fieldOptions, fieldDropdownOptions, rootApi } from '../js/config'
+import PopUp from './PopUp.vue';
+import ToastMessage from './ToastMessage.vue';
 export default {
     name: "UpdateMultipleForm",
     data() {
         return {
+            message: '',
+            state: '',
             selectedUpdateFilter: {},
             selectedUpdateOption: {},
             isDisabled: true,
             typeUpdateData: 0, // typeUpdateData = 0 =>Input, =1 => Dropdown, =2 => ComboBox
             typeDropdown: '',
             prefixDomainName: "Organizations/Domains",
+            isLoading: false
         }
     },
-    components: { InputForm, KienButton },
+    components: { InputForm, Button, PopUp, ToastMessage },
     methods: {
         closeUpdateMultipleForm() {
             this.$store.commit('setEditMultipleRow', false)
         },
         getSelectedUpdateFilter(selected) {
-            if (selected && selected?.field) {
-                this.selectedUpdateFilter = selected.field
+            if (selected) {
+                this.selectedUpdateFilter = selected
             }
         },
-        async handleUpdateMultipleRow() {
-            if (!this.isDisabled) {
-                // console.log(this.getListIdChecked);
-                let resultUpdateObj = null
-                if (this.typeUpdateData === 0) {
-                    const inputValue = $(this.$refs.container).find("#input").val()
-                    switch (this.selectedUpdateFilter?.name) {
+        updateMultiple() {
+            this.$refs.showConfirm.isShow = true
 
-                        case "Họ và tên":
-                            resultUpdateObj = { customer: { FullName: inputValue } }
-                            break;
+        },
+        /**
+         * Gọi api để update nhiều bản ghi 
+         * Created by LVKIEn 29/08/2022
+         */
+        async sendRequestUpdateMultiple() {
+            try {
+                if (!this.isDisabled) {
+                    let resultUpdateObj = null
+                    if (this.typeUpdateData === 0) {
+                        const inputValue = $(this.$refs.container).find("#input").val()
+                        switch (this.selectedUpdateFilter?.name) {
 
-                        case "ĐT di động":
-                            resultUpdateObj = { customer: { CustomerPhoneNum: inputValue } }
-                            break;
+                            case "Họ và tên":
+                                resultUpdateObj = { customer: { FullName: inputValue } }
+                                break;
 
-                        case "ĐT cơ quan":
-                            resultUpdateObj = { customer: { CompanyPhoneNum: inputValue } }
-                            break;
+                            case "ĐT di động":
+                                resultUpdateObj = { customer: { CustomerPhoneNum: inputValue } }
+                                break;
 
-                        case "Email cá nhân":
-                            resultUpdateObj = { customer: { CustomerEmail: inputValue } }
-                            break;
+                            case "ĐT cơ quan":
+                                resultUpdateObj = { customer: { CompanyPhoneNum: inputValue } }
+                                break;
 
-                        case "Email cơ quan":
-                            resultUpdateObj = { customer: { CompanyEmail: inputValue } }
-                            break;
+                            case "Email cá nhân":
+                                resultUpdateObj = { customer: { CustomerEmail: inputValue } }
+                                break;
 
-                        case "Địa chỉ":
-                            resultUpdateObj = { address: { AddressName: inputValue } }
-                            break;
+                            case "Email cơ quan":
+                                resultUpdateObj = { customer: { CompanyEmail: inputValue } }
+                                break;
 
-                        case "Mô tả":
-                            resultUpdateObj = { customer: { Description: inputValue } }
-                            break;
-                        case "Bố cục":
-                            resultUpdateObj = { customer: { Layout: inputValue } }
-                            break;
-                        case "Chủ sở hữu":
-                            resultUpdateObj = { customer: { Owner: inputValue } }
-                            break;
-                        case "Facebook":
-                            resultUpdateObj = { customer: { Facebook: inputValue } }
-                            break;
-                        case "Dùng chung":
-                            resultUpdateObj = { customer: { SharingUse: inputValue } }
-                            break;
-                        case "Tổ chức":
-                            resultUpdateObj = { organization: { OrganizationName: inputValue } }
-                            break;
-                        default:
-                            break;
+                            case "Địa chỉ":
+                                resultUpdateObj = { address: { AddressName: inputValue } }
+                                break;
+
+                            case "Mô tả":
+                                resultUpdateObj = { customer: { Description: inputValue } }
+                                break;
+                            case "Bố cục":
+                                resultUpdateObj = { customer: { Layout: inputValue } }
+                                break;
+                            case "Chủ sở hữu":
+                                resultUpdateObj = { customer: { Owner: inputValue } }
+                                break;
+                            case "Facebook":
+                                resultUpdateObj = { customer: { Facebook: inputValue } }
+                                break;
+                            case "Dùng chung":
+                                resultUpdateObj = { customer: { SharingUse: inputValue } }
+                                break;
+                            case "Tổ chức":
+                                resultUpdateObj = { organization: { OrganizationName: inputValue } }
+                                break;
+                            default:
+                                break;
+                        }
+                    } else if (this.typeUpdateData === 1) {
+                        switch (this.selectedUpdateFilter?.name) {
+                            case "Xưng hô":
+                                resultUpdateObj = { customer: { Vocative: this.selectedUpdateOption?.id } }
+                                break;
+
+                            case "Chức danh":
+                                resultUpdateObj = { customer: { PositionId: this.selectedUpdateOption?.id } }
+                                break;
+
+                            case "Tỉnh/Thành phố":
+                                resultUpdateObj = { address: { CityId: this.selectedUpdateOption?.id } }
+                                break;
+
+                            case "Quận/Huyện":
+                                resultUpdateObj = { address: { DistrictId: this.selectedUpdateOption?.id } }
+                                break;
+
+                            case "Phường/Xã":
+                                resultUpdateObj = { address: { WardId: this.selectedUpdateOption?.id } }
+                                break;
+
+                            case "Nguồn gốc":
+                                resultUpdateObj = { customer: { SourceId: this.selectedUpdateOption?.id } }
+                                break;
+
+                            case "Loại hình":
+                                resultUpdateObj = { organization: { TypeId: this.selectedUpdateOption?.id } }
+                                break;
+                            case "Doanh thu":
+                                resultUpdateObj = { organization: { RevenueId: this.selectedUpdateOption?.id } }
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        resultUpdateObj = { organization: { Domain: this.handleDataWhenSave(this.$refs.domainNames.value) } }
                     }
-                } else if (this.typeUpdateData === 1) {
-                    switch (this.selectedUpdateFilter?.name) {
-                        case "Xưng hô":
-                            resultUpdateObj = { customer: { Vocative: this.selectedUpdateOption?.id } }
-                            break;
 
-                        case "Chức danh":
-                            resultUpdateObj = { customer: { PositionId: this.selectedUpdateOption?.id } }
-                            break;
-
-                        case "Tỉnh/Thành phố":
-                            resultUpdateObj = { address: { CityId: this.selectedUpdateOption?.id } }
-                            break;
-
-                        case "Quận/Huyện":
-                            resultUpdateObj = { address: { DistrictId: this.selectedUpdateOption?.id } }
-                            break;
-
-                        case "Phường/Xã":
-                            resultUpdateObj = { address: { WardId: this.selectedUpdateOption?.id } }
-                            break;
-
-                        case "Nguồn gốc":
-                            resultUpdateObj = { customer: { SourceId: this.selectedUpdateOption?.id } }
-                            break;
-
-                        case "Loại hình":
-                            resultUpdateObj = { organization: { TypeId: this.selectedUpdateOption?.id } }
-                            break;
-                        case "Doanh thu":
-                            resultUpdateObj = { organization: { RevenueId: this.selectedUpdateOption?.id } }
-                            break;
-                        default:
-                            break;
+                    //xử lý gọi api update dữ liệu
+                    const nameTable = Object.keys(resultUpdateObj)[0];
+                    const listId = this.getListIdChecked[`listId${this.capitalizeFirstLetter(nameTable)}`].filter(id => {
+                        return id !== null
+                    })
+                    const dataUpdate = {
+                        ListId: listId,
+                        FieldUpdateName: Object.keys(resultUpdateObj[nameTable])[0],
+                        FieldUpdateValue: resultUpdateObj[nameTable][Object.keys(resultUpdateObj[nameTable])[0]].toString()
                     }
-                } else {
-                    resultUpdateObj = { organization: { Domain: this.handleDataWhenSave(this.$refs.domainNames.value) } }
+                    console.log(dataUpdate);
+                    // xử lý lấy tên bảng
+                    const capitalizeTable = this.capitalizeFirstLetter(nameTable)
+                    console.log(capitalizeTable);
+                    const rootUrlTable = capitalizeTable !== "Address" ? `${capitalizeTable}s` : `${capitalizeTable}es`
+                    this.isLoading = true;
+                    const response = await axios.post(`${rootApi}${rootUrlTable}/MultipleRows`, dataUpdate).then(res => res.data).catch(error => error.response.data)
+                    this.isLoading = false;
+                    if (response.flag) {
+                        this.state = "success"
+                        this.message = "Thành công"
+                        this.$refs.toast.isShow = true
+                        this.$store.commit("setIsUpdated", true)
+                    } else {
+                        this.state = "fail"
+                        this.message = response.userMsg
+                        this.$refs.toast.isShow = true
+                    }
                 }
-
-                //xử lý gọi api update dữ liệu
-                const nameTable = Object.keys(resultUpdateObj)[0];
-                const dataUpdate = {
-                    ListId: this.getListIdChecked[`listId${this.capitalizeFirstLetter(nameTable)}`],
-                    FieldUpdateName: Object.keys(resultUpdateObj[nameTable])[0],
-                    FieldUpdateValue: resultUpdateObj[nameTable][Object.keys(resultUpdateObj[nameTable])[0]].toString()
-                }
-                console.log(dataUpdate);
-                // xử lý lấy tên bảng
-                const capitalizeTable = this.capitalizeFirstLetter(nameTable)
-                console.log(capitalizeTable);
-                const rootUrlTable = capitalizeTable !== "Address" ? `${capitalizeTable}s` : `${capitalizeTable}es`
-                const response = axios.post(`${rootApi}${rootUrlTable}/MultipleRows`, dataUpdate).then(res => res.data).catch(error => error.response.data)
-                alert(response.userMsg)
+            }catch(error){
+                this.state = "fail"
+                this.message = error
+                this.$refs.toast.isShow = true
             }
         },
         // lấy về dữ liệu cho Combobox
@@ -267,10 +304,11 @@ export default {
             })
         },
         getUpdatedOption(selected) {
-            if (selected && selected[this.typeDropdown]) {
+            console.log(selected);
+            if (selected) {
                 this.selectedUpdateOption = {}
-                const formatKey = this.typeDropdown.split("/")[0]
-                this.selectedUpdateOption = selected[this.typeDropdown]
+                // const formatKey = this.typeDropdown.split("/")[0]
+                this.selectedUpdateOption = selected
             }
         },
         // xử lý format dữ liệu của tên tiềm năng, ngành nghề, lĩnh vực khi lưu vào database

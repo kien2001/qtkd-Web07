@@ -63,6 +63,7 @@
     background-image: url("../../img/tronchamhoi.svg");
 }
 .close {
+    background-image: url("../../img/blue-active/close.svg");
     background-image: url("../../img/close.svg");
 }
 .close:hover {

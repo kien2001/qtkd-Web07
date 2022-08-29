@@ -8,10 +8,6 @@
 
 </template>
 <style scoped>
-
-
-
-
 .button-container {
     display: flex;
     align-items: center;
@@ -31,7 +27,7 @@
     height: 32px;
     min-width: max-content;
     padding: 7px 16px;
-    font-weight: 500;
+    font-weight: 600;
     text-align: left;
     line-height: 16px;
     font-size: 13px;
@@ -40,6 +36,8 @@
     align-items: center;
     display: flex;
     background-color: var(--color);
+    border-style: solid;
+    border-width: 1px;
 }
 .button-icon {
     background-repeat: no-repeat;
@@ -67,8 +65,8 @@
 </style>
 <script>
 export default {
-  name: 'KienButton',
-  template: 'KienButton',
+  name: 'Button',
+  template: 'Button',
   props: {
     name: {
       type: String,
@@ -98,7 +96,6 @@ export default {
     //     default: "#1F2229"
     // }
   },
-  // #2B4EEE
   methods: {
     handleClick () {
       this.$emit('clickBtn')
@@ -124,7 +121,7 @@ export default {
         paddingLeft: this.hasIcon ? '32px' : '16px',
         backgroundImage: `url(${this.$attrs.urlMainBtn})` || '',
         borderRadius: this.isComboBtn ? '4px 0 0 4px' : '4px',
-
+        border: this.$attrs.border? `1px solid ${this.$attrs.border}` : 'unset'
       }
     },
     styleObjectSecond () {

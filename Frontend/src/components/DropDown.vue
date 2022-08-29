@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" v-if="options" @click="showOptions">
+  <div class="dropdown" v-if="options" @click="showOptions" ref="dropdown">
     <div class="dropdown-header" ref="dropdown-header">
       {{ this.oldSearchFilter || placeholder || "-Không chọn-" }}
     </div>
@@ -14,7 +14,7 @@
           Không có dữ
           liệu</div>
         <div class="dropdown-item" @mousedown="selectOption(option)" v-for="(option, index) in filteredOptions"
-          :key="index" :value="option.id">
+          :key="index" :value="option.id" ref="filteredOptions">
           {{ option.name }}
         </div>
         <Loading v-if="showLoading" />
@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       showNoValue: false,
-      showLoading:true,
+      showLoading:false,
       selected: {},
       optionsShown: false,
       searchFilter: "",
@@ -88,16 +88,12 @@ export default {
   methods: {
     selectOption(option) {
       this.optionsShown = false;
-      const idInput = $(this.$refs.input).attr("id");
       this.selected = option;
       this.searchFilter = option.name;
-      if (this.showInput) {
-        this.$store.commit("setDropDownSelect", { [idInput]: { id: option.id, name: option.name } });
-        this.$emit("selected", this.$store.state.dropDownSelected);
-      }
-      else {
-        console.log(this.selected.id);
-        this.$emit("selected", this.selected.id);
+      if(this.showInput){
+        this.$emit("selected", this.selected.id === 0 ? "" : { id: this.selected.id , name:this.selected.name} );
+      }else{
+        this.$emit("selected", this.selected.id === 0 ? "" : this.selected.id);
       }
     },
     setOptions(values) {
@@ -173,9 +169,22 @@ export default {
       else {
         this.searchFilter = this.selected.name;
       }
-      this.$emit("selected", this.selected.name);
       this.optionsShown = false;
       $(this.$refs["dropdown-header"]).css("border-color", "#D3D7DE");
+    }
+  },
+  updated(){
+    if (this.selected.id) {
+      // $(this.$refs.dropdown).find(".selected").removeClass("selected")
+      // $(this.$refs.dropdown).find(`.dropdown-item[value=${newValue.id}]`).addClass("selected");
+      const arr = this.$refs.filteredOptions;
+      arr.forEach(item => {
+        $(item).removeClass("selected")
+        if ($(item).is(`[value=${this.selected.id}]`)) {
+          $(item).addClass("selected")
+          console.log($(item))
+        }
+      })
     }
   },
   watch: {
@@ -183,6 +192,9 @@ export default {
       if (newVal && newVal !== "") {
         this.oldSearchFilter = newVal;
       }
+    },
+    selected(newValue){
+      
     }
   },
   components: { Loading }
@@ -190,6 +202,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .dropdown {
   --width-dropdown: 100%;
 }
@@ -283,7 +297,14 @@ export default {
   cursor: pointer;
   text-align: left;
 }
-
+.dropdown-item.selected{
+  color: #4262F0!important;
+  background-image:url("../assets/img/blue-active/tich.svg");
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-position-x: calc(100% - 8px);
+}
 .dropdown .dropdown-container .dropdown-content .dropdown-item:hover {
   background-color: #e7ecf5;
 }

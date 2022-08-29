@@ -1,5 +1,10 @@
 <template>
   <div class="form-submit-container" ref="container">
+    <ToastMessage :message="message" :state="state" ref="toast" />
+    <PopUp
+      :text="!editForm ? 'Bạn có chắc chắn muốn thêm tiềm năng này không?' : 'Bạn có chắc chắn muốn sửa các tiềm năng này không?' "
+      :colorBtn="!editForm ? '#4262F0' : '#31B491'" :colorHoverBtn="!editForm ? '#2B4EEE' : '#2EA888'" ref="showConfirm"
+      @handlePopUp="sendRequestInsert" />
     <div class="form-submit">
       <div class="form-header">
         <div class="header-title">
@@ -9,9 +14,9 @@
           <div class="edit-btn">Sửa bố cục</div>
         </div>
         <div class="header-btn">
-          <KienButton name="Huỷ bỏ" color="#fff" @clickBtn="closeForm" colorHover="#D0D8FB" />
-          <KienButton name="Lưu và thêm" color="#fff" colorHover="#D0D8FB" />
-          <KienButton name="Lưu" color="#4262F0" colorHover="#2B4EEE" @clickBtn="saveForm" colorText="#FFFFFF" />
+          <Button name="Huỷ bỏ" color="#fff" @clickBtn="closeForm" colorHover="#D0D8FB" />
+          <Button name="Lưu và thêm" color="#fff" colorHover="#D0D8FB" @clickBtn="saveAndAddForm" />
+          <Button name="Lưu" color="#4262F0" colorHover="#2B4EEE" @clickBtn="saveForm" colorText="#FFFFFF" />
         </div>
       </div>
       <div class="form-main">
@@ -25,40 +30,42 @@
             <div class="context-item">
               <div class="context-label">Xưng hô</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" id="vocative" :showInput="true" placeholder="-Không chọn-"
-                  :fetchDataWhenClick="false" name="Vocatives" ref="vocative" />
+                <DropDown id="vocative" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                  name="Vocatives" ref="vocative" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Họ và đệm</div>
               <div class="context-input">
-                <InputFormVue id="lastMiddleName" @changeName="setLastMiddleName" ref="lastMiddleName" />
+                <InputFormVue class="inputForm" id="lastMiddleName" @changeName="setLastMiddleName"
+                  ref="lastMiddleName" />
               </div>
             </div>
             <div class="context-item" required>
               <div class="context-label">Tên</div>
               <div class="context-input">
-                <InputFormVue id="firstName" @changeName="setFirstName" ref="firstName" />
+                <InputFormVue class="inputForm" id="firstName" @changeName="setFirstName" ref="firstName" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Họ và tên</div>
               <div class="context-input">
-                <InputFormVue id="fullName" :isDisabled="true" :handleFullName="handleFullName" ref="fullName" />
+                <InputFormVue class="inputForm" id="fullName" :isDisabled="true" ref="fullName" />
+                <!-- :handleFullName="handleFullName" -->
               </div>
             </div>
             <div class=" context-item">
               <div class="context-label">Phòng ban</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" :fetchDataWhenClick="false" id="departmentName"
-                  :showInput="true" placeholder="-Không chọn-" name="Departments" ref="department" />
+                <DropDown :fetchDataWhenClick="false" id="departmentName" :showInput="true" placeholder="-Không chọn-"
+                  name="Departments" ref="departmentId" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Chức danh</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" :fetchDataWhenClick="false" id="positionName" :showInput="true"
-                  placeholder="-Không chọn-" name="Positions" ref="position" />
+                <DropDown :fetchDataWhenClick="false" id="positionName" :showInput="true" placeholder="-Không chọn-"
+                  name="Positions" ref="positionId" />
               </div>
             </div>
             <div class="context-item">
@@ -67,7 +74,7 @@
                 <Tooltip tooltipText="Điện thoại di động" />
               </div>
               <div class="context-input">
-                <InputFormVue id="customerPhoneNum" />
+                <InputFormVue class="inputForm" id="customerPhoneNum" ref="customerPhoneNum" />
               </div>
             </div>
             <div class="context-item">
@@ -76,23 +83,23 @@
                 <Tooltip tooltipText="Điện thoại cơ quan" />
               </div>
               <div class="context-input">
-                <InputFormVue id="companyPhoneNum" />
+                <InputFormVue class="inputForm" id="companyPhoneNum" ref="companyPhoneNum" />
               </div>
             </div>
-            <div class="context-item" v-if="editForm">
+            <div class=" context-item" v-if="editForm">
               <div class="context-label">
                 ĐT khác
                 <Tooltip tooltipText="Điện thoại khác" />
               </div>
               <div class="context-input">
-                <InputFormVue id="otherPhoneNum" />
+                <InputFormVue class="inputForm" id="otherPhoneNum" ref="otherPhoneNum" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Nguồn gốc</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" id="sourceName" :showInput="true" placeholder="-Không chọn-"
-                  :fetchDataWhenClick="false" name="Sources" ref="source" />
+                <DropDown id="sourceName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                  name="Sources" ref="sourceId" />
 
               </div>
             </div>
@@ -120,32 +127,32 @@
             <div class="context-item">
               <div class="context-label">Zalo</div>
               <div class="context-input">
-                <InputFormVue id="zalo" />
+                <InputFormVue class="inputForm" id="zalo" ref="zalo" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Tổ chức</div>
               <div class="context-input">
-                <InputFormVue id="organizationName" />
+                <InputFormVue class="inputForm" id="organizationName" ref="organizationName" />
               </div>
             </div>
-            <div class="context-item">
+            <div class=" context-item">
               <div class="context-label">Email cá nhân</div>
               <div class="context-input">
-                <InputFormVue id="customerEmail" />
+                <InputFormVue class="inputForm" id="customerEmail" ref="customerEmail" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Email cơ quan</div>
               <div class="context-input">
-                <InputFormVue id="companyEmail" />
+                <InputFormVue class="inputForm" id="companyEmail" ref="companyEmail" />
               </div>
             </div>
             <div class="context-item" v-if="editForm"></div>
             <div class="context-item">
               <div class="context-label">Mã số thuế</div>
               <div class="context-input">
-                <InputFormVue id="taxCode" />
+                <InputFormVue class="inputForm" id="taxCode" ref="taxCode" />
               </div>
             </div>
           </div>
@@ -156,8 +163,8 @@
             <div class="context-item">
               <div class="context-label">Giới tính</div>
               <div class="context-input">
-                <DropDown @selected="validateSelection" id="genderName" :showInput="true" placeholder="-Không chọn-"
-                  :fetchDataWhenClick="false" name="Genders" ref="gender" />
+                <DropDown id="genderName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                  name="Genders" ref="gender" />
               </div>
             </div>
             <div class="context-item">
@@ -169,7 +176,7 @@
             <div class="context-item">
               <div class="context-label">Facebook</div>
               <div class="context-input">
-                <InputFormVue id="facebook" />
+                <InputFormVue class="inputForm" id="facebook" ref="facebook" />
               </div>
             </div>
           </div>
@@ -181,13 +188,13 @@
               <div class="context-item">
                 <div class="context-label">Tài khoản ngân hàng</div>
                 <div class="context-input">
-                  <InputFormVue id="bankAccount" />
+                  <InputFormVue class="inputForm" id="bankAccount" ref="bankAccount" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Mở tại ngân hàng</div>
                 <div class="context-input">
-                  <InputFormVue id="bankName" />
+                  <InputFormVue class="inputForm" id="bankName" ref="bankName" />
                 </div>
               </div>
               <div class="context-item">
@@ -199,8 +206,8 @@
               <div class="context-item">
                 <div class="context-label">Loại hình</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="typeName" :showInput="true" placeholder="-Không chọn-"
-                    :fetchDataWhenClick="false" name="Types" />
+                  <DropDown id="typeName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                    name="Types" ref="typeId" />
                 </div>
               </div>
               <div class="context-item">
@@ -222,8 +229,8 @@
               <div class="context-item">
                 <div class="context-label">Doanh thu</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="revenueName" :showInput="true" placeholder="-Không chọn-"
-                    :fetchDataWhenClick="false" name="Revenues" />
+                  <DropDown id="revenueName" :showInput="true" placeholder="-Không chọn-" :fetchDataWhenClick="false"
+                    name="Revenues" ref="revenueId" />
                 </div>
               </div>
             </div>
@@ -234,43 +241,42 @@
               <div class="context-item">
                 <div class="context-label">Quốc gia</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="country" :showInput="true" placeholder="-Không chọn-"
-                    :fetchDataWhenClick="false" name="Countries" />
+                  <DropDown id="country" @selected="getSelectedCountry" :showInput="true" placeholder="-Không chọn-"
+                    :fetchDataWhenClick="false" name="Countries" ref="countryId" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Tỉnh/Thành phố</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="city" @click="handleShowCities" :showInput="true"
-                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Cities" ref="city" />
-
+                  <DropDown id="city" @selected="getSelectedCity" @click="handleShowCities" :showInput="true"
+                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Cities" ref="cityId" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Quận/Huyện</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="district" @click="handleShowDistricts" :showInput="true"
-                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Districts" ref="district" />
+                  <DropDown id="district" @selected="getSelectedDistrict" @click="handleShowDistricts" :showInput="true"
+                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Districts" ref="districtId" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Phường/Xã</div>
                 <div class="context-input">
-                  <DropDown @selected="validateSelection" id="ward" @click="handleShowWards" :showInput="true"
-                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Wards" ref="ward" />
+                  <DropDown id="ward" @selected="getSelectedWard" @click="handleShowWards" :showInput="true"
+                    :fetchDataWhenClick="false" placeholder="-Không chọn-" name="Wards" ref="wardId" />
 
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Số nhà, Đường phố</div>
                 <div class="context-input">
-                  <InputFormVue id="homeNumber" @changeName="setHomeNumber" />
+                  <InputFormVue class="inputForm" id="homeNumber" ref="homeNumber" />
                 </div>
               </div>
               <div class="context-item">
                 <div class="context-label">Mã vùng</div>
                 <div class="context-input">
-                  <InputFormVue id="postalCode" />
+                  <InputFormVue class="inputForm" id="postalCode" ref="postalCode" />
                 </div>
               </div>
               <div class="context-item">
@@ -307,7 +313,7 @@
               <div class="context-item">
                 <div class="context-label">Mã tiềm năng</div>
                 <div class="context-input">
-                  <InputFormVue id="potentialCode" ref="potential-code" />
+                  <InputFormVue class="inputForm" id="potentialCode" ref="potentialCode" />
                 </div>
               </div>
             </div>
@@ -316,7 +322,9 @@
 
       </div>
     </div>
+
   </div>
+  <Loading v-if="isLoading" />
 
 </template>
 
@@ -462,6 +470,7 @@
 }
 
 .context-input {
+  position: relative;
   flex-basis: 70%;
   display: flex;
   flex-direction: column;
@@ -486,34 +495,40 @@
 <script>
 import $ from 'jquery'
 import axios from 'axios'
-import { rootApi } from '@/js/config'
+import { rootApi, dropdownField } from '@/js/config'
+import StatusCode from '../entities/StatusCode'
 import Customer from '../entities/Customer'
+import CustomerUpdate from '../entities/CustomerUpdate'
 import Organization from '../entities/Organization'
 import Address from '../entities/Address'
 import Potential from '../entities/Potential'
 import handleClickFilterItem from '../js/checkbox'
+import { handleTransferObject } from '../js/common'
 import InputFormVue from './InputForm.vue'
 import DatePicker from './DatePicker.vue'
+import PopUp from './PopUp.vue'
 export default {
   name: 'FormSubmit',
   data() {
     return {
-      dropdownSelected: {},
+      message: '',
+      state: '',
       lastMiddleName: '',
       firstName: '',
-      homeNumber: '',
       addressName: '',
       createdAccountAt: '',
       dateOfBirth: '',
-      errorField: {
-        firstName: '',
-        potentialCode: ''
-      },
+      countryName: '',
+      cityName: '',
+      districtName: '',
+      wardName: '',
+      errorField: [],
       prefixPotentialName: "Potentials/PotentialNames",
       prefixCareerName: "Organizations/Careers",
       prefixDomainName: "Organizations/Domains",
       editForm: this.$store.state.editForm,
-      customerEdit: this.$parent.customerEdit
+      customerEdit: this.$parent.customerEdit,
+      isLoading:false
     }
   },
   async mounted() {
@@ -523,71 +538,18 @@ export default {
       $(item).click(this.checkInput)
       $(item).css("background-color", "#fff!important")
     })
-    if (this.editForm) {
-      console.log(this.customerEdit);
+    
+    this.mountDataEditForm()
 
-      this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
-      this.$refs.vocative.currentValue = { id: this.customerEdit.vocative || 0, name: this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn" }
-
-      this.$refs.department.oldSearchFilter = this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn"
-      this.$refs.department.currentValue = { id: this.customerEdit.departmentId || 0, name: this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn" }
-
-      this.$refs.position.oldSearchFilter = this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn"
-      this.$refs.position.currentValue = { id: this.customerEdit.positionId || 0, name: this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn" }
-
-      this.$refs.source.oldSearchFilter = this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn"
-      this.$refs.source.currentValue = { id: this.customerEdit.sourceId || 0, name: this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn" }
-
-      this.$refs.gender.oldSearchFilter = this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn'
-      this.$refs.gender.currentValue = { id: this.customerEdit.gender || 0, name: this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn' }
-      $(this.$refs.container).find("#lastMiddleName").val(this.customerEdit.lastMiddleName)
-      $(this.$refs.container).find("#firstName").val(this.customerEdit.firstName)
-      // xử lý khi có họ và đệm hay ko
-      if (!this.customerEdit.lastMiddleName) {
-        this.firstName = this.customerEdit.firstName?.trim()
-        $(this.$refs.container).find("#fullName").val(this.customerEdit.firstName?.trim())
-      } else {
-        this.firstName = this.customerEdit.firstName?.trim()
-        this.lastMiddleName = this.customerEdit.lastMiddleName?.trim()
-        $(this.$refs.container).find("#fullName").val(this.customerEdit.lastMiddleName?.trim().concat(' ' + this.customerEdit.firstName?.trim()))
-      }
-      $(this.$refs.container).find("#customerPhoneNum").val(this.customerEdit.customerPhoneNum)
-      $(this.$refs.container).find("#companyPhoneNum").val(this.customerEdit.companyPhoneNum)
-      $(this.$refs.container).find("#otherPhoneNum").val(this.customerEdit.otherPhoneNum)
-      $(this.$refs.container).find("#zalo").val(this.customerEdit.zalo)
-      $(this.$refs.container).find("#organizationName").val(this.customerEdit.organizationName)
-      $(this.$refs.container).find("#customerEmail").val(this.customerEdit.customerEmail)
-      $(this.$refs.container).find("#companyEmail").val(this.customerEdit.companyEmail)
-      $(this.$refs.container).find("#taxCode").val(this.customerEdit.taxCode)
-      this.customerEdit.disableCall && $(this.$refs.container).find("#disableCall").trigger("click")
-      this.customerEdit.disableMail && $(this.$refs.container).find("#disableMail").trigger("click")
-      if (this.customerEdit.potentialName) {
-        const potentialArray = this.customerEdit.potentialName.split("\n ").map(item => {
-          if (item !== '') {
-            return item.trim()
-          }
-        }).filter(element => {
-          return element !== undefined;
-        });
-        this.$refs.potentialNames.value = this.formatDataComboBox(potentialArray);
-      }
-      $(this.$refs.container).find("#facebook").val(this.customerEdit.facebook)
-
-      // format dateOfBirth
-      if (this.customerEdit?.dateOfBirth) {
-        this.$refs.dateOfBirth.setDate(this.formatDateTime(this.customerEdit.dateOfBirth))
-      }
-    }
-
-    const requiredFields = $('.context-item[required]>.context-input>input').toArray()
+    const requiredFields = $('.context-item[required] .input-text').toArray()
     requiredFields.forEach(field => {
       $(field).blur(this.checkRequiredField)
       $(field).focus(function (e) {
         $(e.target).css('border-color', '#D3D7DE')
-        $(e.target).next('span').remove()
+        $(e.target).parent().next('span').remove()
       })
     })
-    // xử lý hiển thị cho checkbox
+    // xử lý hiển thị cho checkbox(liên quan đến mặt hình ảnh)
     $('#sharingUse').parent('.context-input').css('display', 'block')
     $('#disableMail').parent('.context-input').css('display', 'block')
     $('#disableCall').parent('.context-input').css('display', 'block')
@@ -598,82 +560,171 @@ export default {
       if (!data.flag) {
         console.log(data.userMgs)
       } else {
-        console.log(data.data)
-        console.log(this.$refs['potential-code'])
 
-        this.$refs['potential-code'].name = data.data
+        this.$refs['potentialCode'].name = data.data
       }
     }
-
   },
   computed: {
     handleFullName() {
       return `${this.lastMiddleName} ${this.firstName}`
-    },
-    getCountry() {
-      return this.dropdownSelected?.country?.id
-    },
-    getCity() {
-      return this.dropdownSelected?.city?.id
-    },
-    getDistrict() {
-      return this.dropdownSelected?.district?.id
-    },
-    getWard() {
-      return this.dropdownSelected?.ward?.id
     }
   },
   watch: {
-    getCountry() {
-      console.log(1)
-      this.dropdownSelected.city = {}
-      this.$refs.city.setOptions([])
+    countryName() {
+      // this.countryName = ""
+      this.cityName = ""
+      this.districtName = ""
+      this.wardName = ""
+      let addressArr = []
+      this.$refs.cityId.selected = {}
+      this.$refs.cityId.setOptions([])
 
-      this.dropdownSelected.district = {}
-      this.$refs.district.setOptions([])
+      this.$refs.districtId.selected = {}
+      this.$refs.districtId.setOptions([])
 
-      this.dropdownSelected.ward = {}
-      this.$refs.ward.setOptions([])
-      if (this.dropdownSelected?.country?.id !== 0) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
+      this.$refs.wardId.selected = {}
+      this.$refs.wardId.setOptions([])
+
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
+
     },
-    getCity() {
-      this.dropdownSelected.district = {}
-      this.$refs.district.setOptions([])
+    cityName() {
+      this.districtName = ""
+      this.wardName = ""
+      let addressArr = []
 
-      this.dropdownSelected.ward = {}
-      this.$refs.ward.setOptions([])
+      this.$refs.districtId.selected = {}
+      this.$refs.districtId.setOptions([])
 
-      if (this.dropdownSelected?.city?.id !== 0) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
-    },
-    getDistrict() {
-      this.dropdownSelected.ward = {}
-      this.$refs.ward.setOptions([])
+      this.$refs.wardId.selected = {}
+      this.$refs.wardId.setOptions([])
 
-      if (this.dropdownSelected?.district?.id !== 0) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
+
     },
-    getWard() {
-      if (this.dropdownSelected?.ward?.id) {
-        const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-        this.addressName = templateAddressName.trim()
-      }
+    districtName() {
+      this.wardName = ""
+      let addressArr = []
+
+      this.$refs.wardId.selected = {}
+      this.$refs.wardId.setOptions([])
+
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
     },
-    homeNumber() {
-      const templateAddressName = `${this.homeNumber || ''}  ${this.dropdownSelected?.ward?.name || ''} ${this.dropdownSelected?.district?.name || ''} ${this.dropdownSelected?.city?.name || ''} ${this.dropdownSelected?.country?.name || ''}`
-      this.addressName = templateAddressName.trim()
+    wardName() {
+      let addressArr = []
+
+      addressArr = [this.wardName.name, this.districtName.name, this.cityName.name, this.countryName.name]
+      console.log(addressArr);
+      this.addressName = addressArr.join(' ').trim()
+    },
+    firstName() {
+      $("#fullName").val(`${this.lastMiddleName} ${this.firstName}`);
+    },
+    lastMiddleName() {
+      $("#fullName").val(`${this.lastMiddleName} ${this.firstName}`);
+    },
+    // xử lý hiển thị lỗi
+    errorField(newValue) {
+      newValue.forEach(item => {
+        const keyErr = Object.keys(item)
+        const fieldError = $(this.$refs.container).find(`#${keyErr}`)
+        if (item[keyErr] !== '') {
+          $(fieldError).parent().next('span').remove()
+          $(fieldError).css('border-color', 'red')
+
+          $(fieldError).parent().after(`<span style="color:red"}}>${item[keyErr]}</span>`)
+        } else {
+          $(fieldError).parent().next('span').remove()
+          $(fieldError).css('border-color', '#D3D7DE')
+        }
+      })
     }
+    
   },
-  components: { InputFormVue, DatePicker },
+  components: { InputFormVue, DatePicker, PopUp },
   template: 'FormSubmit',
   methods: {
+    mountDataEditForm(){
+      if (this.editForm) {
+        console.log(this.customerEdit);
+
+        this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
+        this.$refs.vocative.currentValue = { id: this.customerEdit.vocative || 0, name: this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn" }
+
+        this.$refs.departmentId.oldSearchFilter = this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn"
+        this.$refs.departmentId.currentValue = { id: this.customerEdit.departmentId || 0, name: this.customerEdit.departmentId ? this.customerEdit.departmentName : "Không chọn" }
+
+        this.$refs.positionId.oldSearchFilter = this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn"
+        this.$refs.positionId.currentValue = { id: this.customerEdit.positionId || 0, name: this.customerEdit.positionId ? this.customerEdit.positionName : "Không chọn" }
+
+        this.$refs.sourceId.oldSearchFilter = this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn"
+        this.$refs.sourceId.currentValue = { id: this.customerEdit.sourceId || 0, name: this.customerEdit.sourceId ? this.customerEdit.sourceName : "Không chọn" }
+
+        this.$refs.gender.oldSearchFilter = this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn'
+        this.$refs.gender.currentValue = { id: this.customerEdit.gender || 0, name: this.customerEdit.gender ? this.customerEdit.genderName : 'Không chọn' }
+        $(this.$refs.container).find("#lastMiddleName").val(this.customerEdit.lastMiddleName)
+        $(this.$refs.container).find("#firstName").val(this.customerEdit.firstName)
+        // xử lý khi có họ và đệm hay ko
+        if (!this.customerEdit.lastMiddleName) {
+          this.firstName = this.customerEdit.firstName?.trim()
+          $(this.$refs.container).find("#fullName").val(this.customerEdit.firstName?.trim())
+        } else {
+          this.firstName = this.customerEdit.firstName?.trim()
+          this.lastMiddleName = this.customerEdit.lastMiddleName?.trim()
+          $(this.$refs.container).find("#fullName").val(this.customerEdit.lastMiddleName?.trim().concat(' ' + this.customerEdit.firstName?.trim()))
+        }
+        $(this.$refs.container).find("#customerPhoneNum").val(this.customerEdit.customerPhoneNum)
+        $(this.$refs.container).find("#companyPhoneNum").val(this.customerEdit.companyPhoneNum)
+        $(this.$refs.container).find("#otherPhoneNum").val(this.customerEdit.otherPhoneNum)
+        $(this.$refs.container).find("#zalo").val(this.customerEdit.zalo)
+        $(this.$refs.container).find("#organizationName").val(this.customerEdit.organizationName)
+        $(this.$refs.container).find("#customerEmail").val(this.customerEdit.customerEmail)
+        $(this.$refs.container).find("#companyEmail").val(this.customerEdit.companyEmail)
+        $(this.$refs.container).find("#taxCode").val(this.customerEdit.taxCode)
+        this.customerEdit.disableCall && $(this.$refs.container).find("#disableCall").trigger("click")
+        this.customerEdit.disableMail && $(this.$refs.container).find("#disableMail").trigger("click")
+        if (this.customerEdit.potentialName) {
+          const potentialArray = this.customerEdit.potentialName.split("\n ").map(item => {
+            if (item !== '') {
+              return item.trim()
+            }
+          }).filter(element => {
+            return element !== undefined;
+          });
+          this.$refs.potentialNames.value = this.formatDataComboBox(potentialArray);
+        }
+        $(this.$refs.container).find("#facebook").val(this.customerEdit.facebook)
+
+        // format dateOfBirth
+        if (this.customerEdit?.dateOfBirth) {
+          this.$refs.dateOfBirth.setDate(this.formatDateTime(this.customerEdit.dateOfBirth))
+        }
+      }
+    },
+
+    getSelectedCountry(selected) {
+      this.countryName = selected
+    },
+    getSelectedCity(selected) {
+      this.cityName = selected
+    },
+    getSelectedDistrict(selected) {
+      this.districtName = selected
+    },
+    getSelectedWard(selected) {
+      this.wardName = selected
+    },
+    getSelectedWard(selected) {
+      this.wardName = selected
+    },
     // set object customerEdit
     setCustomerEdit(customer) {
       this.customerEdit = customer
@@ -687,13 +738,18 @@ export default {
     // lấy về dữ liệu cho Combobox
     async getDataComboBox(prefix) {
       let result = null;
-      const response = await axios.get(`${rootApi}${prefix}`).then(res => res.data).catch(error => error.response.data)
-      if (response.flag) {
+      try {
+        const response = await axios.get(`${rootApi}${prefix}`).then(res => res.data).catch(error => error.response.data)
+        if (response.flag) {
+          result = this.formatDataComboBox(response.data)
 
-        result = this.formatDataComboBox(response.data)
+        } else {
+          console.log(response.userMsg);
+        }
+      } catch (error) {
+        console.log(error);
 
-      } else {
-        console.log(response.userMsg);
+        result = null;
       }
       return result;
     },
@@ -718,20 +774,17 @@ export default {
     setFirstName(value) {
       this.firstName = value
     },
-    setHomeNumber(value) {
-      this.homeNumber = value
-    },
     // Xử lý hiển thị tỉnh thành phố chỉ khi chọn quốc gia
     handleShowCities() {
-      this.handleGetAddress('country', 'city', 'Cities', 'Bạn chưa chọn quốc gia')
+      this.handleGetAddress('countryId', 'cityId', 'Cities', 'Bạn chưa chọn quốc gia')
     },
     // Xử lý hiển thị quận/huyện chỉ khi chọn tỉnh thành phố
     handleShowDistricts() {
-      this.handleGetAddress('city', 'district', 'Districts', 'Bạn chưa chọn tỉnh/thành phố')
+      this.handleGetAddress('cityId', 'districtId', 'Districts', 'Bạn chưa chọn tỉnh/thành phố')
     },
     // Xử lý hiển thị xã/ phường chỉ khi chọn quận/huyện
     handleShowWards() {
-      this.handleGetAddress('district', 'ward', 'Wards', 'Bạn chưa chọn quận/huyện')
+      this.handleGetAddress('districtId', 'wardId', 'Wards', 'Bạn chưa chọn quận/huyện')
     },
     // xử lý format dữ liệu của tên tiềm năng, ngành nghề, lĩnh vực khi lưu vào database
     handleDataWhenSave(data) {
@@ -743,79 +796,65 @@ export default {
       }
       return result === '' ? null : result
     },
-    // xử lý hiển thị khu vực khi bấm chọn, không chọn được khu vực con khi chưa chọn cha
+    /**
+     * xử lý hiển thị khu vực khi bấm chọn, không chọn được khu vực con khi chưa chọn cha
+     * @param {*} parentAreaName 
+     * @param {*} areaName 
+     * @param {*} areaNames 
+     * @param {*} actionFail 
+     * Created by LVKIEN 28/08/2022
+     */
     async handleGetAddress(parentAreaName, areaName, areaNames, actionFail) {
       try {
-        if (this.dropdownSelected[parentAreaName] && this.dropdownSelected[parentAreaName].id && this.dropdownSelected[parentAreaName].id !== 0) {
-          this.$refs.city.showLoading=true
-          this.$refs.district.showLoading=true
-          this.$refs.ward.showLoading=true
-          let areaArray = await axios(`${rootApi}${areaNames}?${parentAreaName}Id=${this.dropdownSelected[parentAreaName].id}`).then(res => res.data).catch(error => error.response.data)
-          this.$refs.city.showLoading = false
-          this.$refs.district.showLoading = false
-          this.$refs.ward.showLoading = false
-          if (areaArray.flag) {
-            areaArray = areaArray.data
+        if (this.$refs[parentAreaName] && this.$refs[parentAreaName].selected.id && this.$refs[parentAreaName].selected.id !== 0) {
+          this.$refs.cityId.showLoading = true
+          this.$refs.districtId.showLoading = true
+          this.$refs.wardId.showLoading = true
+          let areaResponse = await axios(`${rootApi}${areaNames}?${parentAreaName}=${this.$refs[parentAreaName].selected.id}`).then(res => res.data).catch(error => error.response.data)
+          this.$refs.cityId.showLoading = false
+          this.$refs.districtId.showLoading = false
+          this.$refs.wardId.showLoading = false
+          if (areaResponse.flag) {
+            areaResponse = areaResponse.data
           } else {
-            this.$refs.city.showNoValue = true
-            this.$refs.district.showNoValue = true
-            this.$refs.ward.showNoValue = true
-            console.log(areaArray.userMsg)
+            this.state = "fail"
+            this.message = areaResponse.userMsg
+            this.$refs.toast.isShow = true
+            
+            this.$refs.cityId.showNoValue = true
+            this.$refs.districtId.showNoValue = true
+            this.$refs.wardId.showNoValue = true
           }
-          if (areaArray.length > 0) {
-            this.$refs[areaName].setOptions(this.handleTransferObject(areaArray))
+          if (areaResponse.length > 0) {
+            this.$refs[areaName].setOptions(handleTransferObject(areaResponse))
           }
-          // else {
-          //   console.log(areaArray);
-          // }
         } else {
-          this[areaName] = []
-          this.$refs.city.optionsShown = false
-          this.$refs.district.optionsShown = false
-          this.$refs.ward.optionsShown = false
-          alert(actionFail)
+          this.$refs.cityId.optionsShown = false
+          this.$refs.districtId.optionsShown = false
+          this.$refs.wardId.optionsShown = false
+
+          this.$refs[areaName].oldSearchFilter = false
+          this.$refs[areaName].selected = {}
+          this.state = "fail"
+          this.message = actionFail
+          this.$refs.toast.isShow = true
         }
       } catch (error) {
-        console.log(error)
-      }
-    },
-    // set giá trị hiện tại của dropdown
-    validateSelection(selected) {
-      if (typeof selected === 'object') {
-        this.dropdownSelected.department = selected?.departmentName
-        this.dropdownSelected.vocative = selected?.vocative
-        this.dropdownSelected.position = selected?.positionName
-        this.dropdownSelected.source = selected?.sourceName
-        this.dropdownSelected.type = selected?.typeName
-        this.dropdownSelected.country = selected?.country
-        this.dropdownSelected.revenue = selected?.revenueName
-        this.dropdownSelected.city = selected?.city
-        this.dropdownSelected.district = selected?.district
-        this.dropdownSelected.ward = selected?.ward
+        this.state = "fail"
+        this.message = error
+        this.$refs.toast.isShow = true
       }
     },
     checkRequiredField(e) {
       if (!$(e.target).val()) {
         $(e.target).css('border-color', 'red')
-        $(e.target).after('<span style="color:red"}}>Tên không được phép để trống</span>')
+        $(e.target).parent().after('<span style="color:red"}}>Tên không được phép để trống</span>')
       } else {
         $(e.target).css('border-color', '#D3D7DE')
-        $(e.target).next('span').remove()
+        $(e.target).parent().next('span').remove()
       }
     },
-    // format dữ liệu theo định dạng của dropdown theo dạng mảng: {id:, name:}
-    handleTransferObject(objectArr) {
-      const objectKeys = Object.keys(objectArr[0])
-      console.log(objectArr);
-      let initResult = [{ id: 0, name: '-Không chọn-' }]
-      const result = objectArr.map(item => {
-        const resultObject = { id: item[objectKeys[0]], name: item[objectKeys[1]] }
 
-        return resultObject
-      })
-      initResult = [...initResult, ...result]
-      return initResult
-    },
     // format kiểu datetime từ backend thành format của frontend
     formatDateTime(dateString) {
       const rawResult = dateString.slice(0, 10)
@@ -833,199 +872,260 @@ export default {
     closeForm() {
       if (this.$route.name === "TiemNang") {
         this.$store.commit('setFormState', false)
-        this.$store.commit('setEditForm', false)
-
+      }
+    },
+    // ánh xạ dữ liệu vào đúng thuộc tính object
+    handleMappingData(object) {
+      const inputArr = $(".inputForm").toArray()
+      const inputValueArr = inputArr.map(input => {
+        return { [$(input).attr("id")]: $(input).val() }
+      })
+      const keysObject = Object.keys(object)
+      keysObject.forEach(key => {
+        const lowerCaseKey = this.lowerCaseFirstLetter(key);
+        inputValueArr.forEach(input => {
+          if (input[lowerCaseKey]) {
+            object[key] = input[lowerCaseKey]
+          }
+        })
+      })
+      if (!this.editForm){
+        const dropdownValueArr = dropdownField.map(dropdown => {
+          if (this.$refs[dropdown]) {
+            return { [dropdown]: this.$refs[dropdown].selected.id || null }
+          }
+        })
+        keysObject.forEach(key => {
+          const lowerCaseKey = this.lowerCaseFirstLetter(key);
+          dropdownValueArr.forEach(dropdown => {
+            if (dropdown[lowerCaseKey]) {
+              object[key] = dropdown[lowerCaseKey]
+            }
+          })
+        })
       }
     },
     // lấy dữ liệu form và gọi API
     // 15/08/2022 LVKien
-    async saveForm() {
-      this.errorField.firstName = ''
-
+    saveForm() {
+      this.$refs.showConfirm.isShow = true
+    },
+    async sendRequestInsert(){
+      this.errorField = [{ firstName: '' }, { potentialCode: '' }]
       const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
       const customer = new Customer()
-
       if (!this.editForm) {
-        const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
-        const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
-        // set lại giá trị lỗi
-        this.errorField.potentialCode = ''
-        // Lấy dữ liệu các ô input trong form
-        const formMainItems = $('.form-main-item').toArray()
-        const arrayResult = formMainItems.map(item => {
-          // lấy tất cả các ô input trong form
-          const inputChild = $(item).children('.form-main-context').children('.context-item').children('.context-input').children(':not([disabled], .dropdown)').toArray()
-          const inputChildValue = inputChild.map(itemChild => {
-            const idItemChild = $(itemChild).attr('id')
-            if ($(itemChild).attr('id') === 'sharingUse') {
-              return { [idItemChild]: !!$(itemChild).attr('checked') }
-            }
-            return { [idItemChild]: $(itemChild).val() }
-          })
-          const idPartition = $(item).attr('id')
-          return { [idPartition]: inputChildValue }
-        })
-        const address = new Address()
-        const organization = new Organization()
-        const potential = new Potential()
-        console.log(arrayResult);
-        customer.setInsertCustomer(this.dropdownSelected.vocative?.id || '', arrayResult[1]['customer-partition'][0].lastMiddleName, arrayResult[1]['customer-partition'][1].firstName, this.dropdownSelected.department?.id || '', this.dropdownSelected.position?.id || '', arrayResult[1]['customer-partition'][2].customerPhoneNum, arrayResult[1]['customer-partition'][3].companyPhoneNum, this.dropdownSelected.source?.id || '', arrayResult[1]['customer-partition'][5].zalo, arrayResult[1]['customer-partition'][6].customerEmail, arrayResult[1]['customer-partition'][7].companyEmail, arrayResult[1]['customer-partition'][8].taxCode, arrayResult[4]['description-partition'][0].description, arrayResult[5]['system-partition'][0].sharingUse)
-        address.setInsertAddress(arrayResult[3]['address-partition'][2].addressName, arrayResult[3]['address-partition'][0].homeNumber, arrayResult[3]['address-partition'][1].postalCode, this.dropdownSelected.country?.id || '', this.dropdownSelected.city?.id || '', this.dropdownSelected.district?.id || '', this.dropdownSelected.ward?.id || '')
-        organization.setInsertOrganization(arrayResult[2]['organization-partition'][0].bankAccount, arrayResult[2]['organization-partition'][1].bankName, this.formatDate(this.createdAccountAt), this.dropdownSelected.type?.id || '', domainNames, careerNames, this.dropdownSelected.revenue?.id || '')
-        potential.setInsertPotential(potentialNames, arrayResult[5]['system-partition'][1].potentialCode)
-        this.formatData(potential)
-        this.formatData(address)
-        this.formatData(organization)
-        this.formatData(customer)
-        console.log(customer, potential, address, organization)
-        let resPotential, resAddress, resOrganization
-        if (!customer.FirstName || customer.FirstName === '') {
-          this.errorField.firstName = 'Tên không được phép để trống'
-        } else {
-          this.errorField.firstName = ''
-          if (!this.checkEmptyObject(potential)) {
-            resPotential = await axios.post(`${rootApi}Potentials`, potential).then(res => res.data).catch(error => error.response.data)
-            if (resPotential.flag) {
-              console.log(resPotential)
-            } else {
-              // Nếu trùng mã tiềm năng
-              if (resPotential?.devMsg === 'E002') {
-                this.errorField.potentialCode = resPotential?.userMsg
-              } else {
-                this.errorField.potentialCode = ''
-              }
-            }
-          }
-        }
-
-        // nếu ko có lỗi
-        if (this.checkEmptyObject(this.errorField)) {
-          if (!this.checkEmptyObject(address)) {
-            resAddress = await axios.post(`${rootApi}Addresses`, address).then(res => res.data).catch(error => error.response.data)
-            if (resAddress.flag) {
-              console.log(resAddress)
-            } else {
-              console.log(resAddress.devMsg)
-            }
-          }
-          if (!this.checkEmptyObject(organization)) {
-            resOrganization = await axios.post(`${rootApi}Organizations`, organization).then(res => res.data).catch(error => error.response.data)
-            if (resOrganization.flag) {
-              console.log(resOrganization)
-            } else {
-              console.log(resOrganization.devMsg)
-            }
-          }
-          // nếu ít nhất 1 trong 3 resPotential resAddress resOrganization thành công, gán các giá trị cho customer
-          if (resPotential.flag || resAddress.flag || resOrganization.flag) {
-            customer.PotentialId = resPotential?.data.toString() || null
-            customer.AddressId = resAddress?.data || null
-            customer.OrganizationId = resOrganization?.data || null
-            console.log(customer)
-            const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
-            if (resCustomer.flag) {
-              alert('Thành công')
-            } else {
-              console.log(resCustomer.data)
-            }
-            // nếu ko nhập address, potential, organization thì thêm luôn customer
-          } else {
-            const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
-            if (resCustomer.flag) {
-              alert('Thành công')
-            } else {
-              console.log(resCustomer.data)
-            }
-          }
-          // nếu có lỗi
-        } else {
-          // xử lý hiển thị lỗi
-          const potentialCodeField = $(this.$refs.container).find('#potentialCode')
-          const firstNameField = $(this.$refs.container).find('#firstName')
-          if (this.errorField.firstName !== '') {
-            $(firstNameField).next('span').remove()
-            $(firstNameField).after(`<span style="color:red"}}>${this.errorField.firstName}</span>`)
-          } else {
-            $(firstNameField).next('span').remove()
-          }
-          if (this.errorField.potentialCode !== '') {
-            $(potentialCodeField).next('span').remove()
-            $(potentialCodeField).after(`<span style="color:red"}}>${this.errorField.potentialCode}</span>`)
-          } else {
-            $(potentialCodeField).next('span').remove()
-          }
-        }
+        await this.saveInsertForm(customer, potentialNames)
       } else {
-        this.saveEditForm(customer, potentialNames)
+        await this.saveEditForm(potentialNames)
       }
     },
-    async saveEditForm(customer, potentialNames) {
-      if ($(this.$refs.container).find("#firstName").val() === '') {
-        this.errorField.firstName = 'Tên không được phép để trống'
+    async saveInsertForm(customer, potentialNames) {
+      const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
+      const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
+      // Lấy dữ liệu các ô input trong form
+
+      const address = new Address()
+      const organization = new Organization()
+      const potential = new Potential()
+
+      organization.Career = careerNames
+      organization.Domain = domainNames
+      organization.CreatedAccountAt = this.formatDate(this.createdAccountAt)
+
+      potential.PotentialName = potentialNames
+
+      customer.Description = $("#addressName").val()
+      customer.SharingUse = !!$("#sharingUse").attr("checked")
+
+      address.AddressName = $("#addressName").val()
+
+      this.handleMappingData(customer)
+      this.handleMappingData(address)
+      this.handleMappingData(organization)
+      this.handleMappingData(potential)
+
+      this.formatData(potential)
+      this.formatData(address)
+      this.formatData(organization)
+      this.formatData(customer)
+
+      console.log(customer, potential, address, organization)
+      let resPotential, resAddress, resOrganization
+      if (!customer.FirstName || customer.FirstName === '') {
+        this.errorField = [...this.errorField, { firstName : 'Tên không được phép để trống' }]
+        this.state = "fail"
+        this.message = 'Tên không được phép để trống'
+        this.$refs.toast.isShow = true
       } else {
-        this.errorField.firstName = ''
+        this.errorField.forEach(item=>item.firstName==='')
+        if (!this.checkEmptyObject(potential)) {
+          resPotential = await axios.post(`${rootApi}Potentials`, potential).then(res => res.data).catch(error => error.response.data)
+          if (resPotential.flag) {
+            console.log(resPotential)
+          } else {
+            // Nếu trùng mã tiềm năng
+            if (resPotential?.devMsg === StatusCode.ErrorCode.DuplicatePotentialCode) {
+              this.errorField = [...this.errorField, { potentialCode: resPotential?.userMsg }] 
+              this.state = "fail"
+              this.message = resPotential.userMsg
+              this.$refs.toast.isShow = true
+            } else {
+              this.errorField.forEach(item => item.potentialCode === '')
+
+            }
+          }
+        }
+      }
+
+      // nếu ko có lỗi
+      if (this.checkEmptyError()) {
+        if (!this.checkEmptyObject(address)) {
+          resAddress = await axios.post(`${rootApi}Addresses`, address).then(res => res.data).catch(error => error.response.data)
+          if (resAddress.flag) {
+            console.log(resAddress)
+          } else {
+            console.log(resAddress.devMsg)
+          }
+        }
+        if (!this.checkEmptyObject(organization)) {
+          resOrganization = await axios.post(`${rootApi}Organizations`, organization).then(res => res.data).catch(error => error.response.data)
+          if (resOrganization.flag) {
+            console.log(resOrganization)
+          } else {
+            console.log(resOrganization.devMsg)
+          }
+        }
+        // nếu ít nhất 1 trong 3 resPotential resAddress resOrganization thành công, gán các giá trị cho customer
+        if (resPotential?.flag || resAddress?.flag || resOrganization?.flag) {
+          customer.PotentialId = resPotential?.data.toString() || null
+          customer.AddressId = resAddress?.data || null
+          customer.OrganizationId = resOrganization?.data || null
+          console.log(customer)
+          this.isLoading = true;
+          const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
+          this.isLoading = false;
+          if (resCustomer.flag) {
+            this.state = "success"
+            this.message = "Thành công"
+            this.$refs.toast.isShow = true
+            this.$store.commit("setIsInserted", true)
+            this.closeForm()
+          } else {
+            this.state = "fail"
+            this.message = resCustomer.userMsg
+            this.$refs.toast.isShow = true
+          }
+          // nếu ko nhập address, potential, organization thì thêm luôn customer
+        } else {
+          this.isLoading = true;
+          const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
+          this.isLoading = false;
+          if (resCustomer.flag) {
+            this.state = "success"
+            this.message = "Thành công"
+            this.$refs.toast.isShow = true
+
+            this.$store.commit("setIsInserted", true)
+            this.closeForm()
+          } else {
+            this.state = "fail"
+            this.message = resCustomer.userMsg
+            this.$refs.toast.isShow = true
+          }
+        }
+      }
+    },
+    async saveEditForm( potentialNames) {
+      const customerUpdate = new CustomerUpdate()
+      if ($(this.$refs.container).find("#firstName").val() === '') {
+        this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
+        this.state = "fail"
+        this.message = "Tên không được phép để trống"
+        this.$refs.toast.isShow = true
+      } else {
+        this.errorField.forEach(item => item.firstName === '')
       }
       // xử lý khi không có lỗi
-      if (this.checkEmptyObject(this.errorField)) {
-        const fieldValues = $(this.$refs.container).find(".context-input").children("input:not([disabled])").toArray()
-        const idFieldInput = fieldValues.map(item => {
-          return this.capitalizeFirstLetter($(item).attr("id"))
-        })
-        idFieldInput.forEach(id => {
-          const lowerCaseId = this.lowerCaseFirstLetter(id)
-          customer[id] = $(this.$refs.container).find(`#${lowerCaseId}`).val()
-        })
-        this.getValueDropdown("Vocative", customer)
-        this.getValueDropdown("Department", customer)
-        this.getValueDropdown("Position", customer)
-        this.getValueDropdown("Source", customer)
-        this.getValueDropdown("Gender", customer)
+      if (this.checkEmptyError()) {
+        this.handleMappingData(customerUpdate)
+        this.getValueDropdown("Vocative", customerUpdate)
+        this.getValueDropdown("DepartmentId", customerUpdate)
+        this.getValueDropdown("PositionId", customerUpdate)
+        this.getValueDropdown("SourceId", customerUpdate)
+        this.getValueDropdown("Gender", customerUpdate)
 
-
-        customer.PotentialName = potentialNames;
-        customer.DisableCall = !!$(this.$refs.container).find("#disableCall").attr("checked")
-        customer.DisableMail = !!$(this.$refs.container).find("#disableMail").attr("checked")
-        customer.CustomerId = this.customerEdit.customerId
-        customer.DateOfBirth = this.formatDate(this.dateOfBirth)
-        customer.OrganizationId = this.customerEdit.organizationId
-        customer.PotentialId = this.customerEdit.potentialId
-        customer.ModifiedAt = this.customerEdit.modifiedAt
-        this.formatData(customer)
-        console.log(customer);
-        const resCustomer = await axios.put(`${rootApi}Customers/${customer.CustomerId}`,customer)
+        customerUpdate.PotentialName = potentialNames;
+        customerUpdate.DisableCall = !!$(this.$refs.container).find("#disableCall").attr("checked")
+        customerUpdate.DisableMail = !!$(this.$refs.container).find("#disableMail").attr("checked")
+        customerUpdate.CustomerId = this.customerEdit.customerId
+        customerUpdate.DateOfBirth = this.formatDate(this.dateOfBirth)
+        customerUpdate.OrganizationId = this.customerEdit.organizationId
+        customerUpdate.PotentialId = this.customerEdit.potentialId
+        customerUpdate.ModifiedAt = this.customerEdit.modifiedAt
+        this.formatData(customerUpdate)
+        console.log(customerUpdate);
+        this.isLoading = true;
+        const resCustomer = await axios.put(`${rootApi}Customers/${customerUpdate.CustomerId}`, customerUpdate)
           .then(res => res.data).catch(error => error.response.data)
+        this.isLoading = false;
         if (resCustomer.flag) {
-          alert('Thành công')
+          this.state = "success"
+          this.message = "Thành công"
+          this.$refs.toast.isShow = true
+          this.$store.commit("setIsUpdated", true)
+          this.customerEdit = customerUpdate
+          this.closeForm()
         } else {
-          console.log(resCustomer.data)
-        }
-      }
-      // nếu có lỗi
-      else {
-        // xử lý hiển thị lỗi
-        const firstNameField = $(this.$refs.container).find('#firstName')
-        if (this.errorField.firstName !== '') {
-          $(firstNameField).next('span').remove()
-          $(firstNameField).after(`<span style="color:red"}}>${this.errorField.firstName}</span>`)
-        } else {
-          $(firstNameField).next('span').remove()
+          this.state = "fail"
+          this.message = resCustomer.userMsg
+          this.$refs.toast.isShow = true
         }
       }
     },
-    getValueDropdown(capitalizeValue, customer) {
+    async saveAndAddForm(){
+      this.$refs.showConfirm.isShow = true
+      await this.sendRequestInsert()
+      this.openForm()
+      
+    },
+    openForm() {
+      if (this.$route.name === "TiemNang") {
+        this.$store.commit('setFormState', true)
+      }
+    },
+    /**
+     * Lấy giá trị dropdown gán vào 1 object
+     * @param {*} capitalizeValue 
+     * @param {*} object 
+     * created by LVKIEN 28/08/2022
+     */
+    getValueDropdown(capitalizeValue, object) {
       const toLowerCaseValue = this.lowerCaseFirstLetter(capitalizeValue)
+      console.log(toLowerCaseValue);
       // nếu prop selected không có, tức là người dùng không sửa gì, lấy gtri current
       if (Object.keys(this.$refs[toLowerCaseValue].selected).length === 0) {
-        customer[capitalizeValue] = this.$refs[toLowerCaseValue].currentValue.id
+        object[capitalizeValue] = this.$refs[toLowerCaseValue].currentValue.id
       } else {
         // nếu id !== 0, tức là người dùng ko click vào ô "Không chọn"
         if (this.$refs[toLowerCaseValue].selected.id !== 0) {
-          customer[capitalizeValue] = this.$refs[toLowerCaseValue].selected.id
+          object[capitalizeValue] = this.$refs[toLowerCaseValue].selected.id
           // nếu id === 0, tức là người dùng click vào ô "Không chọn"
         } else {
-          customer[capitalizeValue] = null;
+          object[capitalizeValue] = null;
         }
       }
+    },
+    checkEmptyError(){
+      let result = true;
+      for (const key in this.errorField) {
+        const itemKey = Object.keys(this.errorField[key]) 
+        if (this.errorField[key][itemKey] !== '') {
+          result = false
+          break;
+        }
+      }
+      return result;
     },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1044,7 +1144,6 @@ export default {
           }
         })
       }
-      // console.log(checkEmpty);
       return checkEmpty
     },
     formatData(data) {
@@ -1055,6 +1154,9 @@ export default {
         }
       })
     }
+  },
+  unmounted(){
+    console.log(1);
   }
 }
 </script>
