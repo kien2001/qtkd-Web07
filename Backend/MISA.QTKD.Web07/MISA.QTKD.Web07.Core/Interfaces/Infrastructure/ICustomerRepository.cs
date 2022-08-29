@@ -24,6 +24,5 @@ namespace Infrastructure
 
         Result GetPaging(int? pageSize, int? pageIndex, string? keyword);
 
-        Result CheckDuplicateCode(Guid customerCode);
     }
 }
