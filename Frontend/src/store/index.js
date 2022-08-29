@@ -10,11 +10,15 @@ export default createStore({
     editForm:true,
     editMultipleRow: false,
     listCheckedCustomer:[],
-    conditionSearch:""
+    conditionSearch:"",
+    customerUpdated:{}
   },
   getters: {
   },
   mutations: {
+    setCustomerUpdated(state, payload){
+      this.state.customerUpdated = payload
+    },
     // set giá trị cho điều kiện tìm kiếm
     setConditionSearch(state, payload){
       this.state.conditionSearch = payload

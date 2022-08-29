@@ -4,7 +4,7 @@
     <PopUp
       :text="!editForm ? 'Bạn có chắc chắn muốn thêm tiềm năng này không?' : 'Bạn có chắc chắn muốn sửa các tiềm năng này không?' "
       :colorBtn="!editForm ? '#4262F0' : '#31B491'" :colorHoverBtn="!editForm ? '#2B4EEE' : '#2EA888'" ref="showConfirm"
-      @handlePopUp="sendRequestInsert" />
+      @handlePopUp="sendRequest" />
     <div class="form-submit">
       <div class="form-header">
         <div class="header-title">
@@ -527,8 +527,9 @@ export default {
       prefixCareerName: "Organizations/Careers",
       prefixDomainName: "Organizations/Domains",
       editForm: this.$store.state.editForm,
-      customerEdit: this.$parent.customerEdit,
-      isLoading:false
+      customerEdit: this.$store.state.customerUpdated,
+      isLoading:false,
+      isSaveAndAdd:false
     }
   },
   async mounted() {
@@ -538,8 +539,10 @@ export default {
       $(item).click(this.checkInput)
       $(item).css("background-color", "#fff!important")
     })
-    
-    this.mountDataEditForm()
+    console.log(this.customerEdit);
+    if(this.customerEdit.firstName){
+      this.mountDataEditForm()
+    }
 
     const requiredFields = $('.context-item[required] .input-text').toArray()
     requiredFields.forEach(field => {
@@ -568,9 +571,17 @@ export default {
   computed: {
     handleFullName() {
       return `${this.lastMiddleName} ${this.firstName}`
-    }
+    },
   },
   watch: {
+    customerEdit(newValue){
+      console.log(1);
+      if(newValue.firstName){
+        // this.customerEdit = newValue
+        this.mountDataEditForm()
+        console.log(1);
+      }
+    },
     countryName() {
       // this.countryName = ""
       this.cityName = ""
@@ -654,8 +665,6 @@ export default {
   methods: {
     mountDataEditForm(){
       if (this.editForm) {
-        console.log(this.customerEdit);
-
         this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
         this.$refs.vocative.currentValue = { id: this.customerEdit.vocative || 0, name: this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn" }
 
@@ -724,10 +733,6 @@ export default {
     },
     getSelectedWard(selected) {
       this.wardName = selected
-    },
-    // set object customerEdit
-    setCustomerEdit(customer) {
-      this.customerEdit = customer
     },
     // xử lý dữ liệu theo format của combobox
     formatDataComboBox(data) {
@@ -908,19 +913,32 @@ export default {
     // lấy dữ liệu form và gọi API
     // 15/08/2022 LVKien
     saveForm() {
+      this.isSaveAndAdd = false
       this.$refs.showConfirm.isShow = true
     },
-    async sendRequestInsert(){
+    async sendRequest(){
+      if (this.isSaveAndAdd){
+        await this.sendRequestSaveAndAdd()
+      }else{
+        await this.sendRequestAddOrUpdate()
+      }
+    },
+    async sendRequestAddOrUpdate(){
+      this.errorField = [{ firstName: '' }, { potentialCode: '' }]
+      if (!this.editForm) {
+        await this.saveInsertForm()
+        this.closeForm()
+      } else {
+        await this.saveEditForm()
+        if (!this.isSaveAndAdd){
+          this.closeForm()
+        }
+      }
+    },
+    async saveInsertForm() {
       this.errorField = [{ firstName: '' }, { potentialCode: '' }]
       const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
       const customer = new Customer()
-      if (!this.editForm) {
-        await this.saveInsertForm(customer, potentialNames)
-      } else {
-        await this.saveEditForm(potentialNames)
-      }
-    },
-    async saveInsertForm(customer, potentialNames) {
       const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
       const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
       // Lấy dữ liệu các ô input trong form
@@ -1010,7 +1028,6 @@ export default {
             this.message = "Thành công"
             this.$refs.toast.isShow = true
             this.$store.commit("setIsInserted", true)
-            this.closeForm()
           } else {
             this.state = "fail"
             this.message = resCustomer.userMsg
@@ -1027,7 +1044,6 @@ export default {
             this.$refs.toast.isShow = true
 
             this.$store.commit("setIsInserted", true)
-            this.closeForm()
           } else {
             this.state = "fail"
             this.message = resCustomer.userMsg
@@ -1036,7 +1052,8 @@ export default {
         }
       }
     },
-    async saveEditForm( potentialNames) {
+    async saveEditForm() {
+      const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
       const customerUpdate = new CustomerUpdate()
       if ($(this.$refs.container).find("#firstName").val() === '') {
         this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
@@ -1058,7 +1075,7 @@ export default {
         customerUpdate.PotentialName = potentialNames;
         customerUpdate.DisableCall = !!$(this.$refs.container).find("#disableCall").attr("checked")
         customerUpdate.DisableMail = !!$(this.$refs.container).find("#disableMail").attr("checked")
-        customerUpdate.CustomerId = this.customerEdit.customerId
+        customerUpdate.CustomerId = this.customerEdit.customerId || this.$store.state.customerUpdated.CustomerId
         customerUpdate.DateOfBirth = this.formatDate(this.dateOfBirth)
         customerUpdate.OrganizationId = this.customerEdit.organizationId
         customerUpdate.PotentialId = this.customerEdit.potentialId
@@ -1074,8 +1091,7 @@ export default {
           this.message = "Thành công"
           this.$refs.toast.isShow = true
           this.$store.commit("setIsUpdated", true)
-          this.customerEdit = customerUpdate
-          this.closeForm()
+          this.$store.commit("setCustomerUpdated", customerUpdate)
         } else {
           this.state = "fail"
           this.message = resCustomer.userMsg
@@ -1083,11 +1099,17 @@ export default {
         }
       }
     },
+    async sendRequestSaveAndAdd(){
+      await this.sendRequestAddOrUpdate()
+      if (!this.editForm) {
+        this.openForm()
+      }
+      this.customerEdit= this.$store.state.customerUpdated
+      console.log(this.customerEdit);
+    },
     async saveAndAddForm(){
+      this.isSaveAndAdd = true
       this.$refs.showConfirm.isShow = true
-      await this.sendRequestInsert()
-      this.openForm()
-      
     },
     openForm() {
       if (this.$route.name === "TiemNang") {
@@ -1155,8 +1177,5 @@ export default {
       })
     }
   },
-  unmounted(){
-    console.log(1);
-  }
 }
 </script>

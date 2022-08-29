@@ -7,6 +7,8 @@
   </div>
 </template>
 <style scoped>
+
+
 .main {
   display: grid;
   grid-template-columns: 240px auto 320px;
@@ -14,6 +16,7 @@
   grid-template-areas:
     "function function function "
     "sideBarLeft mainContent sideBarRight";
+  transition: all 2s linear;
 }
 .sidebar-left {
   grid-area: sideBarLeft;
@@ -37,6 +40,6 @@ import MainContent from '@/views/MainContent.vue'
 import SideBarRight from '@/views/SideBarRight.vue'
 export default {
   name: 'MainComp',
-  components: { SideBarLeft, SideBarRight, FunctionTool, MainContent }
+  components: { SideBarLeft, SideBarRight, FunctionTool, MainContent },
 }
 </script>

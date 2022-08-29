@@ -1,95 +1,97 @@
 <template>
-  <div class="page-table" ref="table">
-    <table class="table-container">
-      <div class="table-header">
-        <div class="thead">
-          <div class="tr">
-            <div class="th icon icon-rectangle-add"></div>
-            <div class="th icon icon-checkbox" @click="checkAll" ref="check-all"></div>
-            <div class="th">Thẻ</div>
-            <div class="th">Xưng hô</div>
-            <div class="th">Họ và tên</div>
-            <div class="th">Chức danh</div>
-            <div class="th">ĐT di động</div>
-            <div class="th">ĐT cơ quan</div>
-            <div class="th">Email cơ quan</div>
-            <div class="th">Email cá nhân</div>
-            <div class="th">Tổ chức</div>
-            <div class="th">Địa chỉ</div>
-            <div class="th">Tỉnh/Thành phố</div>
-            <div class="th">Quận/Huyện</div>
-            <div class="th">Phường/Xã</div>
-            <div class="th">Nguồn gốc</div>
-            <div class="th">Loại hình</div>
-            <div class="th">Lĩnh vực</div>
-            <div class="th">Mô tả</div>
-            <div class="th">Bố cục</div>
-            <div class="th">Chủ sở hữu</div>
-            <div class="th">Doanh thu</div>
-            <div class="th">Dùng chung</div>
-            <div class="th">Facebook</div>
-          </div>
+    <div class="page-table" ref="table">
+        <table class="table-container">
+            <div class="table-header">
+                <div class="thead">
+                    <div class="tr">
+                        <div class="th icon icon-rectangle-add"></div>
+                        <div class="th icon icon-checkbox" @click="checkAll" ref="check-all"></div>
+                        <div class="th">Thẻ</div>
+                        <div class="th">Xưng hô</div>
+                        <div class="th">Họ và tên</div>
+                        <div class="th">Chức danh</div>
+                        <div class="th">ĐT di động</div>
+                        <div class="th">ĐT cơ quan</div>
+                        <div class="th">Email cơ quan</div>
+                        <div class="th">Email cá nhân</div>
+                        <div class="th">Tổ chức</div>
+                        <div class="th">Địa chỉ</div>
+                        <div class="th">Tỉnh/Thành phố</div>
+                        <div class="th">Quận/Huyện</div>
+                        <div class="th">Phường/Xã</div>
+                        <div class="th">Nguồn gốc</div>
+                        <div class="th">Loại hình</div>
+                        <div class="th">Lĩnh vực</div>
+                        <div class="th">Mô tả</div>
+                        <div class="th">Bố cục</div>
+                        <div class="th">Chủ sở hữu</div>
+                        <div class="th">Doanh thu</div>
+                        <div class="th">Dùng chung</div>
+                        <div class="th">Facebook</div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-content" @scroll="handleHorizontalScrollBar">
+                <div class="tbody">
+                    <div class="tr" v-for="customer in customerList" :key="customer.customerId"
+                        :key-name="customer.customerId" @mouseover="showEditWhenHover"
+                        @mouseleave="removeEditWhenHover">
+                        <div class="td" @click="openEditForm"></div>
+                        <div class="td icon icon-checkbox"></div>
+                        <div class="td"></div>
+                        <div class="td">{{  customer.vocativeName !== "" ? customer.vocativeName : "-"  }}</div>
+                        <div class="td">{{  customer.fullName || "-"  }}</div>
+                        <div class="td">{{  customer.positionName || '-'  }}</div>
+                        <div class="td call-background">{{  customer.customerPhoneNum || '-'  }}</div>
+                        <div class="td call-background">{{  customer.companyPhoneNum || '-'  }}</div>
+                        <div class="td">{{  customer.companyEmail || '-'  }}</div>
+                        <div class="td">{{  customer.customerEmail || '-'  }}</div>
+                        <div class="td">{{  customer.organizationName || '-'  }}</div>
+                        <div class="td">{{  customer.addressName || '-'  }}</div>
+                        <div class="td">{{  customer.cityName || '-'  }}</div>
+                        <div class="td">{{  customer.districtName || '-'  }}</div>
+                        <div class="td">{{  customer.wardName || '-'  }}</div>
+                        <div class="td">{{  customer.sourceName || '-'  }}</div>
+                        <div class="td">{{  customer.typeName || '-'  }}</div>
+                        <div class="td">{{  customer.domain || '-'  }}</div>
+                        <div class="td">{{  customer.description || '-'  }}</div>
+                        <div class="td">{{  customer.layout || '-'  }}</div>
+                        <div class="td">{{  customer.owner || '-'  }}</div>
+                        <div class="td">{{  customer.revenueName || '-'  }}</div>
+                        <div class="td">{{  customer.sharingUse ? 'Có' : 'Không'  }}</div>
+                        <div class="td">{{  customer.facebook || '-'  }}</div>
+                    </div>
+                </div>
+                <div v-if="showNoValue" class="not-value">
+                    Không có dữ
+                    liệu</div>
+            </div>
+            <Loading v-if="isLoading" position="absolute"/>
+        </table>
+        <div class="table-paging paging">
+            <div class="paging-left">
+                Tổng số: <strong>{{  totalCount  }}</strong>
+            </div>
+            <div class="paging-right">
+                <div class="paging-center-left">
+                    <DropDown @selected="getNumPerPage" id="limit-num" :showInput="false"
+                        placeholder="10 Bản ghi trên trang" @click="showLimitNum" ref="limit-num"
+                        :fetchDataWhenClick="false" />
+                </div>
+                <div class="paging-center-right">
+                    <div class="btn-icon medium btn-nav btn-first" @click="returnFirstPage"></div>
+                    <div class="btn-icon medium btn-nav btn-prev" @click="returnPrevPage"></div>
+                    <span><strong>{{  this.pageCurrent  }} </strong> đến <strong>{{
+                             getLastPage 
+                            }}</strong></span>
+                    <div class="btn-icon medium btn-nav btn-next" @click="toNextPage"></div>
+                    <div class="btn-icon medium btn-nav btn-last" @click="toLastPage"></div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="table-content" @scroll="handleHorizontalScrollBar">
-        <div class="tbody">
-          <div class="tr" v-for="customer in customerList" :key="customer.customerId" :key-name="customer.customerId"
-            @mouseover="showEditWhenHover" @mouseleave="removeEditWhenHover">
-            <div class="td" @click="openEditForm"></div>
-            <div class="td icon icon-checkbox"></div>
-            <div class="td"></div>
-            <div class="td">{{ customer.vocativeName !== "" ? customer.vocativeName : "-" }}</div>
-            <div class="td">{{ customer.fullName || "-" }}</div>
-            <div class="td">{{ customer.positionName || '-' }}</div>
-            <div class="td call-background">{{ customer.customerPhoneNum || '-' }}</div>
-            <div class="td call-background">{{ customer.companyPhoneNum || '-' }}</div>
-            <div class="td">{{ customer.companyEmail || '-' }}</div>
-            <div class="td">{{ customer.customerEmail || '-' }}</div>
-            <div class="td">{{ customer.organizationName || '-' }}</div>
-            <div class="td">{{ customer.addressName || '-' }}</div>
-            <div class="td">{{ customer.cityName || '-' }}</div>
-            <div class="td">{{ customer.districtName || '-' }}</div>
-            <div class="td">{{ customer.wardName || '-' }}</div>
-            <div class="td">{{ customer.sourceName || '-' }}</div>
-            <div class="td">{{ customer.typeName || '-' }}</div>
-            <div class="td">{{ customer.domain || '-' }}</div>
-            <div class="td">{{ customer.description || '-' }}</div>
-            <div class="td">{{ customer.layout || '-' }}</div>
-            <div class="td">{{ customer.owner || '-' }}</div>
-            <div class="td">{{ customer.revenueName || '-' }}</div>
-            <div class="td">{{ customer.sharingUse ? 'Có' : 'Không' }}</div>
-            <div class="td">{{ customer.facebook || '-' }}</div>
-          </div>
-        </div>
-        <div v-if="showNoValue" class="not-value">
-          Không có dữ
-          liệu</div>
-        <Loading v-if="isLoading" />
-      </div>
-    </table>
-    <div class="table-paging paging">
-      <div class="paging-left">
-        Tổng số: <strong>{{ totalCount }}</strong>
-      </div>
-      <div class="paging-right">
-        <div class="paging-center-left">
-          <DropDown @selected="getNumPerPage" id="limit-num" :showInput="false" placeholder="10 Bản ghi trên trang"
-            @click="showLimitNum" ref="limit-num" :fetchDataWhenClick="false" />
-        </div>
-        <div class="paging-center-right">
-          <div class="btn-icon medium btn-nav btn-first" @click="returnFirstPage"></div>
-          <div class="btn-icon medium btn-nav btn-prev" @click="returnPrevPage"></div>
-          <span><strong>{{ this.pageCurrent }} </strong> đến <strong>{{
-              getLastPage
-          }}</strong></span>
-          <div class="btn-icon medium btn-nav btn-next" @click="toNextPage"></div>
-          <div class="btn-icon medium btn-nav btn-last" @click="toLastPage"></div>
-        </div>
-      </div>
     </div>
-  </div>
-  <FormSubmit v-if="showForm" />
-  <UpdateMultipleForm v-if="getEditMultipleForm" />
+    <FormSubmit v-if="showForm" />
+    <UpdateMultipleForm v-if="getEditMultipleForm" />
 </template>
 <script>
 import $ from 'jquery'
@@ -140,7 +142,7 @@ export default {
             pageCurrent: 1,
             numberPerPage: 10,
             listChecked: [],
-            customerEdit: {},
+            // customerEdit: {},
             isLoading: true,
             // hiển thị khi không có dữ liệu
             showNoValue: false
@@ -252,9 +254,6 @@ export default {
                 console.log(error);
             }
         },
-        setCustomerEdit(customer) {
-            this.customerEdit = customer;
-        },
         /**
          * Mở form edit
          * @param {*} e
@@ -265,7 +264,8 @@ export default {
                 this.$store.commit("setFormState", true);
                 this.$store.commit("setEditForm", true);
                 const customerEditId = $(e.target).parent(".tr").attr("key-name");
-                this.customerEdit = this.customerList.find(customer => customer.customerId === customerEditId);
+                const customerEdit = this.customerList.find(customer => customer.customerId === customerEditId);
+                this.$store.commit("setCustomerUpdated", customerEdit)
             }
         },
         showEditWhenHover(e) {
@@ -414,32 +414,32 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 .page-table {
-  height: 100%;
-  width: 100%;
-  position: relative;
-  display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: auto 50px;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: auto 50px;
 }
 
 .paging-center-left {
-  width: 170px;
+    width: 170px;
 }
 
 div.paging-center-left .dropdown .dropdown-container {
-  bottom: 33px !important;
+    bottom: 33px !important;
 }
 
 .table-content {
-  position: relative;
+    position: relative;
 }
 
 .not-value {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
 }
 </style>

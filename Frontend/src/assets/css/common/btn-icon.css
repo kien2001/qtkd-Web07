@@ -4,14 +4,6 @@
     cursor: pointer;
 }
 
-.btn-toggle {
-    background-color: #fff;
-    z-index: 1000;
-    position: absolute;
-    width: 12px;
-    height: 40px;
-    top: 50%;
-}
 
 .btn-hover:not(.active) {
     border-radius: 50%;
@@ -93,12 +85,6 @@
     background-image: url("../../img/arrow-up.svg");
 }
 
-.toggle-left {
-    right: -12px;
-    border-radius: 0 8px 8px 0;
-    box-shadow: 2px 2px 7px rgba(31, 34, 41, 0.16);
-    background-image: url("../../img/toggle-left.svg");
-}
 
 .toggle-right {
     left: -12px;

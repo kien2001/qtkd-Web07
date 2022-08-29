@@ -6,11 +6,13 @@
     overflow: hidden;
     display: grid;
     grid-template-rows: 37px auto;
+    position:relative;
 }
 
 .tr {
     display: grid;
-    grid-template-columns: 16px 16px 100px 80px 150px 150px 150px 150px 200px 200px 100px 150px 150px 150px 150px 150px 150px 150px 120px 150px 150px 150px 100px 200px;
+    grid-template-columns: 16px 16px 100px 80px 150px 150px 150px 150px 200px 200px 250px 150px 150px 150px 150px 200px 150px 170px 300px 150px 150px 150px 100px 250px;
+    padding: 0 16px;
     padding: 0 16px;
     height: 37px;
     line-height: 37px;
@@ -19,6 +21,7 @@
     box-sizing: border-box;
     grid-gap: 5px 16px;
     width: fit-content;
+    transition: all 0.2s linear;
 }
 
 .tbody>.tr:hover {

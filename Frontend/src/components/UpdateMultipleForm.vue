@@ -26,10 +26,10 @@
                     @clickBtn="updateMultiple" />
             </div>
         </div>
+        <Loading v-if="isLoading" position="fixed"/>
     </div>
     <PopUp text="Bạn có chắc chắn muốn sửa các tiềm năng này không?" colorBtn="#31B491" colorHoverBtn="#2EA888"
         ref="showConfirm" @handlePopUp="sendRequestUpdateMultiple" />
-    <Loading v-if="isLoading" />
     <ToastMessage :message="message" :state="state" ref="toast" />
 
 </template>
@@ -142,6 +142,7 @@ export default {
     components: { InputForm, Button, PopUp, ToastMessage },
     methods: {
         closeUpdateMultipleForm() {
+            this.$store.commit("setIsUpdated", true)
             this.$store.commit('setEditMultipleRow', false)
         },
         getSelectedUpdateFilter(selected) {
@@ -271,7 +272,6 @@ export default {
                         this.state = "success"
                         this.message = "Thành công"
                         this.$refs.toast.isShow = true
-                        this.$store.commit("setIsUpdated", true)
                     } else {
                         this.state = "fail"
                         this.message = response.userMsg

@@ -14,7 +14,7 @@
             <div class="filter-option-list">
                 <div class="filter-option-item" v-for="option in fieldOptions" :key="option.id" ref="fieldOptions">
                     <div class="icon-item icon-checkbox icon icon-small"></div>
-                    <div class="item-content">{{ option.name}}</div>
+                    <div class="item-content">{{  option.name  }}</div>
                 </div>
             </div>
         </div>
@@ -22,7 +22,9 @@
             <Button name="Bỏ lọc" color="#fff" colorHover="#D0D8FB" @clickBtn="removeAllFilters" />
             <Button name="Áp dụng" color="#4262F0" colorHover="#2B4EEE" colorText="#FFFFFF" />
         </div>
-        <div class="btn-icon btn-toggle toggle-left" @click="handleClickToggle"></div>
+        <div class="toggle">
+            <div class="btn-toggle" @click="handleClickToggle"></div>
+        </div>
     </div>
 </template>
 <script>
@@ -35,15 +37,15 @@ export default {
     data() {
         return {
             isToggle: true,
-            showButton:false,
-            fieldOptions:[],
-            listFilterOption:[]
+            showButton: false,
+            fieldOptions: [],
+            listFilterOption: []
         }
     },
-    beforeMount(){
+    beforeMount() {
         fieldMappingOptions.unshift({ id: 1, name: "Thẻ" })
         this.fieldOptions = fieldMappingOptions
-        
+
     },
     mounted() {
         const filterOptionItems = $('.filter-option-item').toArray()
@@ -51,11 +53,11 @@ export default {
             $(item).click(this.filterItemOnClick)
         })
     },
-    watch:{
-        listFilterOption(newValue){
-            if(newValue.length>0){
+    watch: {
+        listFilterOption(newValue) {
+            if (newValue.length > 0) {
                 this.showButton = true
-            }else{
+            } else {
                 this.showButton = false
 
             }
@@ -66,7 +68,7 @@ export default {
          * Bỏ hết các ô check
          * Created by LVKIEN 27.08.2022
          */
-        removeAllFilters(){
+        removeAllFilters() {
             const checkboxItems = $(this.$refs.sidebarLeft).find('[checked]').toArray()
             checkboxItems.forEach((item) => {
                 $(item).removeAttr('checked')
@@ -103,6 +105,7 @@ export default {
     flex-direction: column;
     border-right: 1px solid rgb(226, 228, 233);
     box-sizing: border-box;
+    transition: all 0.5s linear;
 }
 
 .sidebar-title {
@@ -164,5 +167,36 @@ export default {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
+}
+
+.toggle {
+    background-color: #fff;
+    z-index: 1000;
+    position: absolute;
+    width: 12px;
+    height: 40px;
+    top: 50%;
+    right: -12px;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 2px 2px 7px rgba(31, 34, 41, 0.16);
+    box-shadow: 2px 2px 7px rgba(31, 34, 41, 0.16);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-toggle {
+    transition: all 0.2s ease-out;
+    margin: auto;
+    width: 12px;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../assets/img/toggle-left.svg");
+}
+
+.btn-toggle[toggle] {
+    transform: rotate(180deg)
 }
 </style>

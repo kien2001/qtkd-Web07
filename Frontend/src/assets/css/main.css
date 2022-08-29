@@ -34,18 +34,6 @@ body {
     grid-area: main;
 }
 
-/* .sidebar-left {
-    grid-area: sideBarLeft;
-}
-
-.function {
-    grid-area: function;
-}
-
-.sidebar-right {
-    grid-area: sideBarRight;
-} */
-
 .header {
     grid-area: header;
 }
