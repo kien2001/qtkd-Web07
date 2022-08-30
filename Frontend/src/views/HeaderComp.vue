@@ -25,7 +25,7 @@
         <div class="header-menu">
             <router-link to="/">
                 <div class="header-menu-item btn-icon-text active">
-                    <div class=" item-icon icon-home-active">
+                    <div class=" item-icon icon-home">
                     </div>
                     <span class="item-content">Bàn làm việc</span>
                 </div>
@@ -159,22 +159,14 @@ export default {
             }, this.timer);
         },
         menuItemOnClick(e) {
-            this.oldClassImage = $('.active .item-icon').attr('class').split(' ')[1]
-            $('.active .item-icon').removeClass(this.oldClassImage)
-            $('.active .item-icon').addClass(this.oldClassImage.replace(this.oldClassImage.slice(-7), ''))
-            $('.header-menu-item').removeClass('active')
+            $('.header-menu-item.active').removeClass('active')
             const activeItem = $(e.target).parent('.header-menu-item')
             if ($(activeItem).length > 0) {
+                $(activeItem).addClass("active")
                 this.handleActive(activeItem)
             } else {
-                this.handleActive(e.target)
+                $(e.target).addClass("active")
             }
-        },
-        handleActive(element) {
-            this.newClassImage = $(element).children('.item-icon').attr('class').split(' ')[1]
-            $(element).addClass('active')
-            $(element).children('.item-icon').removeClass(this.newClassImage)
-            $(element).children('.item-icon').addClass(this.newClassImage + '-active')
         }
     }
 }
@@ -257,6 +249,7 @@ export default {
     height: 100%;
     align-items: center;
 }
+
 
 
 .header-menu-item:not(.active):hover {

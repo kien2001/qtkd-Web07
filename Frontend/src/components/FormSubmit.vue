@@ -1,8 +1,7 @@
 <template>
   <div class="form-submit-container" ref="container">
-    <ToastMessage :message="message" :state="state" ref="toast" />
     <PopUp
-      :text="!editForm ? 'Bạn có chắc chắn muốn thêm tiềm năng này không?' : 'Bạn có chắc chắn muốn sửa các tiềm năng này không?' "
+      :text="!editForm ? 'Bạn có chắc chắn muốn thêm tiềm năng này không?' : 'Bạn có chắc chắn muốn sửa các tiềm năng này không?'"
       :colorBtn="!editForm ? '#4262F0' : '#31B491'" :colorHoverBtn="!editForm ? '#2B4EEE' : '#2EA888'" ref="showConfirm"
       @handlePopUp="sendRequest" />
     <div class="form-submit">
@@ -14,8 +13,10 @@
           <div class="edit-btn">Sửa bố cục</div>
         </div>
         <div class="header-btn">
-          <Button name="Huỷ bỏ" color="#fff" @clickBtn="closeForm" colorHover="#D0D8FB" />
-          <Button name="Lưu và thêm" color="#fff" colorHover="#D0D8FB" @clickBtn="saveAndAddForm" />
+          <Button name="Huỷ bỏ" color="#fff" @clickBtn="closeForm" colorHover="#D0D8FB" border="#fff"
+            borderHover="#D3D7DE" />
+          <Button name="Lưu và thêm" color="#fff" colorHover="#D0D8FB" border="#fff" borderHover="#D3D7DE"
+            @clickBtn="saveAndAddForm" />
           <Button name="Lưu" color="#4262F0" colorHover="#2B4EEE" @clickBtn="saveForm" colorText="#FFFFFF" />
         </div>
       </div>
@@ -528,8 +529,8 @@ export default {
       prefixDomainName: "Organizations/Domains",
       editForm: this.$store.state.editForm,
       customerEdit: this.$store.state.customerUpdated,
-      isLoading:false,
-      isSaveAndAdd:false
+      isLoading: false,
+      isSaveAndAdd: false
     }
   },
   async mounted() {
@@ -540,7 +541,7 @@ export default {
       $(item).css("background-color", "#fff!important")
     })
     console.log(this.customerEdit);
-    if(this.customerEdit.firstName){
+    if (this.customerEdit.firstName) {
       this.mountDataEditForm()
     }
 
@@ -574,9 +575,9 @@ export default {
     },
   },
   watch: {
-    customerEdit(newValue){
+    customerEdit(newValue) {
       console.log(1);
-      if(newValue.firstName){
+      if (newValue.firstName) {
         // this.customerEdit = newValue
         this.mountDataEditForm()
         console.log(1);
@@ -658,12 +659,12 @@ export default {
         }
       })
     }
-    
+
   },
   components: { InputFormVue, DatePicker, PopUp },
   template: 'FormSubmit',
   methods: {
-    mountDataEditForm(){
+    mountDataEditForm() {
       if (this.editForm) {
         this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
         this.$refs.vocative.currentValue = { id: this.customerEdit.vocative || 0, name: this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn" }
@@ -822,10 +823,10 @@ export default {
           if (areaResponse.flag) {
             areaResponse = areaResponse.data
           } else {
-            this.state = "fail"
-            this.message = areaResponse.userMsg
-            this.$refs.toast.isShow = true
-            
+            this.$store.commit("setState", "fail")
+            this.$store.commit("setMessage", areaResponse.userMsg)
+            this.$store.commit("setIsShow", true)
+
             this.$refs.cityId.showNoValue = true
             this.$refs.districtId.showNoValue = true
             this.$refs.wardId.showNoValue = true
@@ -840,14 +841,15 @@ export default {
 
           this.$refs[areaName].oldSearchFilter = false
           this.$refs[areaName].selected = {}
-          this.state = "fail"
-          this.message = actionFail
-          this.$refs.toast.isShow = true
+          this.$store.commit("setState", "fail")
+          this.$store.commit("setMessage", actionFail)
+          this.$store.commit("setIsShow", true)
+
         }
       } catch (error) {
-        this.state = "fail"
-        this.message = error
-        this.$refs.toast.isShow = true
+        this.$store.commit("setState", "fail")
+        this.$store.commit("setMessage", error)
+        this.$store.commit("setIsShow", true)
       }
     },
     checkRequiredField(e) {
@@ -894,7 +896,7 @@ export default {
           }
         })
       })
-      if (!this.editForm){
+      if (!this.editForm) {
         const dropdownValueArr = dropdownField.map(dropdown => {
           if (this.$refs[dropdown]) {
             return { [dropdown]: this.$refs[dropdown].selected.id || null }
@@ -916,23 +918,20 @@ export default {
       this.isSaveAndAdd = false
       this.$refs.showConfirm.isShow = true
     },
-    async sendRequest(){
-      if (this.isSaveAndAdd){
+    async sendRequest() {
+      if (this.isSaveAndAdd) {
         await this.sendRequestSaveAndAdd()
-      }else{
+      } else {
         await this.sendRequestAddOrUpdate()
       }
     },
-    async sendRequestAddOrUpdate(){
+    async sendRequestAddOrUpdate() {
       this.errorField = [{ firstName: '' }, { potentialCode: '' }]
       if (!this.editForm) {
         await this.saveInsertForm()
-        this.closeForm()
       } else {
         await this.saveEditForm()
-        if (!this.isSaveAndAdd){
-          this.closeForm()
-        }
+        
       }
     },
     async saveInsertForm() {
@@ -971,12 +970,12 @@ export default {
       console.log(customer, potential, address, organization)
       let resPotential, resAddress, resOrganization
       if (!customer.FirstName || customer.FirstName === '') {
-        this.errorField = [...this.errorField, { firstName : 'Tên không được phép để trống' }]
-        this.state = "fail"
-        this.message = 'Tên không được phép để trống'
-        this.$refs.toast.isShow = true
+        this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
+        this.$store.commit("setState", "fail")
+        this.$store.commit("setMessage", "Tên không được phép để trống")
+        this.$store.commit("setIsShow", true)
       } else {
-        this.errorField.forEach(item=>item.firstName==='')
+        this.errorField.forEach(item => item.firstName === '')
         if (!this.checkEmptyObject(potential)) {
           resPotential = await axios.post(`${rootApi}Potentials`, potential).then(res => res.data).catch(error => error.response.data)
           if (resPotential.flag) {
@@ -984,10 +983,11 @@ export default {
           } else {
             // Nếu trùng mã tiềm năng
             if (resPotential?.devMsg === StatusCode.ErrorCode.DuplicatePotentialCode) {
-              this.errorField = [...this.errorField, { potentialCode: resPotential?.userMsg }] 
-              this.state = "fail"
-              this.message = resPotential.userMsg
-              this.$refs.toast.isShow = true
+              this.errorField = [...this.errorField, { potentialCode: resPotential?.userMsg }]
+              this.$store.commit("setState", "fail")
+              this.$store.commit("setMessage", resPotential.userMsg)
+              this.$store.commit("setIsShow", true)
+
             } else {
               this.errorField.forEach(item => item.potentialCode === '')
 
@@ -1024,14 +1024,16 @@ export default {
           const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
           this.isLoading = false;
           if (resCustomer.flag) {
-            this.state = "success"
-            this.message = "Thành công"
-            this.$refs.toast.isShow = true
+            this.$store.commit("setState", "success")
+            this.$store.commit("setMessage", "Thành công")
+            this.$store.commit("setIsShow", true)
             this.$store.commit("setIsInserted", true)
+            this.closeForm()
+            
           } else {
-            this.state = "fail"
-            this.message = resCustomer.userMsg
-            this.$refs.toast.isShow = true
+            this.$store.commit("setState", "fail")
+            this.$store.commit("setMessage", resCustomer.userMsg)
+            this.$store.commit("setIsShow", true)
           }
           // nếu ko nhập address, potential, organization thì thêm luôn customer
         } else {
@@ -1039,15 +1041,16 @@ export default {
           const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
           this.isLoading = false;
           if (resCustomer.flag) {
-            this.state = "success"
-            this.message = "Thành công"
-            this.$refs.toast.isShow = true
+            this.$store.commit("setState", "success")
+            this.$store.commit("setMessage", "Thành công")
+            this.$store.commit("setIsShow", true)
 
             this.$store.commit("setIsInserted", true)
+            this.closeForm()
           } else {
-            this.state = "fail"
-            this.message = resCustomer.userMsg
-            this.$refs.toast.isShow = true
+            this.$store.commit("setState", "fail")
+            this.$store.commit("setMessage", resCustomer.userMsg)
+            this.$store.commit("setIsShow", true)
           }
         }
       }
@@ -1057,9 +1060,9 @@ export default {
       const customerUpdate = new CustomerUpdate()
       if ($(this.$refs.container).find("#firstName").val() === '') {
         this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
-        this.state = "fail"
-        this.message = "Tên không được phép để trống"
-        this.$refs.toast.isShow = true
+        this.$store.commit("setState", "fail")
+        this.$store.commit("setMessage", "Tên không được phép để trống")
+        this.$store.commit("setIsShow", true)
       } else {
         this.errorField.forEach(item => item.firstName === '')
       }
@@ -1087,27 +1090,31 @@ export default {
           .then(res => res.data).catch(error => error.response.data)
         this.isLoading = false;
         if (resCustomer.flag) {
-          this.state = "success"
-          this.message = "Thành công"
-          this.$refs.toast.isShow = true
-          this.$store.commit("setIsUpdated", true)
+          this.$store.commit("setState", "success")
+          this.$store.commit("setMessage", "Thành công")
+          this.$store.commit("setIsShow", true)
+
           this.$store.commit("setCustomerUpdated", customerUpdate)
+          this.$store.commit("setIsUpdated", true)
+          if (!this.isSaveAndAdd) {
+            this.closeForm()
+          }
         } else {
-          this.state = "fail"
-          this.message = resCustomer.userMsg
-          this.$refs.toast.isShow = true
+          this.$store.commit("setState", "fail")
+          this.$store.commit("setMessage", resCustomer.userMsg)
+          this.$store.commit("setIsShow", true)
         }
       }
     },
-    async sendRequestSaveAndAdd(){
+    async sendRequestSaveAndAdd() {
       await this.sendRequestAddOrUpdate()
       if (!this.editForm) {
         this.openForm()
       }
-      this.customerEdit= this.$store.state.customerUpdated
+      this.customerEdit = this.$store.state.customerUpdated
       console.log(this.customerEdit);
     },
-    async saveAndAddForm(){
+    async saveAndAddForm() {
       this.isSaveAndAdd = true
       this.$refs.showConfirm.isShow = true
     },
@@ -1138,10 +1145,10 @@ export default {
         }
       }
     },
-    checkEmptyError(){
+    checkEmptyError() {
       let result = true;
       for (const key in this.errorField) {
-        const itemKey = Object.keys(this.errorField[key]) 
+        const itemKey = Object.keys(this.errorField[key])
         if (this.errorField[key][itemKey] !== '') {
           result = false
           break;

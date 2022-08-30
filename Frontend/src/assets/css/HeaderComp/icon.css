@@ -3,6 +3,7 @@
     display: flex;
     gap: 8px;
 }
+
 .item-icon {
     width: 16px;
     height: 16px;
@@ -16,78 +17,122 @@
 }
 
 .icon-home {
-    background-image: url("../../img/blue-active/home.svg");
     background-image: url("../../img/home.svg");
 }
 
+.active .icon-home {
+    background-image: url("../../img/blue-active/home.svg");
+}
+
 .icon-tiemnang {
-    background-image: url("../../img/blue-active/tiemnang.svg");
     background-image: url("../../img/tiemnang.svg");
 }
 
+.active .icon-tiemnang {
+    background-image: url("../../img/blue-active/tiemnang.svg");
+}
+
 .icon-chaohang {
-    background-image: url("../../img/blue-active/chaohang.svg");
     background-image: url("../../img/chaohang.svg");
 }
 
+.active .icon-chaohang {
+    background-image: url("../../img/blue-active/chaohang.svg");
+}
+
 .icon-lienhe {
-    background-image: url("../../img/blue-active/lienhe.svg");
     background-image: url("../../img/lienhe.svg");
 }
 
+.active .icon-lienhe {
+    background-image: url("../../img/blue-active/lienhe.svg");
+}
+
 .icon-khachhang {
-    background-image: url("../../img/blue-active/khachhang.svg");
     background-image: url("../../img/khachhang.svg");
 }
 
+.active .icon-khachhang {
+    background-image: url("../../img/blue-active/khachhang.svg");
+}
+
 .icon-cohoi {
-    background-image: url("../../img/blue-active/cohoi.svg");
     background-image: url("../../img/cohoi.svg");
 }
 
+.active .icon-cohoi {
+    background-image: url("../../img/blue-active/cohoi.svg");
+}
+
 .icon-baogia {
-    background-image: url("../../img/blue-active/baogia.svg");
     background-image: url("../../img/baogia.svg");
 }
 
+.active .icon-baogia {
+    background-image: url("../../img/blue-active/baogia.svg");
+}
+
 .icon-donhang {
-    background-image: url("../../img/blue-active/giohang.svg");
     background-image: url("../../img/giohang.svg");
 }
 
+.active .icon-donhang {
+    background-image: url("../../img/blue-active/giohang.svg");
+}
+
 .icon-hoadon {
-    background-image: url("../../img/blue-active/hoadon.svg");
     background-image: url("../../img/hoadon.svg");
 }
 
+.active .icon-hoadon {
+    background-image: url("../../img/blue-active/hoadon.svg");
+}
+
 .icon-aocohoi {
-    background-image: url("../../img/blue-active/aocohoi.svg");
     background-image: url("../../img/aocohoi.svg");
 }
 
+.active .icon-aocohoi {
+    background-image: url("../../img/blue-active/aocohoi.svg");
+}
+
 .icon-hoatdong {
-    background-image: url("../../img/blue-active/hoatdong.svg");
     background-image: url("../../img/hoatdong.svg");
 }
 
+.active .icon-hoatdong {
+    background-image: url("../../img/blue-active/hoatdong.svg");
+}
+
 .icon-muctieu {
-    background-image: url("../../img/blue-active/muctieu.svg");
     background-image: url("../../img/muctieu.svg");
 }
 
+.active .icon-muctieu {
+    background-image: url("../../img/blue-active/muctieu.svg");
+}
+
 .icon-chiendich {
-    background-image: url("../../img/blue-active/chiendich.svg");
     background-image: url("../../img/chiendich.svg");
 }
 
+.active .icon-chiendich {
+    background-image: url("../../img/blue-active/chiendich.svg");
+}
+
 .icon-baocao {
-    background-image: url("../../img/blue-active/baocao.svg");
     background-image: url("../../img/baocao.svg");
 }
 
+.active .icon-baocao {
+    background-image: url("../../img/blue-active/baocao.svg");
+}
+
 .icon-khac {
-    background-image: url("../../img/blue-active/khac.svg");
     background-image: url("../../img/khac.svg");
+}
+.active .icon-khac {
+    background-image: url("../../img/blue-active/khac.svg");
 }
 
 .icon-home-active {

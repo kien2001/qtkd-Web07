@@ -4,6 +4,7 @@
     <SideBarLeft />
     <MainContent />
     <SideBarRight />
+    <ToastMessage :message="getMessage" :state="getState" :isShow="getIsShow" ref="toast" />
   </div>
 </template>
 <style scoped>
@@ -41,5 +42,16 @@ import SideBarRight from '@/views/SideBarRight.vue'
 export default {
   name: 'MainComp',
   components: { SideBarLeft, SideBarRight, FunctionTool, MainContent },
+  computed:{
+    getMessage(){
+      return this.$store.state.message
+    },
+    getState(){
+      return this.$store.state.state
+    },
+    getIsShow(){
+      return this.$store.state.isShow
+    },
+  }
 }
 </script>

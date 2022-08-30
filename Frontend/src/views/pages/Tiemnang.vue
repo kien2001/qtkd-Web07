@@ -66,7 +66,7 @@
                     Không có dữ
                     liệu</div>
             </div>
-            <Loading v-if="isLoading" position="absolute"/>
+            <Loading v-if="isLoading" position="absolute" />
         </table>
         <div class="table-paging paging">
             <div class="paging-left">
@@ -101,30 +101,55 @@ import handleClickFilterItem from '@/js/checkbox'
 export default {
     name: "TiemNang",
     computed: {
+        /**
+         * Đi đến cuối của pageSize
+         * Created by LVKIEN 30/08/2022
+         */
         getLastPage() {
             if (this.pageCurrent + this.numberPerPage > Math.ceil(this.totalCount / this.numberPerPage)) {
                 return Math.ceil(this.totalCount / this.numberPerPage);
             }
             return this.pageCurrent + this.numberPerPage - 1;
         },
+        /**
+         * Mở form edit khi click vào ô sửa ở từng dòng
+         * Created by LVKIEN 30/08/2022
+         */
         showForm() {
             return this.$store.state.isShowForm;
         },
-        // lấy trạng thái của isDeleted
+        /**
+        * lấy trạng thái của isDeleted
+        * Created by LVKIEN 30/08/2022
+        */
         getIsDeleted() {
             return this.$store.state.isDeleted;
         },
-        // lấy trạng thái của isInserted
+        /**
+         * lấy trạng thái của isInserted
+         * Created by LVKIEN 30/08/2022
+         */
         getIsInserted() {
             return this.$store.state.isInserted;
         },
-        // lấy trạng thái của isUpdated
+        /**
+         * lấy trạng thái của isUpdated
+         * Created by LVKIEN 30/08/2022
+         */
         getIsUpdated() {
             return this.$store.state.isUpdated;
         },
+        /**
+         * lấy trạng thái của editMultipleRow
+         * Created by LVKIEN 30/08/2022
+         */
         getEditMultipleForm() {
             return this.$store.state.editMultipleRow;
         },
+        /**
+        * lấy giá trị của từ khoá search 
+        * Created by LVKIEN 30/08/2022
+        */
         getKeyWordSearch() {
             return this.$store.state.conditionSearch;
         }
@@ -142,27 +167,45 @@ export default {
             pageCurrent: 1,
             numberPerPage: 10,
             listChecked: [],
-            // customerEdit: {},
             isLoading: true,
             // hiển thị khi không có dữ liệu
             showNoValue: false
         };
     },
+    /**
+     * Lấy dữ liệu của phân trang
+     * Created by LVKIEN 30/08/2022
+     */
     async beforeMount() {
         await this.getDataPaging(this.getKeyWordSearch);
     },
+    /**
+    * Thêm sự kiện cho checkbox
+    * Created by LVKIEN 30/08/2022
+    */
     updated() {
         const checkboxItems = $(".td.icon.icon-checkbox").toArray();
         checkboxItems.forEach((item) => {
+            $(item).unbind()
             $(item).click(this.checkInput);
         });
+        console.log(checkboxItems);
     },
     watch: {
+        /**
+         * Khi keyword thay đổi, gọi API
+         * @param {*} newValue 
+        *  Created by LVKIEN 30/08/2022
+         */
         async getKeyWordSearch(newValue) {
             this.pageCurrent = 1;
             await this.getDataPaging(newValue);
         },
-        // xử lý khi delete thành công
+        /**
+         * xử lý khi delete thành công
+         * @param {*} newValue 
+         *  Created by LVKIEN 30/08/2022
+         */
         async getIsDeleted(newValue) {
             if (newValue) {
                 // reset lại biến isDeleted
@@ -186,7 +229,11 @@ export default {
                 await this.getDataPaging(this.getKeyWordSearch);
             }
         },
-        // xử lý khi insert thành công
+        /**
+         * xử lý khi insert thành công
+         * @param {*} newValue 
+         * Created by LVKIEN 30/08/2022
+         */
         async getIsUpdated(newValue) {
             if (newValue) {
                 // reset lại biến isUpdated
@@ -241,7 +288,10 @@ export default {
                     this.showNoValue = true;
                     this.customerList = [];
                     this.totalCount = 0;
-                    console.log(responsePaging.userMsg);
+                    
+                    this.$store.commit("setState", "fail")
+                    this.$store.commit("setMessage", responsePaging.userMsg)
+                    this.$store.commit("setIsShow", true)
                 }
                 else {
                     this.showNoValue = false;
@@ -251,7 +301,9 @@ export default {
                 }
             }
             catch (error) {
-                console.log(error);
+                this.$store.commit("setState", "fail")
+                this.$store.commit("setMessage", error)
+                this.$store.commit("setIsShow", true)
             }
         },
         /**
@@ -338,6 +390,7 @@ export default {
         },
         // xử lý check cho từng row
         checkInput(e) {
+            console.log(e.target);
             e.preventDefault();
             const checkedItem = $(e.target).parent(".tr");
             const checkAllBtn = this.$refs["check-all"];

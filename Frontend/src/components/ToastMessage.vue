@@ -2,46 +2,34 @@
     <div class="toast" :class="objectClass" :style="objectStyle">
         <div class="toast-icon" :class="state">
         </div>
-        <div class="toast-text">{{message}}</div>
-        <div class="toast-icon toast-icon-close"></div>
+        <div class="toast-text">{{  message  }}</div>
+        <div class="toast-icon toast-icon-close" @click="closeToast"></div>
     </div>
 </template>
 <script>
 export default {
     name: "ToastMessage",
-    data(){
-        return {
-            isShow:false
-        }
-    },
-    computed:{
-        objectClass(){
+    computed: {
+        objectClass() {
             return {
                 "show": this.isShow
             }
         },
-        objectStyle(){
+        objectStyle() {
             return {
                 backgroundColor: `var(--${this.state})`
             }
         }
     },
-    watch:{
-        isShow(newValue){
-            let me = this
-            if(newValue){
-                setTimeout(()=>{
-                    me.isShow = false
-                }, 2000)
-            }
+    methods: {
+        closeToast() {
+            this.$store.commit("setIsShow", false)
         }
     },
-    props:["message", "state"]
+    props: ["message", "state", "isShow"]
 }
 </script>
 <style scoped>
-
-
 .toast {
     --success: #31B491;
     --fail: #EC4141;
@@ -49,7 +37,7 @@ export default {
     --info: #4262F0;
     position: fixed;
     right: -100%;
-    top:10%;
+    top: 10%;
     background-color: var(--success);
     justify-content: space-between;
     min-width: 161px;
@@ -60,12 +48,14 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.5s ease-in-out;
     z-index: 1200;
+    gap: 10px;
 }
-.toast.show{
-    right:0;
+
+.toast.show {
+    animation: moveToast 5s ease-in-out;
 }
+
 .toast+.toast {
     margin-top: 8px;
 }
@@ -77,13 +67,17 @@ export default {
     width: 16px;
     height: 16px;
 }
-.success{
+
+.success {
     background-image: url("../assets/img/tich-tron-green.svg");
 }
-.fail{
+
+.fail {
     background-image: url("../assets/img/ractangle-close-white.svg");
 }
+
 .toast-text {
+    max-width: 100px;
     color: #ffffff;
     font-weight: 500;
     font-size: 13px;
@@ -98,4 +92,26 @@ export default {
     height: 12px;
 }
 
+@keyframes moveToast {
+    0% {
+        right: -100%;
+    }
+
+    10% {
+        right: 20px;
+    }
+
+    15%,
+    20%,
+    30%,
+    40%,
+    50%,
+    60% {
+        right: 10px;
+    }
+
+    100% {
+        right: -100%;
+    }
+}
 </style>

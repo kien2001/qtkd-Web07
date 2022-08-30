@@ -11,8 +11,8 @@
     <div class="function-filter" v-else>
       <div class="selected-item">Đã chọn <span> {{ getListIdChecked.length }}</span></div>
       <div class="edit-btn btn-hover">Bỏ chọn</div>
-      <Button name="Cập nhật thông tin" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconEdit"
-        @clickBtn="editMultipleRow" />
+      <Button name="Cập nhật thông tin" color="#fff" colorHover="#D0D8FB" :hasIcon="true" :urlMainBtn="iconEdit"
+        @clickBtn="editMultipleRow" border="#fff" borderHover="#D3D7DE" />
       <div class="option-detail">
         <div class="btn-icon more-option" @click="showOptions"></div>
         <div class="more-option-container" v-show="showOptionList">
@@ -36,7 +36,6 @@
     </div>
     <PopUp text="Bạn có chắc chắn muốn xoá tiềm năng này không?" colorBtn="#EC4141" colorHoverBtn="#EA2E2E"
       ref="showConfirm" @handlePopUp="sendRequestDelete" />
-    <ToastMessage :message="message" :state="state" ref="toast" />
   </div>
 </template>
 <script>
@@ -57,8 +56,6 @@ export default {
   name: "FunctionTool",
   data() {
     return {
-      message: '',
-      state: '',
       iconAdd,
       iconArrowDownWhite,
       iconEdit,
@@ -69,6 +66,11 @@ export default {
     };
   },
   watch: {
+    /**
+     * Xem liệu đã có ô nào đc check hay chưa, set giá trị biến isItemChecked theo đó
+     * @param {*} newValue 
+     * Created by LVKIEN 30/08/2022
+     */
     getListIdChecked(newValue) {
       if (newValue.length !== 0) {
         this.isItemChecked = false;
@@ -79,6 +81,10 @@ export default {
     }
   },
   computed: {
+    /**
+     * Lấy danh sách row dc check trong store
+     * Created by LVKIEN 30/08/2022
+     */
     getListIdChecked() {
       return this.$store.state.listIdChecked;
     }
@@ -87,7 +93,11 @@ export default {
     $(window).click(this.exit);
   },
   methods: {
-    // tắt thẻ div show detail option
+    /**
+     *  tắt thẻ div show detail option
+     * @param {*} e 
+     * Created by LVKIEN 30/08/2022
+     */
     exit(e) {
       if ($(e.target).attr("class") !== $(this.$refs.function).find(".btn-icon.more-option").attr("class")) {
         this.showOptionList = false;
@@ -103,21 +113,21 @@ export default {
           .then(res => res.data)
           .catch(error => error.response.data);
         if (resDeleteRows.flag) {
-          this.state = "success"
-          this.message = "Thành công"
-          this.$refs.toast.isShow = true
+          this.$store.commit("setState", "success")
+          this.$store.commit("setMessage", "Thành công")
+          this.$store.commit("setIsShow", true)
           this.$store.commit("resetListIdChecked");
           this.$store.commit("setIsDeleted", true);
         }
         else {
-          this.state = "fail"
-          this.message = response.userMsg
-          this.$refs.toast.isShow = true
+          this.$store.commit("setState", "fail")
+          this.$store.commit("setMessage", resDeleteRows.userMsg)
+          this.$store.commit("setIsShow", true)
         }
       } catch (error) {
-        this.state = "fail"
-        this.message = error
-        this.$refs.toast.isShow = true
+        this.$store.commit("setState", "fail")
+        this.$store.commit("setMessage", error)
+        this.$store.commit("setIsShow", true)
       }
       
     },
@@ -127,7 +137,6 @@ export default {
      */
     deleteRow() {
       this.$refs.showConfirm.isShow = true
-
     },
     exportExcel() {
       let resultData = [];
@@ -175,12 +184,24 @@ export default {
       ];
       exportToExcelPro(resultData, "ListCustomer", "ListCustomer", "Danh sách khách hàng", fieldOptions, widthArr);
     },
+    /**
+     * KHi click vào button Cập nhật thông tin, mở component EditMultipleRow
+     * Created by LVKIEN 30/08/2022
+     */
     editMultipleRow() {
       this.$store.commit("setEditMultipleRow", true);
     },
+    /**
+     * Khi click vào button 3 chấm, mở 2 tuỳ chọn là xuất khẩu và xoá
+     * Created by LVKIEN 30/08/2022
+     */
     showOptions() {
       this.showOptionList = !this.showOptionList;
     },
+    /**
+     * Mở form Thêm mới
+     * Created by LVKIEn 30/08/2022
+     */
     openForm() {
       if (this.$route.name === "TiemNang") {
         this.$store.commit("setFormState", true);
@@ -192,6 +213,8 @@ export default {
 }
 </script>
 <style scoped>
+
+
 /* =======Header-footer ========== */
 .function {
   background-color: #E2E4E9;
@@ -273,14 +296,15 @@ export default {
   background-color: #fff;
   background-size: 20px 20px !important;
   border-radius: 4px;
+  border:1px solid #fff;
 }
 
 .more-option:hover,
 .more-option:focus,
 .more-option2>div:hover,
 .more-option2>div:focus {
-  background-color: #E2E4E9;
-  border: 1px solid #D3D7DE;
+  background-color: #D0D8FB;
+  border-color: #D3D7DE;
   border-radius: 4px;
 }
 

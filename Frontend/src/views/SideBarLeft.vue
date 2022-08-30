@@ -109,7 +109,7 @@ export default {
 }
 
 .sidebar-title {
-    height: fit-content;
+    min-height: 47px;
     display: flex;
     justify-content: space-between;
     align-items: center;

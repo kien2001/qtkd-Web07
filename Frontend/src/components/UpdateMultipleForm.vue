@@ -26,11 +26,10 @@
                     @clickBtn="updateMultiple" />
             </div>
         </div>
-        <Loading v-if="isLoading" position="fixed"/>
+        <Loading v-if="isLoading" position="fixed" />
     </div>
     <PopUp text="Bạn có chắc chắn muốn sửa các tiềm năng này không?" colorBtn="#31B491" colorHoverBtn="#2EA888"
         ref="showConfirm" @handlePopUp="sendRequestUpdateMultiple" />
-    <ToastMessage :message="message" :state="state" ref="toast" />
 
 </template>
 
@@ -56,6 +55,8 @@
     flex-direction: column;
     justify-content: space-between;
     border-radius: 4px;
+    transition: all 0.5s ease;
+    transform: translateY(-300px);
 }
 
 .box-header {
@@ -123,7 +124,6 @@ import InputForm from "./InputForm.vue";
 import Button from "./Button.vue";
 import { fieldOptions, fieldDropdownOptions, rootApi } from '../js/config'
 import PopUp from './PopUp.vue';
-import ToastMessage from './ToastMessage.vue';
 export default {
     name: "UpdateMultipleForm",
     data() {
@@ -139,20 +139,27 @@ export default {
             isLoading: false
         }
     },
-    components: { InputForm, Button, PopUp, ToastMessage },
+    components: { InputForm, Button, PopUp },
     methods: {
         closeUpdateMultipleForm() {
-            this.$store.commit("setIsUpdated", true)
             this.$store.commit('setEditMultipleRow', false)
         },
+        /**
+         * 
+         * @param {*} selected :option đã chọn
+         * Created by LVKIEN 30/08/2022
+         */
         getSelectedUpdateFilter(selected) {
             if (selected) {
                 this.selectedUpdateFilter = selected
             }
         },
+        /**
+         * Click vào button Update
+         * Created by LVKIEN 30/08/2022
+         */
         updateMultiple() {
             this.$refs.showConfirm.isShow = true
-
         },
         /**
          * Gọi api để update nhiều bản ghi 
@@ -269,49 +276,64 @@ export default {
                     const response = await axios.post(`${rootApi}${rootUrlTable}/MultipleRows`, dataUpdate).then(res => res.data).catch(error => error.response.data)
                     this.isLoading = false;
                     if (response.flag) {
-                        this.state = "success"
-                        this.message = "Thành công"
-                        this.$refs.toast.isShow = true
+                        this.$store.commit("setState", "success")
+                        this.$store.commit("setMessage", "Thành công")
+                        this.$store.commit("setIsShow", true)
+                        this.$store.commit("setIsUpdated", true)
                     } else {
-                        this.state = "fail"
-                        this.message = response.userMsg
-                        this.$refs.toast.isShow = true
+                        this.$store.commit("setState", "fail")
+                        this.$store.commit("setMessage", response.userMsg)
+                        this.$store.commit("setIsShow", true)
                     }
                 }
-            }catch(error){
-                this.state = "fail"
-                this.message = error
-                this.$refs.toast.isShow = true
+            } catch (error) {
+                this.$store.commit("setState", "fail")
+                this.$store.commit("setMessage", error)
+                this.$store.commit("setIsShow", true)
             }
         },
-        // lấy về dữ liệu cho Combobox
+        /**
+         * lấy về dữ liệu cho Combobox
+         * Created by LVKIEn 29/08/2022
+         */
         async getDataComboBox(prefix) {
             let result = null;
             const response = await axios.get(`${rootApi}${prefix}`).then(res => res.data).catch(error => error.response.data)
             if (response.flag) {
-
                 result = this.formatDataComboBox(response.data)
-
             } else {
                 console.log(response.userMsg);
             }
             return result;
         },
-        // xử lý dữ liệu theo format của combobox
+        //
+        /**
+         * xử lý dữ liệu theo format của combobox
+         * @param {*} data 
+         * Created by LVKIEn 30/08/2022
+         */
         formatDataComboBox(data) {
             return data.map(item => {
                 return { value: item, label: item }
             })
         },
+        /**
+         * Lấy về trường dữ liệu cần update
+         * @param {*} selected : option update
+         * Created by LVKIEn 30/08/2022
+         */
         getUpdatedOption(selected) {
             console.log(selected);
             if (selected) {
                 this.selectedUpdateOption = {}
-                // const formatKey = this.typeDropdown.split("/")[0]
                 this.selectedUpdateOption = selected
             }
         },
-        // xử lý format dữ liệu của tên tiềm năng, ngành nghề, lĩnh vực khi lưu vào database
+        /**
+         * Xử lý format dữ liệu của tên tiềm năng, ngành nghề, lĩnh vực khi lưu vào database
+         * @param {*} data 
+         * Created by LVKIEn 30/08/2022
+         */
         handleDataWhenSave(data) {
             let result = '';
             if (data?.length > 0) {
@@ -321,7 +343,12 @@ export default {
             }
             return result === '' ? null : result
         },
-        // xử lý format họ và tên
+        //
+        /**
+         * xử lý format họ và tên
+         * @param {*} name 
+         * Created by LVKIEn 30/08/2022
+         */
         handleGetName(name) {
             const nameArr = name.split(" ");
             if (nameArr.length === 1) {
@@ -343,11 +370,20 @@ export default {
                 }
             }
         },
+        /**
+         * Viết hoa chữ cái đầu
+         * @param {*} string 
+         * Created by LVKIEN 30/08/2022
+         */
         capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         },
     },
     mounted() {
+        setTimeout(() => {
+            $(this.$refs.container).find(".box-main").css("transform", "translateY(-200px)")
+        }, 5)
+
         fieldOptions.sort((a, b) => a.localeCompare(b))
         let count = 0;
         const options = fieldOptions.map(option => {
@@ -357,6 +393,10 @@ export default {
         this.$refs.listField.setOptions(options)
     },
     computed: {
+        /**
+         * Lấy về 1 object chứa các mảng id của customer, address, organization để update
+         * Created by LVKien 30/08/2022
+         */
         getListIdChecked() {
             const listCheckedCustomer = this.$store.state.listCheckedCustomer.map(customer => {
                 return { customerId: customer.customerId, addressId: customer.addressId, organizationId: customer.organizationId }
@@ -365,9 +405,15 @@ export default {
             const listIdAddress = listCheckedCustomer.map(id => id.addressId)
             const listIdOrganization = listCheckedCustomer.map(id => id.organizationId)
             return { listIdCustomer, listIdAddress, listIdOrganization }
-        }
+        },
     },
     watch: {
+        /**
+         * Xem thuộc tính selectedUpdateFilter để xử lý chọn loại input
+         * @param {*} newValue 
+         * @param {*} oldValue 
+         * Created by LVKIEn 30/08/2022
+         */
         selectedUpdateFilter(newValue, oldValue) {
             if (newValue) {
                 this.isDisabled = false

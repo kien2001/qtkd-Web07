@@ -11,11 +11,29 @@ export default createStore({
     editMultipleRow: false,
     listCheckedCustomer:[],
     conditionSearch:"",
-    customerUpdated:{}
+    customerUpdated:{},
+    state:"",
+    message:"",
+    isShow:false
   },
   getters: {
   },
   mutations: {
+    setState(state, payload){
+      this.state.state = payload
+    },
+    setMessage(state, payload){
+      this.state.message = payload
+    },
+    setIsShow(state, payload){
+      let me = this.state
+      this.state.isShow = payload
+      if (me.isShow) {
+        setTimeout(() => {
+          me.isShow = false
+        }, 5000)
+      }
+    },
     setCustomerUpdated(state, payload){
       this.state.customerUpdated = payload
     },
