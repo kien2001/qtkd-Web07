@@ -7,9 +7,6 @@
 .item-icon {
     width: 16px;
     height: 16px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
 }
 
 .item-content {
@@ -17,180 +14,183 @@
 }
 
 .icon-home {
-    background-image: url("../../img/home.svg");
+    -webkit-mask: url("../../img/home.svg") no-repeat 50% 50%;
+    mask: url("../../img/home.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-home {
-    background-image: url("../../img/blue-active/home.svg");
+    background-color: #5A76F2;
 }
 
 .icon-tiemnang {
-    background-image: url("../../img/tiemnang.svg");
+    -webkit-mask: url("../../img/tiemnang.svg") no-repeat 50% 50%;
+    mask: url("../../img/tiemnang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-tiemnang {
-    background-image: url("../../img/blue-active/tiemnang.svg");
+    background-color: #5A76F2;
 }
 
 .icon-chaohang {
-    background-image: url("../../img/chaohang.svg");
+    -webkit-mask: url("../../img/chaohang.svg") no-repeat 50% 50%;
+    mask: url("../../img/chaohang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-chaohang {
-    background-image: url("../../img/blue-active/chaohang.svg");
+    background-color: #5A76F2;
 }
 
 .icon-lienhe {
-    background-image: url("../../img/lienhe.svg");
+    -webkit-mask: url("../../img/lienhe.svg") no-repeat 50% 50%;
+    mask: url("../../img/lienhe.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+
 }
 
 .active .icon-lienhe {
-    background-image: url("../../img/blue-active/lienhe.svg");
+    background-color: #5A76F2;
 }
 
 .icon-khachhang {
-    background-image: url("../../img/khachhang.svg");
+    -webkit-mask: url("../../img/khachhang.svg") no-repeat 50% 50%;
+    mask: url("../../img/khachhang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-khachhang {
-    background-image: url("../../img/blue-active/khachhang.svg");
+    background-color: #5A76F2;
 }
 
 .icon-cohoi {
+    -webkit-mask: url("../../img/cohoi.svg") no-repeat 50% 50%;
+    mask: url("../../img/cohoi.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
     background-image: url("../../img/cohoi.svg");
 }
 
 .active .icon-cohoi {
-    background-image: url("../../img/blue-active/cohoi.svg");
+    background-color: #5A76F2;
 }
 
 .icon-baogia {
-    background-image: url("../../img/baogia.svg");
+    -webkit-mask: url("../../img/baogia.svg") no-repeat 50% 50%;
+    mask: url("../../img/baogia.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-baogia {
-    background-image: url("../../img/blue-active/baogia.svg");
+    background-color: #5A76F2;
 }
 
 .icon-donhang {
-    background-image: url("../../img/giohang.svg");
+    -webkit-mask: url("../../img/giohang.svg") no-repeat 50% 50%;
+    mask: url("../../img/giohang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-donhang {
-    background-image: url("../../img/blue-active/giohang.svg");
+    background-color: #5A76F2;
 }
 
 .icon-hoadon {
-    background-image: url("../../img/hoadon.svg");
+    -webkit-mask: url("../../img/hoadon.svg") no-repeat 50% 50%;
+    mask: url("../../img/hoadon.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-hoadon {
-    background-image: url("../../img/blue-active/hoadon.svg");
+    background-color: #5A76F2;
 }
 
 .icon-aocohoi {
-    background-image: url("../../img/aocohoi.svg");
+    -webkit-mask: url("../../img/aocohoi.svg") no-repeat 50% 50%;
+    mask: url("../../img/aocohoi.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-aocohoi {
-    background-image: url("../../img/blue-active/aocohoi.svg");
+    background-color: #5A76F2;
 }
 
 .icon-hoatdong {
-    background-image: url("../../img/hoatdong.svg");
+    -webkit-mask: url("../../img/hoatdong.svg") no-repeat 50% 50%;
+    mask: url("../../img/hoatdong.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-hoatdong {
-    background-image: url("../../img/blue-active/hoatdong.svg");
+    background-color: #5A76F2;
 }
 
 .icon-muctieu {
-    background-image: url("../../img/muctieu.svg");
+    -webkit-mask: url("../../img/muctieu.svg") no-repeat 50% 50%;
+    mask: url("../../img/muctieu.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-muctieu {
-    background-image: url("../../img/blue-active/muctieu.svg");
+    background-color: #5A76F2;
 }
 
 .icon-chiendich {
-    background-image: url("../../img/chiendich.svg");
+    -webkit-mask: url("../../img/chiendich.svg") no-repeat 50% 50%;
+    mask: url("../../img/chiendich.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-chiendich {
-    background-image: url("../../img/blue-active/chiendich.svg");
+    background-color: #5A76F2;
 }
 
 .icon-baocao {
-    background-image: url("../../img/baocao.svg");
+    -webkit-mask: url("../../img/baocao.svg") no-repeat 50% 50%;
+    mask: url("../../img/baocao.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
 
 .active .icon-baocao {
-    background-image: url("../../img/blue-active/baocao.svg");
+    background-color: #5A76F2;
 }
 
 .icon-khac {
-    background-image: url("../../img/khac.svg");
+    -webkit-mask: url("../../img/khac.svg") no-repeat 50% 50%;
+    mask: url("../../img/khac.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
 }
+
 .active .icon-khac {
-    background-image: url("../../img/blue-active/khac.svg");
-}
-
-.icon-home-active {
-    background-image: url("../../img/blue-active/home.svg");
-}
-
-.icon-tiemnang-active {
-    background-image: url("../../img/blue-active/tiemnang.svg");
-}
-
-.icon-chaohang-active {
-    background-image: url("../../img/blue-active/chaohang.svg");
-}
-
-.icon-lienhe-active {
-    background-image: url("../../img/blue-active/lienhe.svg");
-}
-
-.icon-khachhang-active {
-    background-image: url("../../img/blue-active/khachhang.svg");
-}
-
-.icon-cohoi-active {
-    background-image: url("../../img/blue-active/cohoi.svg");
-}
-
-.icon-baogia-active {
-    background-image: url("../../img/blue-active/baogia.svg");
-}
-
-.icon-donhang-active {
-    background-image: url("../../img/blue-active/giohang.svg");
-}
-
-.icon-hoadon-active {
-    background-image: url("../../img/blue-active/hoadon.svg");
-}
-
-.icon-aocohoi-active {
-    background-image: url("../../img/blue-active/aocohoi.svg");
-}
-
-.icon-hoatdong-active {
-    background-image: url("../../img/blue-active/hoatdong.svg");
-}
-
-.icon-muctieu-active {
-    background-image: url("../../img/blue-active/muctieu.svg");
-}
-
-.icon-chiendich-active {
-    background-image: url("../../img/blue-active/chiendich.svg");
-}
-
-.icon-baocao-active {
-    background-image: url("../../img/blue-active/baocao.svg");
-}
-
-.icon-khac-active {
-    background-image: url("../../img/blue-active/khac.svg");
+    background-color: #5A76F2;
 }

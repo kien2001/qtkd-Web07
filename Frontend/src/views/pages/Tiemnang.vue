@@ -39,27 +39,30 @@
                         <div class="td" @click="openEditForm"></div>
                         <div class="td icon icon-checkbox"></div>
                         <div class="td"></div>
-                        <div class="td">{{  customer.vocativeName !== "" ? customer.vocativeName : "-"  }}</div>
-                        <div class="td">{{  customer.fullName || "-"  }}</div>
-                        <div class="td">{{  customer.positionName || '-'  }}</div>
-                        <div class="td call-background">{{  customer.customerPhoneNum || '-'  }}</div>
-                        <div class="td call-background">{{  customer.companyPhoneNum || '-'  }}</div>
-                        <div class="td">{{  customer.companyEmail || '-'  }}</div>
-                        <div class="td">{{  customer.customerEmail || '-'  }}</div>
-                        <div class="td">{{  customer.organizationName || '-'  }}</div>
-                        <div class="td">{{  customer.addressName || '-'  }}</div>
-                        <div class="td">{{  customer.cityName || '-'  }}</div>
-                        <div class="td">{{  customer.districtName || '-'  }}</div>
-                        <div class="td">{{  customer.wardName || '-'  }}</div>
-                        <div class="td">{{  customer.sourceName || '-'  }}</div>
-                        <div class="td">{{  customer.typeName || '-'  }}</div>
-                        <div class="td">{{  customer.domain || '-'  }}</div>
-                        <div class="td">{{  customer.description || '-'  }}</div>
-                        <div class="td">{{  customer.layout || '-'  }}</div>
-                        <div class="td">{{  customer.owner || '-'  }}</div>
-                        <div class="td">{{  customer.revenueName || '-'  }}</div>
-                        <div class="td">{{  customer.sharingUse ? 'Có' : 'Không'  }}</div>
-                        <div class="td">{{  customer.facebook || '-'  }}</div>
+                        <div class="td">{{ customer.vocativeName !== "" ? customer.vocativeName : "-" }}</div>
+                        <div class="td">{{ customer.fullName || "-" }}</div>
+                        <div class="td">{{ customer.positionName || '-' }}</div>
+                        <div class="td call-background">{{ customer.customerPhoneNum || '-' }}</div>
+                        <div class="td call-background">{{ customer.companyPhoneNum || '-' }}</div>
+                        <div class="td">{{ customer.companyEmail || '-' }}</div>
+                        <div class="td">{{ customer.customerEmail || '-' }}</div>
+                        <div class="td">{{ customer.organizationName || '-' }}</div>
+                        <div class="td">{{ customer.addressName || '-' }}</div>
+                        <div class="td">{{ customer.cityName || '-' }}</div>
+                        <div class="td">{{ customer.districtName || '-' }}</div>
+                        <div class="td">{{ customer.wardName || '-' }}</div>
+                        <div class="td">{{ customer.sourceName || '-' }}</div>
+                        <div class="td">{{ customer.typeName || '-' }}</div>
+                        <div class="td">{{ customer.domain || '-' }}</div>
+                        <div class="td">{{ customer.description || '-' }}</div>
+                        <div class="td">{{ customer.layout || '-' }}</div>
+                        <div class="td">{{ customer.owner || '-' }}</div>
+                        <div class="td">{{ customer.revenueName || '-' }}</div>
+                        <div class="td">{{ customer.sharingUse ? 'Có' : 'Không' }}</div>
+                        <div class="td" v-if="customer.facebook"><a :href=customer.facebook target="_blank" :style="{color:'hsl(206,100%,40%)', textDecoration: 'underline'}">{{
+                                customer.facebook }}</a>
+                        </div>
+                        <div class="td" v-else>-</div>
                     </div>
                 </div>
                 <div v-if="showNoValue" class="not-value">
@@ -70,7 +73,7 @@
         </table>
         <div class="table-paging paging">
             <div class="paging-left">
-                Tổng số: <strong>{{  totalCount  }}</strong>
+                Tổng số: <strong>{{ totalCount }}</strong>
             </div>
             <div class="paging-right">
                 <div class="paging-center-left">
@@ -81,8 +84,8 @@
                 <div class="paging-center-right">
                     <div class="btn-icon medium btn-nav btn-first" @click="returnFirstPage"></div>
                     <div class="btn-icon medium btn-nav btn-prev" @click="returnPrevPage"></div>
-                    <span><strong>{{  this.pageCurrent  }} </strong> đến <strong>{{
-                             getLastPage 
+                    <span><strong>{{ this.pageCurrent }} </strong> đến <strong>{{
+                            getLastPage
                             }}</strong></span>
                     <div class="btn-icon medium btn-nav btn-next" @click="toNextPage"></div>
                     <div class="btn-icon medium btn-nav btn-last" @click="toLastPage"></div>
@@ -365,8 +368,8 @@ export default {
                 if (listChecked.length <= 0) {
                     this.listChecked = [];
                 }
-                // khi check all
             }
+            // khi check all
             else {
                 $(checkAllBtn).attr("all-checked", "");
                 $(checkAllBtn).removeClass("icon-checkbox");
