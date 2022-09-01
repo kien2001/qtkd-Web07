@@ -151,6 +151,10 @@ export default {
         })
     },
     methods: {
+        /**
+         * truyền giá trị key search lên store mỗi timer sau khi người dùng gõ
+         * Created by LVKIEN 1/9/2022
+         */
         handleSearch() {
             let me = this;
             clearTimeout(this.timeOut);

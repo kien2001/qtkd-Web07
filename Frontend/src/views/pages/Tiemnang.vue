@@ -36,7 +36,7 @@
                     <div class="tr" v-for="customer in customerList" :key="customer.customerId"
                         :key-name="customer.customerId" @mouseover="showEditWhenHover"
                         @mouseleave="removeEditWhenHover">
-                        <div class="td" @click="openEditForm"></div>
+                        <div class="td " @click="openEditForm"></div>
                         <div class="td icon icon-checkbox"></div>
                         <div class="td"></div>
                         <div class="td">{{ customer.vocativeName !== "" ? customer.vocativeName : "-" }}</div>
@@ -192,7 +192,6 @@ export default {
             $(item).unbind()
             $(item).click(this.checkInput);
         });
-        console.log(checkboxItems);
     },
     watch: {
         /**

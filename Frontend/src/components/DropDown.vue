@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" v-if="options" @click="showOptions" ref="dropdown">
+  <div class="dropdown" v-if="options" @click="showOptions" ref="dropdown" :name="name">
     <div class="dropdown-header" ref="dropdown-header">
       {{  this.oldSearchFilter || placeholder || "-Không chọn-"  }}
     </div>
@@ -70,9 +70,6 @@ export default {
       currentValue: {},
     };
   },
-  created() {
-    $(window).click(this.exit);
-  },
   computed: {
     filteredOptions() {
       const filtered = [];
@@ -106,6 +103,10 @@ export default {
     },
     async showOptions(e) {
       e.stopPropagation();
+      const dropdownContainer = $(".dropdown-container").toArray();
+      dropdownContainer.forEach(dropdown=>{
+        $(dropdown).css("display", "none")
+      })
       this.optionsShown = true;
       this.searchFilter = "";
       this.$nextTick(() => this.$refs.input.focus());
@@ -132,7 +133,6 @@ export default {
               } else {
                 this.getSuccess = true;
                 result = this.handleTransferObject(data.data);
-                console.log(result);
                 this.options = result;
               }
             }
@@ -190,8 +190,6 @@ export default {
   },
   updated() {
     if (this.selected.id) {
-      // $(this.$refs.dropdown).find(".selected").removeClass("selected")
-      // $(this.$refs.dropdown).find(`.dropdown-item[value=${newValue.id}]`).addClass("selected");
       const arr = this.$refs.filteredOptions;
       arr.forEach((item) => {
         $(item).removeClass("selected");
@@ -202,13 +200,24 @@ export default {
       });
     }
   },
+  mounted(){
+    $(window).click(this.exit);
+    // let me = this;
+    // $(document).unbind()
+    // $(document).click(function (e) {
+    //   console.log($(e.target).parent(".dropdown")?.attr("name"), me.name);
+    //   if ($(e.target).parent(".dropdown")?.attr("name") !== me.name) {
+    //     me.exit()
+    //   }
+    //   console.log(e.target);
+    // });
+  },
   watch: {
     searchFilter(newVal, oldVal) {
       if (newVal && newVal !== "") {
         this.oldSearchFilter = newVal;
       }
     },
-    selected(newValue) { },
   },
   components: { Loading },
 };

@@ -38,14 +38,15 @@
             <div class="context-item">
               <div class="context-label">Họ và đệm</div>
               <div class="context-input">
-                <InputFormVue class="inputForm" id="lastMiddleName" @changeName="setLastMiddleName"
+                <InputFormVue class="inputForm" id="lastMiddleName" @changeName="setLastMiddleName" maxlength="50"
                   ref="lastMiddleName" />
               </div>
             </div>
             <div class="context-item" required>
               <div class="context-label">Tên</div>
               <div class="context-input">
-                <InputFormVue class="inputForm" id="firstName" @changeName="setFirstName" ref="firstName" />
+                <InputFormVue class="inputForm" id="firstName" @changeName="setFirstName" ref="firstName"
+                  maxlength="50" />
               </div>
             </div>
             <div class="context-item">
@@ -140,13 +141,15 @@
             <div class=" context-item">
               <div class="context-label">Email cá nhân</div>
               <div class="context-input">
-                <InputFormVue class="inputForm" id="customerEmail" ref="customerEmail" />
+                <InputFormVue class="inputForm" id="customerEmail" @keyup.prevent="handleValidateEmail"
+                  ref="customerEmail" />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Email cơ quan</div>
               <div class="context-input">
-                <InputFormVue class="inputForm" id="companyEmail" ref="companyEmail" />
+                <InputFormVue class="inputForm" id="companyEmail" @keyup.prevent="handleValidateEmail"
+                  ref="companyEmail" />
               </div>
             </div>
             <div class="context-item" v-if="editForm"></div>
@@ -505,6 +508,7 @@ import Address from '../entities/Address'
 import Potential from '../entities/Potential'
 import handleClickFilterItem from '../js/checkbox'
 import { handleTransferObject } from '../js/common'
+import validateEmail from '../js/validateEmail'
 import InputFormVue from './InputForm.vue'
 import DatePicker from './DatePicker.vue'
 import PopUp from './PopUp.vue'
@@ -530,21 +534,19 @@ export default {
       editForm: this.$store.state.editForm,
       customerEdit: this.$store.state.customerUpdated,
       isLoading: false,
-      isSaveAndAdd: false
+      isSaveAndAdd: false,
+      timeOut: 0
     }
   },
   async mounted() {
     const checkboxItems = $('.context-input>.icon.icon-checkbox').toArray()
-    console.log(checkboxItems)
     checkboxItems.forEach((item) => {
       $(item).click(this.checkInput)
       $(item).css("background-color", "#fff!important")
     })
-    console.log(this.customerEdit);
     if (this.customerEdit.firstName) {
       this.mountDataEditForm()
     }
-
     const requiredFields = $('.context-item[required] .input-text').toArray()
     requiredFields.forEach(field => {
       $(field).blur(this.checkRequiredField)
@@ -564,7 +566,6 @@ export default {
       if (!data.flag) {
         console.log(data.userMgs)
       } else {
-
         this.$refs['potentialCode'].name = data.data
       }
     }
@@ -572,7 +573,7 @@ export default {
   computed: {
     handleFullName() {
       return `${this.lastMiddleName} ${this.firstName}`
-    },
+    }
   },
   watch: {
     customerEdit(newValue) {
@@ -664,6 +665,41 @@ export default {
   components: { InputFormVue, DatePicker, PopUp },
   template: 'FormSubmit',
   methods: {
+    /**
+     * Xử lý validate email: Sau 1s, nếu ko nhập đúng định dạng, hiển thị lỗi
+     * @param {*} e 
+     * Created by LVKIEN 1/9/2022
+     */
+    async handleValidateEmail(e) {
+      let check = false;
+      let me = this
+      clearTimeout(this.timeOut);
+      this.timeOut = setTimeout(() => {
+        if (validateEmail(e.target.value)) {
+          check = true
+        } else {
+          check = false
+        }
+        if (!check) {
+          me.errorField = [{ email: 'Email không đúng định dạng' }]
+          console.log(me.errorField);
+          if ($(e.target).css('border-color') !== 'rgb(255, 0, 0)') {
+            $(e.target).css('border-color', 'red')
+            $(e.target).parent().after('<span style="color:red"}}>Email không đúng định dạng</span>')
+          }
+        } else {
+          me.errorField.forEach(item => item.email === '')
+          console.log(1);
+          $(e.target).css('border-color', '#D3D7DE')
+          $(e.target).parent().next('span').remove()
+        }
+      }, 1000);
+    },
+
+    /**
+     * Gán dữ liệu vào form khi đc mount trong form sửa
+     * Created by LVKIEN 1/9/2022
+     */
     mountDataEditForm() {
       if (this.editForm) {
         this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative ? this.customerEdit.vocativeName : "Không chọn"
@@ -919,23 +955,27 @@ export default {
       this.$refs.showConfirm.isShow = true
     },
     async sendRequest() {
+      const emailError = this.errorField[0]?.email || ''
+      this.errorField = [{ firstName: '' }, { potentialCode: '' }, { email: emailError }]
+      console.log(emailError);
       if (this.isSaveAndAdd) {
+
         await this.sendRequestSaveAndAdd()
       } else {
+
         await this.sendRequestAddOrUpdate()
       }
     },
     async sendRequestAddOrUpdate() {
-      this.errorField = [{ firstName: '' }, { potentialCode: '' }]
       if (!this.editForm) {
         await this.saveInsertForm()
       } else {
         await this.saveEditForm()
-        
+
       }
     },
     async saveInsertForm() {
-      this.errorField = [{ firstName: '' }, { potentialCode: '' }]
+      console.log(this.errorField);
       const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
       const customer = new Customer()
       const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
@@ -969,7 +1009,7 @@ export default {
 
       console.log(customer, potential, address, organization)
       let resPotential, resAddress, resOrganization
-      if (!customer.FirstName || customer.FirstName === '') {
+      if (!customer.FirstName || customer.FirstName.trim() === '') {
         this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
         this.$store.commit("setState", "fail")
         this.$store.commit("setMessage", "Tên không được phép để trống")
@@ -990,7 +1030,6 @@ export default {
 
             } else {
               this.errorField.forEach(item => item.potentialCode === '')
-
             }
           }
         }
@@ -1029,7 +1068,7 @@ export default {
             this.$store.commit("setIsShow", true)
             this.$store.commit("setIsInserted", true)
             this.closeForm()
-            
+
           } else {
             this.$store.commit("setState", "fail")
             this.$store.commit("setMessage", resCustomer.userMsg)
@@ -1058,7 +1097,7 @@ export default {
     async saveEditForm() {
       const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
       const customerUpdate = new CustomerUpdate()
-      if ($(this.$refs.container).find("#firstName").val() === '') {
+      if ($(this.$refs.container).find("#firstName").val().trim() === '') {
         this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
         this.$store.commit("setState", "fail")
         this.$store.commit("setMessage", "Tên không được phép để trống")

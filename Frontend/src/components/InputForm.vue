@@ -1,10 +1,16 @@
 <template>
   <div class="input-container">
-    <input type="text" class="input-text" :class="className" :id="id" v-model="name" :disabled="isDisabled" />
+    <input type="text" class="input-text" :class="className" :id="id" v-model="name" :disabled="isDisabled"
+      :maxlength="maxlength" />
     <div class="clear" v-if="isClear" @click="clearInput"></div>
   </div>
 </template>
 <style scoped>
+
+
+
+
+
 
 .input-container{
   position: relative;
@@ -23,7 +29,7 @@
     outline: none;
     width: 100%;
     height: inherit;
-    padding: 0 10px;
+    padding: 0 28px 0 10px;
     background-color: #fff;
     font-size: 13px;
     line-height: 16px;
@@ -46,13 +52,9 @@
     border-color: #4262F0;
 }
 .input-text:not([disabled]) ~ .clear{
+  background: url('../assets/img/checkbox-collection.svg') no-repeat -4px -28px;
   width: 12px;
   height: 12px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-image: url("../assets/img/blue-active/clear.svg");
-  background-image: url("../assets/img/clear.svg");
   position: absolute;
   top:50%;
   right:9.5px;
@@ -61,7 +63,9 @@
 }
 .input-text:not([disabled])~.clear:hover
 {
-  background-image: url("../assets/img/blue-active/clear.svg");
+  background: url('../assets/img/checkbox-collection.svg') no-repeat -125px -23px;
+  width: 17px;
+    height: 17px;
 }
 </style>
 <script>
@@ -96,7 +100,7 @@ export default {
       }
     }
   },
-  props: ['isDisabled',  'id', 'class' ]
+  props: ['isDisabled', 'id', 'class', 'maxlength' ]
 
 }
 </script>
