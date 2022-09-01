@@ -30,5 +30,21 @@ class Customer {
     this.SourceId = ''
   }
 
+  setInsertCustomer (vocative, lastMiddleName, firstName, departmentId, positionId, customerPhoneNum, companyPhoneNum, sourceId, zalo, customerEmail, companyEmail, taxCode, description, sharingUse) {
+    this.Vocative = vocative
+    this.LastMiddleName = lastMiddleName
+    this.FirstName = firstName
+    this.DepartmentId = departmentId
+    this.PositionId = positionId
+    this.CustomerPhoneNum = customerPhoneNum
+    this.CompanyPhoneNum = companyPhoneNum
+    this.SourceId = sourceId
+    this.Zalo = zalo
+    this.CustomerEmail = customerEmail
+    this.CompanyEmail = companyEmail
+    this.TaxCode = taxCode
+    this.Description = description
+    this.SharingUse = sharingUse
+  }
 }
 export default Customer

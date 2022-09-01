@@ -23,107 +23,107 @@
             </div>
         </div>
         <div class="header-menu">
-            <router-link to="/">
-                <div class="header-menu-item btn-icon-text active">
-                    <div class=" item-icon icon-home-active">
+            <router-link to="/" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text active" :href="href" @click="navigate">
+                    <div class=" item-icon icon-ngoinha-active">
                     </div>
                     <span class="item-content">Bàn làm việc</span>
                 </div>
             </router-link>
 
-            <router-link to="/tiemnang">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/tiemnang" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-tiemnang">
                     </div>
                     <span class=" item-content">Tiềm năng</span>
                 </div>
             </router-link>
-            <router-link to="/chaohang">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/chaohang" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-chaohang">
                     </div>
                     <span class="item-content">Chào hàng</span>
                 </div>
             </router-link>
-            <router-link to="/lienhe">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/lienhe" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-lienhe ">
                     </div>
                     <span class="item-content">Liên hệ</span>
                 </div>
             </router-link>
-            <router-link to="/khachhang">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/khachhang" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-khachhang">
                     </div>
                     <span class="item-content">Khách hàng</span>
                 </div>
             </router-link>
-            <router-link to="/cohoi">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/cohoi" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-cohoi">
                     </div>
                     <span class="item-content">Cơ hội</span>
                 </div>
             </router-link>
-            <router-link to="/baogia">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/baogia" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-baogia">
                     </div>
                     <span class="item-content">Báo giá</span>
                 </div>
             </router-link>
-            <router-link to="/donhang">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/donhang" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-donhang">
                     </div>
                     <span class="item-content">Đơn hàng</span>
                 </div>
             </router-link>
-            <router-link to="/hoadon">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/hoadon" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-hoadon">
                     </div>
                     <span class="item-content">Hoá đơn</span>
                 </div>
             </router-link>
-            <router-link to="/aocohoi">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/aocohoi" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-aocohoi">
                     </div>
                     <span class="item-content">Ao cơ hội</span>
                 </div>
             </router-link>
-            <router-link to="/hoatdong">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/hoatdong" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-hoatdong">
                     </div>
                     <span class="item-content">Hoạt động</span>
                 </div>
             </router-link>
-            <router-link to="/muctieu">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/muctieu" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-muctieu">
                     </div>
                     <span class="item-content">Mục tiêu</span>
                 </div>
             </router-link>
-            <router-link to="/chiendich">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/chiendich" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-chiendich">
                     </div>
                     <span class="item-content">Chiến dịch</span>
                 </div>
             </router-link>
-            <router-link to="/baocao">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/baocao" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-baocao">
                     </div>
                     <span class="item-content">Báo cáo</span>
                 </div>
             </router-link>
-            <router-link to="/khac">
-                <div class="header-menu-item btn-icon-text">
+            <router-link to="/khac" custom v-slot="{ href, navigate }">
+                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
                     <div class="item-icon icon-khac">
                     </div>
                     <span class="item-content">Khác</span>
@@ -141,7 +141,7 @@ export default {
             oldClassImage: '',
             newClassImage: '',
             timeout: null,
-            timer: 1000,
+            timer: 1000
         }
     },
     mounted() {
@@ -179,14 +179,13 @@ export default {
     }
 }
 </script>
-<style src="@/assets/css/HeaderComp/icon.css"></style>
-<style scoped>
 
+<style scoped>
 
 .header {
     display: flex;
     flex-direction: column;
-    --imgUrl: url("../assets/img/icon_toggle.svg");
+    /* background-image: url("../assets/img/blue-hover"); */
 }
 
 /* =======Header-logo ========== */
@@ -245,19 +244,16 @@ export default {
     padding-left: 7px;
     box-shadow: 0px 4px 8px -4px rgba(31, 34, 41, 0.16);
 }
-.header-menu>a{
-    height: 100%;
-    margin:0 7px;
-}
-.header-menu>a:first-child {
-    margin-left: 0;
-}
+
 .header-menu-item {
     position: relative;
     height: 100%;
     align-items: center;
+    margin: 0 7px;
 }
-
+.header-menu-item:first-child{
+    margin-left:0;
+}
 
 .header-menu-item:not(.active):hover {
     border-radius: 4px;

@@ -1,14 +1,8 @@
 <template>
-  <div class="input-container">
-    <input type="text" class="input-text" :class="className" :id="id" v-model="name" :disabled="isDisabled" />
-    <div class="clear" v-if="isClear" @click="clearInput"></div>
-  </div>
+    <input type="text" class="input-text" v-model="name" :disabled="isDisabled" >
 </template>
 <style scoped>
 
-.input-container{
-  position: relative;
-}
 .input-text[disabled]{
     background-color: #E2E4E9;
     cursor: not-allowed;
@@ -45,58 +39,23 @@
 .input-text:not([disabled]):active {
     border-color: #4262F0;
 }
-.input-text:not([disabled]) ~ .clear{
-  width: 12px;
-  height: 12px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-image: url("../assets/img/blue-active/clear.svg");
-  background-image: url("../assets/img/clear.svg");
-  position: absolute;
-  top:50%;
-  right:9.5px;
-  transform:translateY(-50%);
-  cursor: pointer;
-}
-.input-text:not([disabled])~.clear:hover
-{
-  background-image: url("../assets/img/blue-active/clear.svg");
-}
 </style>
 <script>
+import $ from 'jquery';
 export default {
   name: 'InputForm',
   data () {
     return {
-      name: '',
-      className:'',
-      isClear: false
+      name: ''
     }
   },
-  emits: ['changeName'],
-  beforeMount(){
-    this.className = this.class
-  },
-  updated(){
+  updated () {
     this.$emit('changeName', this.name)
-  },  
-  methods: {
-    clearInput() {
-      console.log(1);
-      this.name = ''
+    if (this.$attrs.handleFullName) {
+      $('#fullName').val(this.$attrs.handleFullName)
     }
   },
-  watch:{
-    name(newValue){
-      if (newValue===''){
-        this.isClear=false
-      }else{
-        this.isClear = true
-      }
-    }
-  },
-  props: ['isDisabled',  'id', 'class' ]
+  props: ['isDisabled', 'changeName', 'fullName']
 
 }
 </script>

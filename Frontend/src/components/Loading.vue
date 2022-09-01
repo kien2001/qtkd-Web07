@@ -17,7 +17,7 @@
     justify-content: center;
     align-items: center;
     /* visibility: hidden; */
-    z-index: 1003;
+    z-index: 1000;
 }
 .loading{
     background-image: url('../assets/img/loadding-icon.svg');

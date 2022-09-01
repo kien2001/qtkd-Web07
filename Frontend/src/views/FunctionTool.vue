@@ -11,21 +11,21 @@
     <div class="function-filter" v-else>
       <div class="selected-item">Đã chọn <span> {{ getListIdChecked.length }}</span></div>
       <div class="edit-btn btn-hover">Bỏ chọn</div>
-      <Button name="Cập nhật thông tin" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconEdit"
+      <KienButton name="Cập nhật thông tin" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconEdit"
         @clickBtn="editMultipleRow" />
       <div class="option-detail">
         <div class="btn-icon more-option" @click="showOptions"></div>
         <div class="more-option-container" v-show="showOptionList">
-          <Button name="Xuất khẩu" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconExport"
+          <KienButton name="Xuất khẩu" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconExport"
             @clickBtn="exportExcel" />
-          <Button name="Xoá" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconDelete"
+          <KienButton name="Xoá" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconDelete"
             colorText="#EC4141" @clickBtn="deleteRow" />
         </div>
       </div>
     </div>
     <div class="function-manipulation">
       <div class=" ">
-        <Button name="Thêm" color="#4262F0" colorHover="#2B4EEE" :hasIcon="true" :urlMainBtn="iconAdd"
+        <KienButton name="Thêm" color="#4262F0" colorHover="#2B4EEE" :hasIcon="true" :urlMainBtn="iconAdd"
           :isComboBtn="true" :urlSecondBtn="iconArrowDownWhite" @clickBtn="openForm" colorText="#fff" />
       </div>
       <div class="btn-icon more-option" @click="handleExport"></div>
@@ -34,9 +34,6 @@
         <div class="item-sub btn-addition icon-arrow-down"></div>
       </div>
     </div>
-    <PopUp text="Bạn có chắc chắn muốn xoá tiềm năng này không?" colorBtn="#EC4141" colorHoverBtn="#EA2E2E"
-      ref="showConfirm" @handlePopUp="sendRequestDelete" />
-    <ToastMessage :message="message" :state="state" ref="toast" />
   </div>
 </template>
 <script>
@@ -52,13 +49,10 @@ import exportToExcelPro from '@/js/exportToExcel'
 import { fieldOptions } from '../js/config'
 import CustomerTable from '@/entities/CustomerTable'
 import { capitalizeFirstLetter, lowerCaseFirstLetter } from '@/js/common'
-import PopUp from '@/components/PopUp.vue'
 export default {
-  name: "FunctionTool",
+  name: 'FunctionTool',
   data() {
     return {
-      message: '',
-      state: '',
       iconAdd,
       iconArrowDownWhite,
       iconEdit,
@@ -66,88 +60,67 @@ export default {
       iconDelete,
       showOptionList: false,
       isItemChecked: true // biến kiểm tra xem liệu đã có row nào trong table đc check hay chưa
-    };
+    }
   },
   watch: {
     getListIdChecked(newValue) {
       if (newValue.length !== 0) {
-        this.isItemChecked = false;
-      }
-      else {
-        this.isItemChecked = true;
+        this.isItemChecked = false
+      } else {
+        this.isItemChecked = true
       }
     }
   },
   computed: {
     getListIdChecked() {
-      return this.$store.state.listIdChecked;
+      return this.$store.state.listIdChecked
     }
   },
   created() {
-    $(window).click(this.exit);
+    $(window).click(this.exit)
   },
   methods: {
+    
     // tắt thẻ div show detail option
     exit(e) {
-      if ($(e.target).attr("class") !== $(this.$refs.function).find(".btn-icon.more-option").attr("class")) {
-        this.showOptionList = false;
+      if ($(e.target).attr('class') !== $(this.$refs.function).find('.btn-icon.more-option').attr('class')) {
+        this.showOptionList = false
       }
     },
     /**
      * Delete nhiều hàng
      * Created by LVKIEN 28/08/2022
      */
-    async sendRequestDelete() {
-      try {
-        const resDeleteRows = await axios.post(`${rootApi}Customers/ListCustomerId`, this.getListIdChecked)
-          .then(res => res.data)
-          .catch(error => error.response.data);
-        if (resDeleteRows.flag) {
-          this.state = "success"
-          this.message = "Thành công"
-          this.$refs.toast.isShow = true
-          this.$store.commit("resetListIdChecked");
-          this.$store.commit("setIsDeleted", true);
-        }
-        else {
-          this.state = "fail"
-          this.message = response.userMsg
-          this.$refs.toast.isShow = true
-        }
-      } catch (error) {
-        this.state = "fail"
-        this.message = error
-        this.$refs.toast.isShow = true
+    async deleteRow() {
+      const resDeleteRows = await axios.post(`${rootApi}Customers/ListCustomerId`, this.getListIdChecked)
+        .then(res => res.data)
+        .catch(error => error.response.data)
+      if (resDeleteRows.flag) {
+        alert(resDeleteRows.data)
+        this.$store.commit('resetListIdChecked')
+        this.$store.commit('setIsDeleted', true)
+      } else {
+        alert(resDeleteRows.data)
       }
-      
-    },
-    /**
-     * Hiển thị PopUp xoá
-     * Created by LVKIEN 29/08/2022
-     */
-    deleteRow() {
-      this.$refs.showConfirm.isShow = true
-
     },
     exportExcel() {
-      let resultData = [];
+      let resultData = []
       const customerTable = new CustomerTable();
-      const keyCustomerTableArr = Object.keys(customerTable);
-      const keyLowerArr = keyCustomerTableArr.map(key => lowerCaseFirstLetter(key));
-      if (this.$store.state.listCheckedCustomer?.length > 0) {
-        this.$store.state.listCheckedCustomer.forEach(checkedCustomer => {
-          const customerTable = new CustomerTable();
-          keyLowerArr.forEach(key => {
-            customerTable[capitalizeFirstLetter(key)] = checkedCustomer[key];
-          });
-          if (checkedCustomer.lastMiddleName) {
-            customerTable.FullName = `${checkedCustomer.lastMiddleName.trim()} ${checkedCustomer.firstName.trim()}`;
+      const keyCustomerTableArr = Object.keys(customerTable)
+      const keyLowerArr = keyCustomerTableArr.map(key => lowerCaseFirstLetter(key) )
+      if (this.$store.state.listCheckedCustomer?.length > 0 ){
+        this.$store.state.listCheckedCustomer.forEach(checkedCustomer=>{
+          const customerTable = new CustomerTable(); 
+          keyLowerArr.forEach(key=>{
+            customerTable[capitalizeFirstLetter(key)] = checkedCustomer[key]
+          })
+          if (checkedCustomer.lastMiddleName){
+            customerTable.FullName = `${checkedCustomer.lastMiddleName.trim()} ${checkedCustomer.firstName.trim() }`
+          }else{
+            customerTable.FullName = checkedCustomer.firstName.trim()
           }
-          else {
-            customerTable.FullName = checkedCustomer.firstName.trim();
-          }
-          resultData = [...resultData, customerTable];
-        });
+          resultData = [...resultData, customerTable]
+        })
       }
       console.log(resultData);
       const widthArr = [
@@ -172,23 +145,23 @@ export default {
         { width: 30 },
         { width: 20 },
         { width: 30 }
-      ];
-      exportToExcelPro(resultData, "ListCustomer", "ListCustomer", "Danh sách khách hàng", fieldOptions, widthArr);
+      ]
+      exportToExcelPro(resultData, "ListCustomer", "ListCustomer", "Danh sách khách hàng", fieldOptions, widthArr)
     },
     editMultipleRow() {
-      this.$store.commit("setEditMultipleRow", true);
+      this.$store.commit('setEditMultipleRow', true)
     },
     showOptions() {
-      this.showOptionList = !this.showOptionList;
+      this.showOptionList = !this.showOptionList
     },
     openForm() {
       if (this.$route.name === "TiemNang") {
-        this.$store.commit("setFormState", true);
-        this.$store.commit("setEditForm", false);
+        this.$store.commit('setFormState', true)
+        this.$store.commit('setEditForm', false)
+        this.$store.commit('resetDropdown')
       }
     }
-  },
-  components: { PopUp }
+  }
 }
 </script>
 <style scoped>
