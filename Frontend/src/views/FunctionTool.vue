@@ -121,7 +121,7 @@ export default {
         }
         else {
           this.$store.commit("setState", "fail")
-          this.$store.commit("setMessage", resDeleteRows.userMsg)
+          this.$store.commit("setMessage", resDeleteRows.userMsg[0])
           this.$store.commit("setIsShow", true)
         }
       } catch (error) {

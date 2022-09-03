@@ -31,7 +31,7 @@ export default createStore({
       if (me.isShow) {
         setTimeout(() => {
           me.isShow = false
-        }, 5000)
+        }, 3000)
       }
     },
     setCustomerUpdated(state, payload){

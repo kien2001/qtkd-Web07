@@ -292,7 +292,7 @@ export default {
                     this.totalCount = 0;
                     
                     this.$store.commit("setState", "fail")
-                    this.$store.commit("setMessage", responsePaging.userMsg)
+                    this.$store.commit("setMessage", responsePaging.userMsg[0])
                     this.$store.commit("setIsShow", true)
                 }
                 else {
@@ -425,8 +425,8 @@ export default {
             }
         },
         getNumPerPage(value) {
-            if (!isNaN(value)) {
-                this.numberPerPage = value;
+            if (!isNaN(value.id)) {
+                this.numberPerPage = value.id;
                 this.pageCurrent = 1;
             }
         },

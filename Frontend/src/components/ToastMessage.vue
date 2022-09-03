@@ -50,10 +50,11 @@ export default {
     align-items: center;
     z-index: 1200;
     gap: 10px;
+    margin-bottom:20px;
 }
 
 .toast.show {
-    animation: moveToast 5s ease-in-out;
+    animation: moveToast 3s ease-in-out;
 }
 
 .toast+.toast {

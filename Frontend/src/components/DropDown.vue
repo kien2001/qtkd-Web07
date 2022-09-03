@@ -34,9 +34,7 @@ export default {
   props: {
     id: {
       type: String,
-      required: false,
-      default: "dropdown",
-      // note: 'Input name'
+      required: false
     },
     placeholder: {
       type: String,
@@ -80,7 +78,7 @@ export default {
         }
       }
       return filtered;
-    },
+    }
   },
   methods: {
     selectOption(option) {
@@ -95,7 +93,7 @@ export default {
             : { id: this.selected.id, name: this.selected.name }
         );
       } else {
-        this.$emit("selected", this.selected.id === 0 ? "" : this.selected.id);
+        this.$emit("selected", this.selected.id === 0 ? "" :{ id:this.selected.id, name:this.$attrs.name1 || ""});
       }
     },
     setOptions(values) {
@@ -104,8 +102,9 @@ export default {
     async showOptions(e) {
       e.stopPropagation();
       const dropdownContainer = $(".dropdown-container").toArray();
+      const currentDropdown = $(this.$refs.dropdown).find(".dropdown-container")
       dropdownContainer.forEach(dropdown=>{
-        $(dropdown).css("display", "none")
+        $(dropdown).not(currentDropdown).css("display", "none")
       })
       this.optionsShown = true;
       this.searchFilter = "";
@@ -128,7 +127,9 @@ export default {
               this.showLoading = false;
               // get dữ liệu lỗi
               if (!data.flag) {
-                console.log(data.userMsg);
+                this.$store.commit("setState", "fail")
+                this.$store.commit("setMessage", data.userMsg[0])
+                this.$store.commit("setIsShow", true)
                 this.showNoValue = true;
               } else {
                 this.getSuccess = true;
@@ -148,8 +149,9 @@ export default {
               // get dữ liệu lỗi
               if (!data.flag) {
                 this.$store.commit("setState", "fail")
-                this.$store.commit("setMessage", data.userMsg)
+                this.$store.commit("setMessage", data.userMsg[0])
                 this.$store.commit("setIsShow", true)
+                this.showNoValue = true;
               } else {
                 this.success = true
                 result = this.handleTransferObject(data.data);
@@ -195,29 +197,19 @@ export default {
         $(item).removeClass("selected");
         if ($(item).is(`[value=${this.selected.id}]`)) {
           $(item).addClass("selected");
-          console.log($(item));
         }
       });
     }
   },
   mounted(){
     $(window).click(this.exit);
-    // let me = this;
-    // $(document).unbind()
-    // $(document).click(function (e) {
-    //   console.log($(e.target).parent(".dropdown")?.attr("name"), me.name);
-    //   if ($(e.target).parent(".dropdown")?.attr("name") !== me.name) {
-    //     me.exit()
-    //   }
-    //   console.log(e.target);
-    // });
   },
   watch: {
     searchFilter(newVal, oldVal) {
       if (newVal && newVal !== "") {
         this.oldSearchFilter = newVal;
       }
-    },
+    }
   },
   components: { Loading },
 };

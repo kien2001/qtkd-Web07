@@ -167,7 +167,6 @@ export default {
             const activeItem = $(e.target).parent('.header-menu-item')
             if ($(activeItem).length > 0) {
                 $(activeItem).addClass("active")
-                this.handleActive(activeItem)
             } else {
                 $(e.target).addClass("active")
             }

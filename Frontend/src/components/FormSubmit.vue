@@ -564,7 +564,9 @@ export default {
         .then(res => res.data)
         .catch(error => console.log(error))
       if (!data.flag) {
-        console.log(data.userMgs)
+        this.$store.commit("setState", "fail")
+        this.$store.commit("setMessage", data.userMsg[0])
+        this.$store.commit("setIsShow", true)
       } else {
         this.$refs['potentialCode'].name = data.data
       }
@@ -786,7 +788,7 @@ export default {
           result = this.formatDataComboBox(response.data)
 
         } else {
-          console.log(response.userMsg);
+          console.log(response.userMsg[0]);
         }
       } catch (error) {
         console.log(error);
@@ -860,7 +862,7 @@ export default {
             areaResponse = areaResponse.data
           } else {
             this.$store.commit("setState", "fail")
-            this.$store.commit("setMessage", areaResponse.userMsg)
+            this.$store.commit("setMessage", areaResponse.userMsg[0])
             this.$store.commit("setIsShow", true)
 
             this.$refs.cityId.showNoValue = true
@@ -889,7 +891,7 @@ export default {
       }
     },
     checkRequiredField(e) {
-      if (!$(e.target).val()) {
+      if (!$(e.target).val().trim()) {
         $(e.target).css('border-color', 'red')
         $(e.target).parent().after('<span style="color:red"}}>Tên không được phép để trống</span>')
       } else {
@@ -955,14 +957,10 @@ export default {
       this.$refs.showConfirm.isShow = true
     },
     async sendRequest() {
-      const emailError = this.errorField[0]?.email || ''
-      this.errorField = [{ firstName: '' }, { potentialCode: '' }, { email: emailError }]
-      console.log(emailError);
+      this.errorField = []
       if (this.isSaveAndAdd) {
-
         await this.sendRequestSaveAndAdd()
       } else {
-
         await this.sendRequestAddOrUpdate()
       }
     },
@@ -975,175 +973,120 @@ export default {
       }
     },
     async saveInsertForm() {
-      console.log(this.errorField);
-      const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
-      const customer = new Customer()
-      const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
-      const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
-      // Lấy dữ liệu các ô input trong form
+      try {
+        const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
+        const careerNames = this.handleDataWhenSave(this.$refs.careerNames.value)
+        const domainNames = this.handleDataWhenSave(this.$refs.domainNames.value)
 
-      const address = new Address()
-      const organization = new Organization()
-      const potential = new Potential()
+        // Lấy dữ liệu các ô input trong form
+        const customer = new Customer()
+        const address = new Address()
+        const organization = new Organization()
+        const potential = new Potential()
 
-      organization.Career = careerNames
-      organization.Domain = domainNames
-      organization.CreatedAccountAt = this.formatDate(this.createdAccountAt)
+        organization.Career = careerNames
+        organization.Domain = domainNames
+        organization.CreatedAccountAt = this.formatDate(this.createdAccountAt)
 
-      potential.PotentialName = potentialNames
+        potential.PotentialName = potentialNames
 
-      customer.Description = $("#addressName").val()
-      customer.SharingUse = !!$("#sharingUse").attr("checked")
+        customer.Description = $("#addressName").val()
+        customer.SharingUse = !!$("#sharingUse").attr("checked")
 
-      address.AddressName = $("#addressName").val()
+        address.AddressName = $("#addressName").val()
 
-      this.handleMappingData(customer)
-      this.handleMappingData(address)
-      this.handleMappingData(organization)
-      this.handleMappingData(potential)
+        this.handleMappingData(customer)
+        this.handleMappingData(address)
+        this.handleMappingData(organization)
+        this.handleMappingData(potential)
 
-      this.formatData(potential)
-      this.formatData(address)
-      this.formatData(organization)
-      this.formatData(customer)
+        this.formatData(potential)
+        this.formatData(address)
+        this.formatData(organization)
+        this.formatData(customer)
 
-      console.log(customer, potential, address, organization)
-      let resPotential, resAddress, resOrganization
-      if (!customer.FirstName || customer.FirstName.trim() === '') {
-        this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
-        this.$store.commit("setState", "fail")
-        this.$store.commit("setMessage", "Tên không được phép để trống")
-        this.$store.commit("setIsShow", true)
-      } else {
-        this.errorField.forEach(item => item.firstName === '')
-        if (!this.checkEmptyObject(potential)) {
-          resPotential = await axios.post(`${rootApi}Potentials`, potential).then(res => res.data).catch(error => error.response.data)
-          if (resPotential.flag) {
-            console.log(resPotential)
+        console.log(customer, potential, address, organization)
+        if (!customer.FirstName || customer.FirstName.trim() === '') {
+          this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
+          this.$store.commit("setState", "fail")
+          this.$store.commit("setMessage", "Tên không được phép để trống")
+          this.$store.commit("setIsShow", true)
+        } else{
+          const customerInsert = { customer, potential, address, organization }
+          this.isLoading = true;
+          const resCustomer = await axios.post(`${rootApi}Customers`, customerInsert).then(res => res.data).catch(error => error.response.data)
+          this.isLoading = false;
+          if (resCustomer.flag) {
+            this.$store.commit("setState", "success")
+            this.$store.commit("setMessage", "Thành công")
+            this.$store.commit("setIsShow", true)
+            this.$store.commit("setIsInserted", true)
+            this.closeForm()
           } else {
-            // Nếu trùng mã tiềm năng
-            if (resPotential?.devMsg === StatusCode.ErrorCode.DuplicatePotentialCode) {
-              this.errorField = [...this.errorField, { potentialCode: resPotential?.userMsg }]
-              this.$store.commit("setState", "fail")
-              this.$store.commit("setMessage", resPotential.userMsg)
-              this.$store.commit("setIsShow", true)
-
-            } else {
-              this.errorField.forEach(item => item.potentialCode === '')
+            const potentialErrrorCode = resCustomer.devMsg.find(item => item === StatusCode.ErrorCode.DuplicatePotentialCode);
+            if (potentialErrrorCode) {
+              this.errorField = [...this.errorField, StatusCode.MessageError.DuplicatePotentialCode]
             }
           }
         }
-      }
-
-      // nếu ko có lỗi
-      if (this.checkEmptyError()) {
-        if (!this.checkEmptyObject(address)) {
-          resAddress = await axios.post(`${rootApi}Addresses`, address).then(res => res.data).catch(error => error.response.data)
-          if (resAddress.flag) {
-            console.log(resAddress)
-          } else {
-            console.log(resAddress.devMsg)
-          }
-        }
-        if (!this.checkEmptyObject(organization)) {
-          resOrganization = await axios.post(`${rootApi}Organizations`, organization).then(res => res.data).catch(error => error.response.data)
-          if (resOrganization.flag) {
-            console.log(resOrganization)
-          } else {
-            console.log(resOrganization.devMsg)
-          }
-        }
-        // nếu ít nhất 1 trong 3 resPotential resAddress resOrganization thành công, gán các giá trị cho customer
-        if (resPotential?.flag || resAddress?.flag || resOrganization?.flag) {
-          customer.PotentialId = resPotential?.data.toString() || null
-          customer.AddressId = resAddress?.data || null
-          customer.OrganizationId = resOrganization?.data || null
-          console.log(customer)
-          this.isLoading = true;
-          const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
-          this.isLoading = false;
-          if (resCustomer.flag) {
-            this.$store.commit("setState", "success")
-            this.$store.commit("setMessage", "Thành công")
-            this.$store.commit("setIsShow", true)
-            this.$store.commit("setIsInserted", true)
-            this.closeForm()
-
-          } else {
-            this.$store.commit("setState", "fail")
-            this.$store.commit("setMessage", resCustomer.userMsg)
-            this.$store.commit("setIsShow", true)
-          }
-          // nếu ko nhập address, potential, organization thì thêm luôn customer
-        } else {
-          this.isLoading = true;
-          const resCustomer = await axios.post(`${rootApi}Customers`, customer).then(res => res.data).catch(error => error.response.data)
-          this.isLoading = false;
-          if (resCustomer.flag) {
-            this.$store.commit("setState", "success")
-            this.$store.commit("setMessage", "Thành công")
-            this.$store.commit("setIsShow", true)
-
-            this.$store.commit("setIsInserted", true)
-            this.closeForm()
-          } else {
-            this.$store.commit("setState", "fail")
-            this.$store.commit("setMessage", resCustomer.userMsg)
-            this.$store.commit("setIsShow", true)
-          }
-        }
+        
+      } catch (error) {
+        console.log(error);
       }
     },
     async saveEditForm() {
-      const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
-      const customerUpdate = new CustomerUpdate()
-      if ($(this.$refs.container).find("#firstName").val().trim() === '') {
-        this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
-        this.$store.commit("setState", "fail")
-        this.$store.commit("setMessage", "Tên không được phép để trống")
-        this.$store.commit("setIsShow", true)
-      } else {
-        this.errorField.forEach(item => item.firstName === '')
-      }
-      // xử lý khi không có lỗi
-      if (this.checkEmptyError()) {
-        this.handleMappingData(customerUpdate)
-        this.getValueDropdown("Vocative", customerUpdate)
-        this.getValueDropdown("DepartmentId", customerUpdate)
-        this.getValueDropdown("PositionId", customerUpdate)
-        this.getValueDropdown("SourceId", customerUpdate)
-        this.getValueDropdown("Gender", customerUpdate)
-
-        customerUpdate.PotentialName = potentialNames;
-        customerUpdate.DisableCall = !!$(this.$refs.container).find("#disableCall").attr("checked")
-        customerUpdate.DisableMail = !!$(this.$refs.container).find("#disableMail").attr("checked")
-        customerUpdate.CustomerId = this.customerEdit.customerId || this.$store.state.customerUpdated.CustomerId
-        customerUpdate.DateOfBirth = this.formatDate(this.dateOfBirth)
-        customerUpdate.OrganizationId = this.customerEdit.organizationId
-        customerUpdate.PotentialId = this.customerEdit.potentialId
-        customerUpdate.ModifiedAt = this.customerEdit.modifiedAt
-        this.formatData(customerUpdate)
-        console.log(customerUpdate);
-        this.isLoading = true;
-        const resCustomer = await axios.put(`${rootApi}Customers/${customerUpdate.CustomerId}`, customerUpdate)
-          .then(res => res.data).catch(error => error.response.data)
-        this.isLoading = false;
-        if (resCustomer.flag) {
-          this.$store.commit("setState", "success")
-          this.$store.commit("setMessage", "Thành công")
-          this.$store.commit("setIsShow", true)
-
-          this.$store.commit("setCustomerUpdated", customerUpdate)
-          this.$store.commit("setIsUpdated", true)
-          if (!this.isSaveAndAdd) {
-            this.closeForm()
-          }
-        } else {
+      try {
+        const potentialNames = this.handleDataWhenSave(this.$refs.potentialNames.value)
+        const customerUpdate = new CustomerUpdate()
+        if ($(this.$refs.container).find("#firstName").val().trim() === '') {
+          this.errorField = [...this.errorField, { firstName: 'Tên không được phép để trống' }]
           this.$store.commit("setState", "fail")
-          this.$store.commit("setMessage", resCustomer.userMsg)
+          this.$store.commit("setMessage", "Tên không được phép để trống")
           this.$store.commit("setIsShow", true)
+        } else {
+          this.handleMappingData(customerUpdate)
+          this.getValueDropdown("Vocative", customerUpdate)
+          this.getValueDropdown("DepartmentId", customerUpdate)
+          this.getValueDropdown("PositionId", customerUpdate)
+          this.getValueDropdown("SourceId", customerUpdate)
+          this.getValueDropdown("Gender", customerUpdate)
+
+          customerUpdate.PotentialName = potentialNames;
+          customerUpdate.DisableCall = !!$(this.$refs.container).find("#disableCall").attr("checked")
+          customerUpdate.DisableMail = !!$(this.$refs.container).find("#disableMail").attr("checked")
+          customerUpdate.CustomerId = this.customerEdit.customerId || this.$store.state.customerUpdated.CustomerId
+          customerUpdate.DateOfBirth = this.formatDate(this.dateOfBirth)
+          customerUpdate.OrganizationId = this.customerEdit.organizationId
+          customerUpdate.PotentialId = this.customerEdit.potentialId
+          customerUpdate.ModifiedAt = this.customerEdit.modifiedAt
+          this.formatData(customerUpdate)
+          console.log(customerUpdate);
+          this.isLoading = true;
+          const resCustomer = await axios.put(`${rootApi}Customers/${customerUpdate.CustomerId}`, customerUpdate)
+            .then(res => res.data).catch(error => error.response.data)
+          this.isLoading = false;
+          if (resCustomer.flag) {
+            this.$store.commit("setState", "success")
+            this.$store.commit("setMessage", "Thành công")
+            this.$store.commit("setIsShow", true)
+
+            this.$store.commit("setCustomerUpdated", customerUpdate)
+            this.$store.commit("setIsUpdated", true)
+            if (!this.isSaveAndAdd) {
+              this.closeForm()
+            }
+          } else {
+            this.$store.commit("setState", "fail")
+            this.$store.commit("setMessage", resCustomer.userMsg[0])
+            this.$store.commit("setIsShow", true)
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
+      
+      
+      
     },
     async sendRequestSaveAndAdd() {
       await this.sendRequestAddOrUpdate()

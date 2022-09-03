@@ -145,7 +145,7 @@ export default {
             this.$store.commit('setEditMultipleRow', false)
         },
         /**
-         * 
+         * Lấy giá trị option
          * @param {*} selected :option đã chọn
          * Created by LVKIEN 30/08/2022
          */
@@ -282,7 +282,7 @@ export default {
                         this.$store.commit("setIsUpdated", true)
                     } else {
                         this.$store.commit("setState", "fail")
-                        this.$store.commit("setMessage", response.userMsg)
+                        this.$store.commit("setMessage", response.userMsg[0])
                         this.$store.commit("setIsShow", true)
                     }
                 }
@@ -306,7 +306,6 @@ export default {
             }
             return result;
         },
-        //
         /**
          * xử lý dữ liệu theo format của combobox
          * @param {*} data 

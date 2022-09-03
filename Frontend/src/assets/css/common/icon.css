@@ -12,7 +12,7 @@
 }
 
 .icon-checkbox:hover {
-    background: url('../../img/checkbox-collection.svg') no-repeat -18px -25px;
+    background: url('../../img/checkbox-collection.svg') no-repeat -17.8px -25px;
     width: 16px;
     height: 16px;
 }
@@ -48,7 +48,7 @@
 }
 
 .icon-edit:hover {
-    background: url('../../img/checkbox-collection.svg') no-repeat -84px -2px;
+    background: url('../../img/checkbox-collection.svg') no-repeat -84.2px -2px;
     width: 17px;
     height: 16px;
 }
