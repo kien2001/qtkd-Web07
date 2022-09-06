@@ -23,112 +23,147 @@
             </div>
         </div>
         <div class="header-menu">
-            <router-link to="/" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text active" :href="href" @click="navigate">
-                    <div class=" item-icon icon-ngoinha-active">
+            <router-link to="/">
+                <div class="header-menu-item btn-icon-text active">
+                    <div class=" item-icon icon-home">
                     </div>
                     <span class="item-content">Bàn làm việc</span>
                 </div>
             </router-link>
 
-            <router-link to="/tiemnang" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/tiemnang">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-tiemnang">
                     </div>
                     <span class=" item-content">Tiềm năng</span>
                 </div>
             </router-link>
-            <router-link to="/chaohang" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/chaohang">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-chaohang">
                     </div>
                     <span class="item-content">Chào hàng</span>
                 </div>
             </router-link>
-            <router-link to="/lienhe" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/lienhe">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-lienhe ">
                     </div>
                     <span class="item-content">Liên hệ</span>
                 </div>
             </router-link>
-            <router-link to="/khachhang" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/khachhang">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-khachhang">
                     </div>
                     <span class="item-content">Khách hàng</span>
                 </div>
             </router-link>
-            <router-link to="/cohoi" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/cohoi">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-cohoi">
                     </div>
                     <span class="item-content">Cơ hội</span>
                 </div>
             </router-link>
-            <router-link to="/baogia" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/baogia">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-baogia">
                     </div>
                     <span class="item-content">Báo giá</span>
                 </div>
             </router-link>
-            <router-link to="/donhang" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/donhang">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-donhang">
                     </div>
                     <span class="item-content">Đơn hàng</span>
                 </div>
             </router-link>
-            <router-link to="/hoadon" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/hoadon">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-hoadon">
                     </div>
                     <span class="item-content">Hoá đơn</span>
                 </div>
             </router-link>
-            <router-link to="/aocohoi" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/aocohoi">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-aocohoi">
                     </div>
                     <span class="item-content">Ao cơ hội</span>
                 </div>
             </router-link>
-            <router-link to="/hoatdong" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/hoatdong">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-hoatdong">
                     </div>
                     <span class="item-content">Hoạt động</span>
                 </div>
             </router-link>
-            <router-link to="/muctieu" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/muctieu">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-muctieu">
                     </div>
                     <span class="item-content">Mục tiêu</span>
                 </div>
             </router-link>
-            <router-link to="/chiendich" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/chiendich">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-chiendich">
                     </div>
                     <span class="item-content">Chiến dịch</span>
                 </div>
             </router-link>
-            <router-link to="/baocao" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/baocao">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-baocao">
                     </div>
                     <span class="item-content">Báo cáo</span>
                 </div>
             </router-link>
-            <router-link to="/khac" custom v-slot="{ href, navigate }">
-                <div class="header-menu-item btn-icon-text" :href="href" @click="navigate">
+            <router-link to="/khac">
+                <div class="header-menu-item btn-icon-text">
                     <div class="item-icon icon-khac">
                     </div>
                     <span class="item-content">Khác</span>
                 </div>
             </router-link>
+            <div class="header-menu-item btn-icon-text">
+                <div class="item-icon icon-khac">
+                </div>
+                <span class="item-content">Khác</span>
+                <div class="other-menu-item">
+                    <router-link to="/hoatdong">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-hoatdong">
+                            </div>
+                            <span class="item-content">Hoạt động</span>
+                        </div>
+                    </router-link>
+                    <router-link to="/muctieu">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-muctieu">
+                            </div>
+                            <span class="item-content">Mục tiêu</span>
+                        </div>
+                    </router-link>
+                    <router-link to="/chiendich">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-chiendich">
+                            </div>
+                            <span class="item-content">Chiến dịch</span>
+                        </div>
+                    </router-link>
+                    <router-link to="/baocao">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-baocao">
+                            </div>
+                            <span class="item-content">Báo cáo</span>
+                        </div>
+                    </router-link>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -141,7 +176,7 @@ export default {
             oldClassImage: '',
             newClassImage: '',
             timeout: null,
-            timer: 1000
+            timer: 1000,
         }
     },
     mounted() {
@@ -151,6 +186,10 @@ export default {
         })
     },
     methods: {
+        /**
+         * truyền giá trị key search lên store mỗi timer sau khi người dùng gõ
+         * Created by LVKIEN 1/9/2022
+         */
         handleSearch() {
             let me = this;
             clearTimeout(this.timeOut);
@@ -159,33 +198,26 @@ export default {
             }, this.timer);
         },
         menuItemOnClick(e) {
-            this.oldClassImage = $('.active .item-icon').attr('class').split(' ')[1]
-            $('.active .item-icon').removeClass(this.oldClassImage)
-            $('.active .item-icon').addClass(this.oldClassImage.replace(this.oldClassImage.slice(-7), ''))
-            $('.header-menu-item').removeClass('active')
+            $('.header-menu-item.active').removeClass('active')
             const activeItem = $(e.target).parent('.header-menu-item')
+            console.log(activeItem);
             if ($(activeItem).length > 0) {
-                this.handleActive(activeItem)
+                $(activeItem).addClass("active")
             } else {
-                this.handleActive(e.target)
+                $(e.target).addClass("active")
             }
-        },
-        handleActive(element) {
-            this.newClassImage = $(element).children('.item-icon').attr('class').split(' ')[1]
-            $(element).addClass('active')
-            $(element).children('.item-icon').removeClass(this.newClassImage)
-            $(element).children('.item-icon').addClass(this.newClassImage + '-active')
         }
     }
 }
 </script>
-
+<style src="@/assets/css/HeaderComp/icon.css">
+</style>
 <style scoped>
 
 .header {
     display: flex;
     flex-direction: column;
-    /* background-image: url("../assets/img/blue-hover"); */
+    --imgUrl: url("../assets/img/icon_toggle.svg");
 }
 
 /* =======Header-logo ========== */
@@ -245,15 +277,22 @@ export default {
     box-shadow: 0px 4px 8px -4px rgba(31, 34, 41, 0.16);
 }
 
+.header-menu>a {
+    height: 100%;
+    margin: 0 7px;
+}
+
+.header-menu>a:first-child {
+    margin-left: 0;
+}
+
 .header-menu-item {
     position: relative;
     height: 100%;
     align-items: center;
-    margin: 0 7px;
 }
-.header-menu-item:first-child{
-    margin-left:0;
-}
+
+
 
 .header-menu-item:not(.active):hover {
     border-radius: 4px;
@@ -266,5 +305,59 @@ export default {
 
 .header-menu-item.active>.item-content {
     color: #4262F0;
+}
+
+.header-menu>.header-menu-item:last-child {
+    display:none;
+    position: relative;
+}
+
+.header-menu>.header-menu-item:last-child>.other-menu-item {
+    position: absolute;
+    height: fit-content;
+    padding: 4px;
+    transform: translateY(60%);
+    min-width: 150px;
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: -2px 2px 7px rgba(31, 34, 41, 0.16);
+}
+
+/* .other-menu-item>a {
+} */
+.other-menu-item .header-menu-item {
+    padding: 4px 6px;
+}
+
+/******************Responsive****************/
+@media screen and (max-width: 1280px) {
+
+    .header-menu>a[href="#/chiendich"],
+    .header-menu>a[href="#/muctieu"],
+    .header-menu>a[href="#/hoatdong"],
+    .header-menu>a[href="#/khac"],
+    .header-menu>a[href="#/baocao"] {
+        display: none
+    }
+
+    .header-menu>.header-menu-item:last-child {
+        display: flex;
+        margin-left: 7px
+    }
+
+    .header-menu>.header-menu-item:last-child .icon-khac {
+        background-color: #333;
+    }
+
+    .header-menu>.header-menu-item:last-child .item-content {
+        color: #333;
+    }
+
+    .header-menu>.header-menu-item.active:last-child .other-menu-item {
+        display: flex;
+    }
 }
 </style>

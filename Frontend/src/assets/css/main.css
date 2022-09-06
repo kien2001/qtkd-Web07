@@ -1,7 +1,6 @@
 @import url(./common/input.css);
 @import url(./common/icon.css);
 @import url(./common/btn-icon.css);
-@import url(./common/btn-icon-text.css);
 @import url(./common/btn-icon-text-color.css);
 @import url(./common/table.css);
 @import url(./common/paging.css);
@@ -9,7 +8,7 @@
 
 @font-face {
     font-family: Roboto V20;
-    src: url("../fonts/roboto-v20-vietnamese_latin-regular.woff2");
+    src: url("../fonts/Roboto-Regular.ttf");
 }
 
 body {
@@ -24,7 +23,7 @@ body {
 
 #app {
     display: grid;
-    grid-template-columns:  1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: 76px calc(100vh - 76px);
     grid-template-areas:
         "header "
@@ -34,18 +33,6 @@ body {
 .main {
     grid-area: main;
 }
-
-/* .sidebar-left {
-    grid-area: sideBarLeft;
-}
-
-.function {
-    grid-area: function;
-}
-
-.sidebar-right {
-    grid-area: sideBarRight;
-} */
 
 .header {
     grid-area: header;
@@ -62,18 +49,19 @@ body {
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-    width: 16px;
+    width: 7px;
+    height: 7px;
     scrollbar-width: thin;
 }
 
 *::-webkit-scrollbar-track {
-    background: #ffffff;
+    background: #F5F5F5;
 }
 
 *::-webkit-scrollbar-thumb {
     background-color: #c0c0c0;
     border-radius: 10px;
-    border: 5px solid #ffffff;
+    /* border: 5px solid #ffffff; */
     background-clip: padding-box;
     height: 10px;
 }

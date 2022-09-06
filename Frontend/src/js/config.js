@@ -11,88 +11,119 @@ export const dropdownField = [
 export const fieldMappingOptions =
     [{
         id: "Vocative",
-        name: "Xưng hô"
+        name: "Xưng hô",
+        type: 1,
+        url: "Vocatives"
     }, {
         id: "FullName",
-        name: "Họ và tên"
+        name: "Họ và tên",
+        type: 1
     },
     {
-        id: "Position",
-        name: "Chức danh"
+        id: "PositionName",
+        name: "Chức danh",
+        type: 1,
+        url: "Positions"
     },
     {
         id: "CustomerPhoneNum",
-        name: "ĐT di động"
+        name: "ĐT di động",
+        type: 2
     },
     {
         id: "CompanyPhoneNum",
-        name: "ĐT cơ quan"
+        name: "ĐT cơ quan",
+        type: 2
     },
     {
         id: "CompanyEmail",
-        name: "Email cơ quan"
+        name: "Email cơ quan",
+        type: 2
     }
         ,
     {
         id: "CustomerEmail",
-        name: "Email cá nhân"
+        name: "Email cá nhân",
+        type: 2
     },
     {
         id: "OrganizationName",
-        name: "Tổ chức"
+        name: "Tổ chức",
+        type: 1,
+        url: "Organizations"
     },
     {
         id: "AddressName",
-        name: "Địa chỉ"
+        name: "Địa chỉ",
+        type: 2
     },
     {
         id: "CityName",
-        name: "Tỉnh/Thành phố"
+        name: "Tỉnh/Thành phố",
+        type: 1,
+        url: "Cities/AllCities"
     },
     {
         id: "DistrictName",
-        name: "Quận/Huyện"
+        name: "Quận/Huyện",
+        type: 1,
+        url: "Districts/AllDistricts"
     },
     {
         id: "WardName",
-        name: "Phường/Xã"
+        name: "Phường/Xã",
+        type: 1,
+        url: "Wards/AllWards"
     },
     {
         id: "SourceName",
-        name: "Nguồn gốc"
+        name: "Nguồn gốc",
+        type: 1,
+        url: "Sources"
     },
     {
         id: "TypeName",
-        name: "Loại hình"
+        name: "Loại hình",
+        type: 1,
+        url: "Types"
     },
     {
         id: "Domain",
-        name: "Lĩnh vực"
+        name: "Lĩnh vực",
+        type: 1,
+        url: "Organizations/Domains"
     },
     {
         id: "Description",
-        name: "Mô tả"
+        name: "Mô tả",
+        type: 2
     },
     {
         id: "Layout",
-        name: "Bố cục"
+        name: "Bố cục",
+        type: 2
     },
     {
         id: "Owner",
-        name: "Chủ sở hữu"
+        name: "Chủ sở hữu",
+        type: 1
     },
     {
-        id: "Revenue",
-        name: "Doanh thu"
+        id: "RevenueName",
+        name: "Doanh thu",
+        type: 1,
+        url: "Revenues"
     },
 
     {
         id: "SharingUse",
-        name: "Dùng chung"
+        name: "Dùng chung",
+        type: 2
     },
     {
         id: "Facebook",
-        name: "Facebook"
+        name: "Facebook",
+        type: 2
     }
     ]
 
@@ -110,3 +141,8 @@ export const addressFields = ["Địa chỉ", "Tỉnh/Thành phố", "Quận/Huy
 
 // các trường trong bảng organization phần cập nhật nhiều 
 export const organizationFields = ["Loại hình", "Lĩnh vực", "Tổ chức"]
+
+export const optionType1 = ["Xưng hô", "Họ và tên", "Chức danh", "Tỉnh/Thành phố", "Quận/Huyện", "Phường/Xã", "Nguồn gốc", "Loại hình", "Lĩnh vực", "Bố cục", "Chủ sở hữu", "Doanh thu", "Tổ chức"]
+
+export const optionType2 = ["ĐT di động", "ĐT cơ quan", "Email cơ quan", "Email cá nhân", "Mô tả", "Facebook"]
+

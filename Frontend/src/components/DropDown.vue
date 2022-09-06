@@ -1,7 +1,7 @@
 <template>
-  <div class="dropdown" v-if="options" @click="showOptions">
+  <div class="dropdown" v-if="options" @click="showOptions" ref="dropdown" :name="name">
     <div class="dropdown-header" ref="dropdown-header">
-      {{ this.oldSearchFilter || placeholder || "-Không chọn-" }}
+      {{  this.oldSearchFilter || placeholder || "-Không chọn-"  }}
     </div>
     <div class="dropdown-container" v-show="optionsShown">
       <!-- Dropdown Input -->
@@ -10,12 +10,12 @@
 
       <!-- Dropdown Menu -->
       <div class="dropdown-content">
-        <div v-if="showNoValue" :style="{  textAlign: 'center', backgroundColor: '#fff' }">
-          Không có dữ
-          liệu</div>
-        <div class="dropdown-item" @mousedown="selectOption(option)" v-for="(option, index) in filteredOptions"
-          :key="index" :value="option.id">
-          {{ option.name }}
+        <div v-if="showNoValue" :style="{ textAlign: 'center', backgroundColor: '#fff' }">
+          Không có dữ liệu
+        </div>
+        <div class="dropdown-item" @mousedown.self="selectOption(option)" v-for="(option, index) in filteredOptions"
+          :key="index" :value="option.id" ref="filteredOptions">
+          {{  option.name  }}
         </div>
         <Loading v-if="showLoading" />
       </div>
@@ -24,54 +24,49 @@
 </template>
 
 <script>
-import $ from 'jquery'
-import axios from 'axios'
-import { rootApi } from '@/js/config'
-import Loading from "./Loading.vue"
+import $ from "jquery";
+import axios from "axios";
+import { rootApi } from "@/js/config";
+import Loading from "./Loading.vue";
 export default {
   name: "DropDown",
   template: "DropDown",
   props: {
     id: {
       type: String,
-      required: false,
-      default: "dropdown"
-      // note: 'Input name'
+      required: false
     },
     placeholder: {
       type: String,
       required: false,
-      default: "Please select an option"
+      default: "Please select an option",
       // note: 'Placeholder of dropdown'
     },
     showInput: {
       type: Boolean,
-      required: true
+      required: true,
     },
     name: {
       type: String,
-      required: false
+      required: false,
     },
     fetchDataWhenClick: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       showNoValue: false,
-      showLoading:false,
+      showLoading: false,
       selected: {},
       optionsShown: false,
       searchFilter: "",
       options: [],
       getSuccess: false,
       oldSearchFilter: "",
-      currentValue: {}
+      currentValue: {},
     };
-  },
-  created() {
-    $(window).click(this.exit);
   },
   computed: {
     filteredOptions() {
@@ -90,84 +85,124 @@ export default {
       this.optionsShown = false;
       this.selected = option;
       this.searchFilter = option.name;
-      this.$emit("selected", this.selected.id === 0 ? "" : this.selected.name);
+      if (this.showInput) {
+        this.$emit(
+          "selected",
+          this.selected.id === 0
+            ? ""
+            : { id: this.selected.id, name: this.selected.name }
+        );
+      } else {
+        this.$emit("selected", this.selected.id === 0 ? "" :{ id:this.selected.id, name:this.$attrs.name1 || ""});
+      }
     },
     setOptions(values) {
       this.options = values;
     },
     async showOptions(e) {
       e.stopPropagation();
+      const dropdownContainer = $(".dropdown-container").toArray();
+      const currentDropdown = $(this.$refs.dropdown).find(".dropdown-container")
+      dropdownContainer.forEach(dropdown=>{
+        $(dropdown).not(currentDropdown).css("display", "none")
+      })
       this.optionsShown = true;
       this.searchFilter = "";
       this.$nextTick(() => this.$refs.input.focus());
       $(this.$refs["dropdown-header"]).css("border-color", "#7189F4");
       if (this.name) {
-        if (this.name !== "Cities" && this.name !== "Districts" &&
-          this.name !== "Wards") {
+        if (
+          this.name !== "Cities" &&
+          this.name !== "Districts" &&
+          this.name !== "Wards"
+        ) {
           if (!this.fetchDataWhenClick) {
             if (!this.getSuccess) {
               this.showLoading = true;
-              const data = await axios.get(`${rootApi}${this.name}`)
-                .then(res => res.data)
-                .catch(error => error.response.data);
+              const data = await axios
+                .get(`${rootApi}${this.name}`)
+                .then((res) => res.data)
+                .catch((error) => error.response.data);
               let result;
               this.showLoading = false;
               // get dữ liệu lỗi
               if (!data.flag) {
-                console.log(data.userMsg);
-                this.showNoValue = true
-              }
-              else {
+                this.$store.commit("setState", "fail")
+                this.$store.commit("setMessage", data.userMsg[0])
+                this.$store.commit("setIsShow", true)
+                this.showNoValue = true;
+              } else {
                 this.getSuccess = true;
                 result = this.handleTransferObject(data.data);
-                console.log(result);
                 this.options = result;
               }
             }
-          }
-          else {
-            console.log(1);
-            const data = await axios.get(`${rootApi}${this.name}`)
-              .then(res => res.data)
-              .catch(error => error.response.data);
-            let result;
-            // get dữ liệu lỗi
-            if (!data.flag) {
-              console.log(data.userMsg);
-            }
-            else {
-              this.getSuccess = true;
-              result = this.handleTransferObject(data.data);
-              console.log(result);
-              this.options = result;
+          } else {
+            if(!sessionStorage.getItem(this.name)){
+              this.showLoading = true;
+              const data = await axios
+                .get(`${rootApi}${this.name}`)
+                .then((res) => res.data)
+                .catch((error) => error.response.data);
+              this.showLoading = false;
+              let result;
+              // get dữ liệu lỗi
+              if (!data.flag) {
+                this.$store.commit("setState", "fail")
+                this.$store.commit("setMessage", data.userMsg[0])
+                this.$store.commit("setIsShow", true)
+                this.showNoValue = true;
+              } else {
+                this.success = true
+                result = this.handleTransferObject(data.data);
+                console.log(result);
+                this.options = result;
+                sessionStorage.setItem(this.name, JSON.stringify(result));
+              }
+            }else{
+              this.options = JSON.parse(sessionStorage.getItem(this.name))
             }
           }
         }
       }
-     
     },
     handleTransferObject(objectArr) {
       const objectKeys = Object.keys(objectArr[0]);
       let initResult = [{ id: 0, name: "-Không chọn-" }];
-      const result = objectArr.map(item => {
-        const resultObject = { id: item[objectKeys[0]], name: item[objectKeys[1]] };
+      const result = objectArr.map((item) => {
+        const resultObject = {
+          id: item[objectKeys[0]],
+          name: item[objectKeys[1]],
+        };
         return resultObject;
       });
       initResult = [...initResult, ...result];
-      console.log(initResult);
       return initResult;
     },
     exit() {
       if (this.selected.id === undefined) {
         this.selected = {};
         this.searchFilter = "";
-      }
-      else {
+      } else {
         this.searchFilter = this.selected.name;
       }
       this.optionsShown = false;
       $(this.$refs["dropdown-header"]).css("border-color", "#D3D7DE");
+    },
+  },
+  updated() {
+    if (this.selected.id) {
+      const arr = this.$refs.filteredOptions;
+      arr.forEach((item) => {
+        $(item).removeClass("selected");
+        if ($(item).is(`[value=${this.selected.id}]`)) {
+          $(item).addClass("selected");
+        }
+      });
     }
+  },
+  mounted(){
+    $(window).click(this.exit);
   },
   watch: {
     searchFilter(newVal, oldVal) {
@@ -176,8 +211,8 @@ export default {
       }
     }
   },
-  components: { Loading }
-}
+  components: { Loading },
+};
 </script>
 
 <style scoped>
@@ -194,13 +229,13 @@ export default {
   overflow: hidden;
   border-width: 1px;
   border-style: solid;
-  border-color: #D3D7DE;
+  border-color: #d3d7de;
   text-align: left;
   line-height: 32px;
   height: 32px;
   padding: 0 8px 0 16px;
   border-radius: 4px;
-  color: #1F2229;
+  color: #1f2229;
   background-image: url("../assets/img/arrow-down.svg");
   background-size: 16px 16px;
   background-repeat: no-repeat;
@@ -210,12 +245,12 @@ export default {
 }
 
 .dropdown .dropdown-header:hover {
-  border-color: #7189F4;
+  border-color: #7189f4;
 }
 
 .dropdown .dropdown-header:focus,
 .dropdown .dropdown-header:active {
-  border-color: #4262F0;
+  border-color: #4262f0;
 }
 
 .dropdown .dropdown-container {
@@ -273,6 +308,15 @@ export default {
   display: block;
   cursor: pointer;
   text-align: left;
+}
+
+.dropdown-item.selected {
+  color: #4262f0 !important;
+  background-image: url("../assets/img/blue-active/tich.svg");
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-position-x: calc(100% - 8px);
 }
 
 .dropdown .dropdown-container .dropdown-content .dropdown-item:hover {

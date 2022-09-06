@@ -1,11 +1,11 @@
 <template>
-    <div class="loading-container" ref="loading">
+    <div class="loading-container" ref="loading" :style="{position: position}">
         <div class="loading"></div>
     </div>
 </template>
 <style scoped>
 .loading-container {
-    position:absolute;
+    /* position:absolute; */
     top:0;
     bottom: 0;
     right: 0;
@@ -17,7 +17,7 @@
     justify-content: center;
     align-items: center;
     /* visibility: hidden; */
-    z-index: 1000;
+    z-index: 1003;
 }
 .loading{
     background-image: url('../assets/img/loadding-icon.svg');
@@ -29,6 +29,7 @@
 </style>
 <script>
 export default {
-    name:"Loading"
+    name:"Loading",
+    props:["position"]
 }
 </script>

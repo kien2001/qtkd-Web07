@@ -1,0 +1,196 @@
+.btn-icon-text {
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+}
+
+.item-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.item-content {
+    font-weight: 500px;
+}
+
+.icon-home {
+    -webkit-mask: url("../../img/home.svg") no-repeat 50% 50%;
+    mask: url("../../img/home.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-home {
+    background-color: #5A76F2;
+}
+
+.icon-tiemnang {
+    -webkit-mask: url("../../img/tiemnang.svg") no-repeat 50% 50%;
+    mask: url("../../img/tiemnang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-tiemnang {
+    background-color: #5A76F2;
+}
+
+.icon-chaohang {
+    -webkit-mask: url("../../img/chaohang.svg") no-repeat 50% 50%;
+    mask: url("../../img/chaohang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-chaohang {
+    background-color: #5A76F2;
+}
+
+.icon-lienhe {
+    -webkit-mask: url("../../img/lienhe.svg") no-repeat 50% 50%;
+    mask: url("../../img/lienhe.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+
+}
+
+.active>.icon-lienhe {
+    background-color: #5A76F2;
+}
+
+.icon-khachhang {
+    -webkit-mask: url("../../img/khachhang.svg") no-repeat 50% 50%;
+    mask: url("../../img/khachhang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-khachhang {
+    background-color: #5A76F2;
+}
+
+.icon-cohoi {
+    -webkit-mask: url("../../img/cohoi.svg") no-repeat 50% 50%;
+    mask: url("../../img/cohoi.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+    background-image: url("../../img/cohoi.svg");
+}
+
+.active>.icon-cohoi {
+    background-color: #5A76F2;
+}
+
+.icon-baogia {
+    -webkit-mask: url("../../img/baogia.svg") no-repeat 50% 50%;
+    mask: url("../../img/baogia.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-baogia {
+    background-color: #5A76F2;
+}
+
+.icon-donhang {
+    -webkit-mask: url("../../img/giohang.svg") no-repeat 50% 50%;
+    mask: url("../../img/giohang.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-donhang {
+    background-color: #5A76F2;
+}
+
+.icon-hoadon {
+    -webkit-mask: url("../../img/hoadon.svg") no-repeat 50% 50%;
+    mask: url("../../img/hoadon.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-hoadon {
+    background-color: #5A76F2;
+}
+
+.icon-aocohoi {
+    -webkit-mask: url("../../img/aocohoi.svg") no-repeat 50% 50%;
+    mask: url("../../img/aocohoi.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-aocohoi {
+    background-color: #5A76F2;
+}
+
+.icon-hoatdong {
+    -webkit-mask: url("../../img/hoatdong.svg") no-repeat 50% 50%;
+    mask: url("../../img/hoatdong.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-hoatdong {
+    background-color: #5A76F2;
+}
+
+.icon-muctieu {
+    -webkit-mask: url("../../img/muctieu.svg") no-repeat 50% 50%;
+    mask: url("../../img/muctieu.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-muctieu {
+    background-color: #5A76F2;
+}
+
+.icon-chiendich {
+    -webkit-mask: url("../../img/chiendich.svg") no-repeat 50% 50%;
+    mask: url("../../img/chiendich.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-chiendich {
+    background-color: #5A76F2;
+}
+
+.icon-baocao {
+    -webkit-mask: url("../../img/baocao.svg") no-repeat 50% 50%;
+    mask: url("../../img/baocao.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-baocao {
+    background-color: #5A76F2;
+}
+
+.icon-khac {
+    -webkit-mask: url("../../img/khac.svg") no-repeat 50% 50%;
+    mask: url("../../img/khac.svg") no-repeat 50% 50%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    background-color: #333;
+}
+
+.active>.icon-khac {
+    background-color: #5A76F2;
+}

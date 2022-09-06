@@ -1,8 +1,20 @@
 <template>
-    <input type="text" class="input-text" v-model="name" :disabled="isDisabled" >
+  <div class="input-container">
+    <input type="text" class="input-text" :class="className" :id="id" v-model="name" :disabled="isDisabled"
+      :maxlength="maxlength" />
+    <div class="clear" v-if="isClear" @click="clearInput"></div>
+  </div>
 </template>
 <style scoped>
 
+
+
+
+
+
+.input-container{
+  position: relative;
+}
 .input-text[disabled]{
     background-color: #E2E4E9;
     cursor: not-allowed;
@@ -17,7 +29,7 @@
     outline: none;
     width: 100%;
     height: inherit;
-    padding: 0 10px;
+    padding: 0 28px 0 10px;
     background-color: #fff;
     font-size: 13px;
     line-height: 16px;
@@ -39,23 +51,56 @@
 .input-text:not([disabled]):active {
     border-color: #4262F0;
 }
+.input-text:not([disabled]) ~ .clear{
+  background: url('../assets/img/checkbox-collection.svg') no-repeat -4px -28px;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top:50%;
+  right:9.5px;
+  transform:translateY(-50%);
+  cursor: pointer;
+}
+.input-text:not([disabled])~.clear:hover
+{
+  background: url('../assets/img/checkbox-collection.svg') no-repeat -125px -23px;
+  width: 17px;
+    height: 17px;
+}
 </style>
 <script>
-import $ from 'jquery';
 export default {
   name: 'InputForm',
   data () {
     return {
-      name: ''
+      name: '',
+      className:'',
+      isClear: false
     }
   },
-  updated () {
+  emits: ['changeName'],
+  beforeMount(){
+    this.className = this.class
+  },
+  updated(){
     this.$emit('changeName', this.name)
-    if (this.$attrs.handleFullName) {
-      $('#fullName').val(this.$attrs.handleFullName)
+  },  
+  methods: {
+    clearInput() {
+      console.log(1);
+      this.name = ''
     }
   },
-  props: ['isDisabled', 'changeName', 'fullName']
+  watch:{
+    name(newValue){
+      if (newValue===''){
+        this.isClear=false
+      }else{
+        this.isClear = true
+      }
+    }
+  },
+  props: ['isDisabled', 'id', 'class', 'maxlength' ]
 
 }
 </script>

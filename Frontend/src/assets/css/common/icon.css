@@ -1,31 +1,32 @@
 .icon {
-    background-repeat: no-repeat;
     background-position: center;
-    background-size: 16px 16px;
-    width: 16px;
-    height: 16px;
     align-self: center;
 }
 
-.icon-small {
+
+.icon-checkbox {
+    background: url('../../img/checkbox-collection.svg') no-repeat -80px -25px;
+    width: 16px;
+    height: 16px;
+
+}
+
+.icon-checkbox:hover {
+    background: url('../../img/checkbox-collection.svg') no-repeat -17.8px -25px;
     width: 16px;
     height: 16px;
 }
 
-.icon-checkbox {
-    background-image: url("../../img/checkbox-normal.svg");
-}
-
-.icon-checkbox:hover {
-    background-image: url("../../img/checkbox-hover.svg");
-}
-
 .icon-checkbox-checked {
-    background-image: url("../../img/checkbox-checked.svg");
+    background: url('../../img/checkbox-collection.svg') no-repeat -58px -25px;
+    width: 16px;
+    height: 16px;
 }
 
 .icon-all-checked {
-    background-image: url("../../img/de-select.svg");
+    background: url('../../img/checkbox-collection.svg') no-repeat -37px -26px;
+    width: 16px;
+    height: 16px;
 }
 
 .icon-document-background {
@@ -33,18 +34,21 @@
 }
 
 .icon-rectangle-add {
-    background-image: url("../../img/rectangle-add.svg");
+    background: url('../../img/checkbox-collection.svg') no-repeat -18px -2px;
+    width: 16px;
+    height: 16px;
 }
 
 .icon-edit {
-    background-repeat: no-repeat;
     background-position: center;
-    background-size: 16px 16px;
+    align-self: center;
+    background: url('../../img/checkbox-collection.svg') no-repeat -42px -3px;
     width: 16px;
     height: 16px;
-    align-self: center;
-    background-image: url("../../img/edit.svg");
 }
-.icon-edit:hover{
-    background-image: url("../../img/blue-active/edit.svg");
+
+.icon-edit:hover {
+    background: url('../../img/checkbox-collection.svg') no-repeat -84.2px -2px;
+    width: 17px;
+    height: 16px;
 }
