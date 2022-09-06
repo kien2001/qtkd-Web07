@@ -9,7 +9,7 @@
 
 @font-face {
     font-family: Roboto V20;
-    src: url("../fonts/roboto-v20-vietnamese_latin-regular.woff2");
+    src: url("../fonts/Roboto-Regular.ttf");
 }
 
 body {
@@ -34,18 +34,6 @@ body {
 .main {
     grid-area: main;
 }
-
-/* .sidebar-left {
-    grid-area: sideBarLeft;
-}
-
-.function {
-    grid-area: function;
-}
-
-.sidebar-right {
-    grid-area: sideBarRight;
-} */
 
 .header {
     grid-area: header;

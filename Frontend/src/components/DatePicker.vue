@@ -36,8 +36,8 @@ export default {
     updated() {
         this.$emit('getDate', this.date)
     },
-    methods:{
-        setDate(value){
+    methods: {
+        setDate(value) {
             this.date = value
         }
     }

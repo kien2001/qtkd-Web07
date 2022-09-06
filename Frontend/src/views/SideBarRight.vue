@@ -31,7 +31,9 @@
                 </div>
             </div>
         </div>
-        <div class="btn-icon btn-toggle toggle-right" @click="handleClickToggle"></div>
+        <div class="toggle">
+            <div class="btn-toggle" @click="handleClickToggle"></div>
+        </div>
     </div>
 </template>
 <script>
@@ -53,6 +55,7 @@ export default {
 }
 </script>
 <style scoped>
+
 .sidebar-right {
     position: relative;
     display: flex;
@@ -96,5 +99,36 @@ export default {
 
 .main-item-content .content-header {
     margin-bottom: 3px;
+}
+
+.toggle {
+    background-color: #fff;
+    z-index: 1000;
+    position: absolute;
+    width: 12px;
+    height: 40px;
+    top: 50%;
+    left: -12px;
+    border-radius: 8px 0 0 8px;
+    box-shadow: 2px 2px 7px rgba(31, 34, 41, 0.16);
+    box-shadow: 2px 2px 7px rgba(31, 34, 41, 0.16);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-toggle {
+    transition: all 0.2s ease-out;
+    margin: auto;
+    width: 12px;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../assets/img/toggle-right.svg");
+}
+
+.btn-toggle[toggle] {
+    transform: rotate(180deg)
 }
 </style>

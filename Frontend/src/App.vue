@@ -8,7 +8,16 @@ import HeaderComp from '@/views/HeaderComp.vue'
 import MainComp from './views/MainComp.vue'
 
 export default {
-  components: { HeaderComp, MainComp }
+  components: { HeaderComp, MainComp },
+  watch: {
+    $route: {
+     
+      handler(to, from) {
+        document.title = to.meta.title || 'AMIS Bán Hàng';
+      },
+       immediate: true
+    },
+  }
 }
 </script>
 <style>

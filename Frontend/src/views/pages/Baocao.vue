@@ -1,10 +1,15 @@
 <template>
-    <h1>
-       Báo cáo
-    </h1>
+  <h1>
+    Chức năng đang thi công, vui lòng quay lại sau!!! 😘
+  </h1>
 </template>
 <script>
 export default {
-  name: 'BaoCao'
+  name: 'BaoCao',
+  mounted() {
+    this.$store.commit("setState", "fail")
+    this.$store.commit("setMessage", "Chức năng đang thi công")
+    this.$store.commit("setIsShow", true)
+  }
 }
 </script>
