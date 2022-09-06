@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
@@ -29,6 +30,8 @@ namespace Repository
         public Result Delete(IEnumerable<Guid> listCustomerId)
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -51,15 +54,15 @@ namespace Repository
                 if (checkSuccess == false)
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.DeletedFail;
-                    result.UserMsg = FailMessage.MessageError.DeleteFail;
+                    result.DevMsg.Add(FailMessage.CodeError.DeletedFail);
+                    result.UserMsg.Add(FailMessage.MessageError.DeleteFail);
                     result.Flag = false;
                 }
                 else
                 {
                     result.Data = count;
-                    result.DevMsg = SuccessMessage.CodeSuccess.DeleteSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.DeleteSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.DeleteSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.DeleteSuccess);
                     result.Flag = true;
                 }
             }
@@ -67,8 +70,8 @@ namespace Repository
             {
 
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -83,11 +86,13 @@ namespace Repository
         public Result UpdateMultiple(UpdatedMultiple<Guid> updatedMultiple)
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 var stringIdList = updatedMultiple.ListId.ConvertAll<string>(g => g.ToString());
                 var updateQuery = "";
-                object parameters ;
+                object parameters;
 
                 if (updatedMultiple.FieldUpdateName == "FullName")
                 {
@@ -121,16 +126,16 @@ namespace Repository
                 if (res == 0)
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.UpdateFailed;
-                    result.UserMsg = FailMessage.MessageError.UpdateFail;
+                    result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
+                    result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
                     result.Flag = false;
                 }
                 else
                 {
 
                     result.Data = res;
-                    result.DevMsg = SuccessMessage.CodeSuccess.UpdateSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.UpdateSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
                     result.Flag = true;
                 }
 
@@ -139,50 +144,68 @@ namespace Repository
             {
 
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
 
         }
 
-        public Result GetPaging(int ?pageSize, int ?pageIndex, string? keyword)
+        public Result GetPaging(int? pageSize, int? pageIndex, string? keyword, FilterObject[]? listFilter)
         {
-            Result result = new();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+
                 var pagingProc = "Proc_Customer_GetPaging";
                 var orConditions = new List<string>();
+                var whereConditions = new List<string>();
+
                 string whereClause = "";
-                if(keyword != null || keyword != "")
+                string andClause = "";
+                string orClause = "";
+
+                if (listFilter is not null && listFilter.Length > 0)
+                {
+                    andClause = ConvertToSqlCommand(listFilter: listFilter);
+                    whereConditions.Add(andClause);
+                }
+                if (keyword != null)
                 {
                     orConditions.Add($"FullName LIKE '%{keyword}%'");
-                    orConditions.Add($"CustomerPhoneNum LIKE '%{keyword}%'");
-                    orConditions.Add($"CustomerEmail LIKE '%{keyword}%'");
 
                 }
-                if(orConditions.Count > 0)
+                if (orConditions.Count > 0)
                 {
-                    whereClause = $"({string.Join(" OR ", orConditions)})";
+                    orClause = $"({string.Join(" OR ", orConditions)})";
+                    whereConditions.Add(orClause);
+
                 }
-                var parameters = new
+                if (whereConditions.Count > 0)
                 {
-                    v_Offset = pageIndex,
-                    v_Limit = pageSize,
-                    v_Sort = default(Plane[]),
-                    v_Where = whereClause
+                    whereClause = $"({string.Join(" AND ", whereConditions)})";
+                    
+                }
+                DynamicParameters dynamicParameters = new();
+                dynamicParameters.Add("@v_Offset", pageIndex);
+                dynamicParameters.Add("@v_Limit", pageSize);
+                dynamicParameters.Add("@v_Sort", default(Plane[]));
+                dynamicParameters.Add("@v_Where", whereClause);
 
-                };
 
-                var multipleResults = mySqlConnection.QueryMultiple(sql: pagingProc, param: parameters, commandType: System.Data.CommandType.StoredProcedure);
+                var multipleResults = mySqlConnection.QueryMultiple(sql: pagingProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
 
                 if (multipleResults == null)
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.NotValue;
-                    result.UserMsg = FailMessage.MessageError.NotValue;
+                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
                     result.Flag = false;
                 }
                 else
@@ -190,29 +213,29 @@ namespace Repository
                     var customerTable = multipleResults.Read<Customer>();
                     var totalCount = multipleResults.Read<long>().Single();
 
-                    if(totalCount == 0)
+                    if (totalCount == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg = FailMessage.CodeError.NotFound;
-                        result.UserMsg = FailMessage.MessageError.NotFound;
+                        result.DevMsg.Add(FailMessage.CodeError.NotFound);
+                        result.UserMsg.Add(FailMessage.MessageError.NotFound);
                         result.Flag = false;
                     }
                     else
                     {
                         result.Data = new { customers = customerTable, totalCount };
-                        result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
-                        result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
+                        result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                        result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
                         result.Flag = true;
                     }
-                    
+
                 }
             }
             catch (Exception ex)
             {
 
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -227,6 +250,8 @@ namespace Repository
         public Result Insert(Customer customer)
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -267,16 +292,16 @@ namespace Repository
                 if (res == 0)
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.InsertFailed;
-                    result.UserMsg = FailMessage.MessageError.InsertFail;
+                    result.DevMsg.Add(FailMessage.CodeError.InsertFailed);
+                    result.UserMsg.Add(FailMessage.MessageError.InsertFail);
                     result.Flag = false;
 
                 }
                 else
                 {
                     result.Data = res;
-                    result.DevMsg = SuccessMessage.CodeSuccess.InsertSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.InsertSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
                     result.Flag = true;
                 }
             }
@@ -284,8 +309,8 @@ namespace Repository
             {
 
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -301,6 +326,8 @@ namespace Repository
         public Result Update(CustomerUpdate customer, Guid customerId)
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -338,41 +365,36 @@ namespace Repository
                 if (updateCustomerRes == 0)
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.UpdateFailed;
-                    result.UserMsg = FailMessage.MessageError.UpdateFail;
+                    result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
+                    result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
                     result.Flag = false;
                 }
                 else
                 {
                     var updatePotOrgaProc = "Proc_Customer_UpdateOrgaPotential";
 
-                    var param = new
-                    {
-                        v_PotentialId = customer.PotentialId,
-                        v_PotentialName = customer.PotentialName,
-                        v_OrganizationId = customer.OrganizationId,
-                        v_OrganizatonName = customer.OrganizationName,
-                        v_CustomerId = customerId,
+                    DynamicParameters dynamicParameters = new();
+                    dynamicParameters.Add("@v_PotentialId", customer.PotentialId);
+                    dynamicParameters.Add("@v_PotentialName", customer.PotentialName);
+                    dynamicParameters.Add("@v_OrganizationId", customer.OrganizationId);
+                    dynamicParameters.Add("@v_OrganizatonName", customer.OrganizationName);
+                    dynamicParameters.Add("@v_CustomerId", customerId);
+                    dynamicParameters.Add("@v_ModifiedAt", DateTime.Now);
 
-                        v_ModifiedAt = DateTime.Now
-                    };
-
-
-
-                    int updateOrgaPotentialRes = mySqlConnection.QueryFirstOrDefault<int>(sql: updatePotOrgaProc, param: param, commandType: System.Data.CommandType.StoredProcedure);
+                    int updateOrgaPotentialRes = mySqlConnection.QueryFirstOrDefault<int>(sql: updatePotOrgaProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
 
                     if (updateOrgaPotentialRes == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg = FailMessage.CodeError.UpdateFailed;
-                        result.UserMsg = FailMessage.MessageError.UpdateFail;
+                        result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
+                        result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
                         result.Flag = false;
                     }
                     else
                     {
                         result.Data = updateOrgaPotentialRes;
-                        result.DevMsg = SuccessMessage.CodeSuccess.UpdateSuccess;
-                        result.UserMsg = SuccessMessage.MessageSuccess.UpdateSuccess;
+                        result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
+                        result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
                         result.Flag = true;
                     }
                 }
@@ -381,8 +403,8 @@ namespace Repository
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -395,7 +417,7 @@ namespace Repository
         /// <returns></returns>
         public static NameCustomer HandleGetName(string name)
         {
-            NameCustomer result = new ();
+            NameCustomer result = new();
             string[] nameArr = name.Split(" ");
             if (nameArr.Length == 1)
             {
@@ -423,6 +445,112 @@ namespace Repository
 
                 return result;
             }
+        }
+     
+        /// <summary>
+        /// Tạo câu lệnh andClause từ mảng ở frontend
+        /// </summary>
+        /// <param name="listFilter"></param>
+        /// <returns></returns>
+        /// Created by LVKIEn 6/9/2022
+        public static string ConvertToSqlCommand(FilterObject[] listFilter)
+        {
+
+            var andConditions = new List<string>();
+            string andClause = "";
+            if (listFilter is not null && listFilter.Length > 0)
+            {
+                foreach (FilterObject item in listFilter)
+                {
+                    string query = "";
+
+                    if (JsonValueKind.String == item.Value.ValueKind)
+                    {
+                        string value = JsonSerializer.Deserialize<string>(item.Value);
+                        switch (item.Type)
+                        {
+                            // Là
+                            case 1:
+                                query = $"({item.Name} = '{value}')";
+                                break;
+                            // Chứa
+                            case 2:
+                                query = $"({item.Name} LIKE '%{value}%')";
+                                break;
+                            // Không là
+                            case 3:
+                                query = $"({item.Name} != '{value}')";
+                                break;
+                            // Không chứa
+                            case 4:
+                                query = $"({item.Name} NOT LIKE '%{value}%')";
+                                break;
+                            // Không Trống
+                            case 5:
+                                query = $"({item.Name} IS NOT NULL OR {item.Name} != ' ')";
+                                break;
+                            // Trống
+                            case 6:
+                                query = $"({item.Name} IS NULL OR {item.Name} = ' ')";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (JsonValueKind.Array == item.Value.ValueKind)
+                    {
+                        var valueList = JsonSerializer.Deserialize<List<string>>(item.Value);
+                        switch (item.Type)
+                        {
+                            // Là
+                            case 1:
+                                List<string> tempArr = new();
+                                foreach (string itemValue in valueList)
+                                {
+                                    string tempValue = $"({item.Name} = '{itemValue}')";
+                                    tempArr.Add(tempValue);
+                                }
+                                query = $"({string.Join(" OR ", tempArr)})";
+                                break;
+                            // Chứa
+                            case 2:
+                                query = $"({item.Name} LIKE '%{item.Value}%')";
+                                break;
+                            // Không là
+                            case 3:
+                                List<string> tempArrOther = new();
+                                foreach (string itemValue in valueList)
+                                {
+                                    string tempValue = $"({item.Name} != '{itemValue}')";
+                                    tempArrOther.Add(tempValue);
+                                }
+                                query = $"({string.Join(" OR ", tempArrOther)})";
+                                break;
+                            // Không chứa
+                            case 4:
+                                query = $"({item.Name} NOT LIKE '%{item.Value}%')";
+                                break;
+                            // Trống
+                            case 5:
+                                query = $"({item.Name} IS NULL OR {item.Name} = ' ')";
+                                break;
+                            // không trống
+                            case 6:
+                                query = $"({item.Name} IS NOT NULL OR {item.Name} != ' ')";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    andConditions.Add(query);
+                }
+            }
+            if (andConditions.Count > 0)
+            {
+                andClause = $"({string.Join(" AND ", andConditions)})";
+            }
+            return andClause;
         }
     }
 }

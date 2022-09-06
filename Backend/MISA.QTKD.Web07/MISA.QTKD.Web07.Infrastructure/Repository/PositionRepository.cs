@@ -23,6 +23,8 @@ namespace Repository
         public Result Get()
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -31,24 +33,24 @@ namespace Repository
                 if (!positionArray.Any())
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.NotValue;
-                    result.UserMsg = FailMessage.MessageError.NotValue;
+                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
                     result.Flag = false;
 
                 }
                 else
                 {
                     result.Data = positionArray;
-                    result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;

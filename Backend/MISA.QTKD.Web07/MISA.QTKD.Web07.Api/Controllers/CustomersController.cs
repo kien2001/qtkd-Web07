@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MISA.QTKD.Web07.Core.Entities;
 using MISA.QTKD.Web07.Core.Interfaces.Services;
+using Services;
 
 namespace MISA.QTKD.Web07.Api.Controllers
 {
@@ -28,10 +29,10 @@ namespace MISA.QTKD.Web07.Api.Controllers
         /// <param name="pageIndex"></param>
         /// <returns></returns>
         ///  Created by LVKien 17/8/2022
-        [HttpGet]
-        public IActionResult Get([FromQuery] int? pageSize, [FromQuery] int? pageIndex, [FromQuery] string? keyword)
+        [HttpPut]
+        public IActionResult Get([FromQuery] int? pageSize, [FromQuery] int? pageIndex, [FromQuery] string? keyword, [FromBody] FilterObject[]? listFilter)
         {
-            Result customerResult = _customerRepository.GetPaging(pageSize, pageIndex, keyword);
+            Result customerResult = _customerRepository.GetPaging(pageSize, pageIndex, keyword, listFilter);
             if (customerResult.Flag == false)
             {
                 return BadRequest(customerResult);
@@ -64,9 +65,9 @@ namespace MISA.QTKD.Web07.Api.Controllers
         /// <returns></returns>
         ///  Created by LVKien 17/8/2022
         [HttpPost]
-        public IActionResult Post(Customer customer)
+        public IActionResult Post(CustomerInsert  customerInsert)
         {
-            Result customerResult = _customerService.InsertService(customer);
+            Result customerResult = _customerService.InsertService(customerInsert);
             if (customerResult.Flag == false)
             {
                 return BadRequest(customerResult);

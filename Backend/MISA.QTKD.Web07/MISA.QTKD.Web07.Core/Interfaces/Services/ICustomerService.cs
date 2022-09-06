@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Entities;
 using MISA.QTKD.Web07.Core.Entities;
 
-namespace MISA.QTKD.Web07.Core.Interfaces.Services
+namespace Services
 {
     public interface ICustomerService
     {
@@ -17,7 +17,7 @@ namespace MISA.QTKD.Web07.Core.Interfaces.Services
         /// <returns></returns>
         /// Created by: LVKien (11/08/2022)
 
-        Result InsertService(Customer customer);
+        Result InsertService(CustomerInsert customer);
 
         /// <summary>
         /// Sửa đổi dữ liệu

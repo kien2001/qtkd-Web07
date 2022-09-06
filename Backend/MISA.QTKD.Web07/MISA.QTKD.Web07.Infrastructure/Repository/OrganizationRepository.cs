@@ -26,6 +26,8 @@ namespace Repository
         public Result Get()
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -34,24 +36,24 @@ namespace Repository
                 if (!organizationArray.Any())
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.NotValue;
-                    result.UserMsg = FailMessage.MessageError.NotValue;
+                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
                     result.Flag = false;
 
                 }
                 else
                 {
                     result.Data = organizationArray;
-                    result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -68,6 +70,8 @@ namespace Repository
         public Result GetCareer()
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -75,27 +79,26 @@ namespace Repository
                 var careerArray = mySqlConnection.Query<string>(query);
                 if (!careerArray.Any())
                 {
-                    result = new Result(data: null,
-                        devMsg: FailMessage.CodeError.NotValue,
-                        userMsg: FailMessage.MessageError.NotValue,
-                        flag: false
-                        );
+                    result.Data = new();
+                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                    result.Flag = false;
                 }
                 else
                 {
 
                     IEnumerable<string> resultArray = CommonFunc.CommonFunc.FormatData(careerArray);
                     result.Data = resultArray;
-                    result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -111,6 +114,8 @@ namespace Repository
         public Result GetDomain()
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -119,8 +124,8 @@ namespace Repository
                 if (!domainArray.Any())
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.NotValue;
-                    result.UserMsg = FailMessage.MessageError.NotValue;
+                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
                     result.Flag = false;
                 }
                 else
@@ -128,16 +133,16 @@ namespace Repository
                     IEnumerable<string> resultArray = CommonFunc.CommonFunc.FormatData(domainArray);
 
                     result.Data = resultArray;
-                    result.DevMsg = SuccessMessage.CodeSuccess.GetSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.GetSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -153,6 +158,8 @@ namespace Repository
         public Result Insert(Organization organization)
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -179,15 +186,15 @@ namespace Repository
                 if (res == 0)
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.NotValue;
-                    result.UserMsg = FailMessage.MessageError.NotValue;
+                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
                     result.Flag = false;
                 }
                 else
                 {
                     result.Data = res;
-                    result.DevMsg = SuccessMessage.CodeSuccess.InsertSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.InsertSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
+                    result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
                     result.Flag = true;
 
                 }
@@ -196,8 +203,8 @@ namespace Repository
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;
@@ -212,6 +219,8 @@ namespace Repository
         public Result UpdateMultiple(UpdatedMultiple<int> updatedMultiple)
         {
             Result result = new();
+            result.UserMsg = new List<string>();
+            result.DevMsg = new List<string>();
             try
             {
                 var stringIdList = updatedMultiple.ListId.ConvertAll<string>(g => g.ToString());
@@ -229,16 +238,16 @@ namespace Repository
                 if (res == 0)
                 {
                     result.Data = new { };
-                    result.DevMsg = FailMessage.CodeError.UpdateFailed;
-                    result.UserMsg = FailMessage.MessageError.UpdateFail;
+                    result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
+                    result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
                     result.Flag = false;
                 }
                 else
                 {
 
                     result.Data = res;
-                    result.DevMsg = SuccessMessage.CodeSuccess.UpdateSuccess;
-                    result.UserMsg = SuccessMessage.MessageSuccess.UpdateSuccess;
+                    result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
+                    result.UserMsg .Add(SuccessMessage.MessageSuccess.UpdateSuccess);
                     result.Flag = true;
                 }
 
@@ -247,8 +256,8 @@ namespace Repository
             {
 
                 result.Data = ex.Message;
-                result.DevMsg = FailMessage.CodeError.ProcessError;
-                result.UserMsg = FailMessage.MessageError.ProcessError;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                 result.Flag = false;
             }
             return result;

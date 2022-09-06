@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MISA.QTKD.Web07.Core.Entities
+namespace Entities
 {
     /// <summary>
     /// Ánh xạ với bảng Xã

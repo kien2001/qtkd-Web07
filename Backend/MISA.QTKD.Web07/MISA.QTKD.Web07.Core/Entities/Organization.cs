@@ -12,7 +12,7 @@ namespace Entities
     /// Created by LVKIEN 17/05/2022
     public class Organization
     {
-        public int OrganizationId { get; set; }// Id tổ chức
+        public int? OrganizationId { get; set; }// Id tổ chức
         public string? OrganizationName { get; set; } // Tên tổ chức
 
         public string? BankAccount { get; set; }// Tên tài khoản
@@ -30,10 +30,10 @@ namespace Entities
 
         public int? RevenueId { get; set; }// Id tiềm năng
 
-        public Organization(int organizatioId, string organizatioName, string bankAccount, string bankName, DateTime createdAccountAt, int typeId, string domain, string career, int revenueId)
+        public Organization(int? organizationId, string? organizationName, string? bankAccount, string? bankName, DateTime? createdAccountAt, int? typeId, string? domain, string? career, int? revenueId)
         {
-            OrganizationId = organizatioId;
-            OrganizationName = organizatioName;
+            OrganizationId = organizationId;
+            OrganizationName = organizationName;
             BankAccount = bankAccount;
             BankName = bankName;
             CreatedAccountAt = createdAccountAt;

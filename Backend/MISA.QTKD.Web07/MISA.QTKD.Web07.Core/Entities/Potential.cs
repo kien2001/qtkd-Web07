@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MISA.QTKD.Web07.Core.Entities
+namespace Entities
 {
     /// <summary>
     /// Ánh xạ với bảng Potential
@@ -12,12 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class Potential
     {
-        public Guid PotentialId { get; set; } // id Tiềm năng
+        public Guid? PotentialId { get; set; } // id Tiềm năng
         public string? PotentialName { get; set; }// tên tiềm năng
         public string? PotentialCode { get; set; }// Mã tiềm năng
 
 
-        public Potential(Guid potentialId, string potentialName, string potentialCode)
+        public Potential(Guid? potentialId, string? potentialName, string? potentialCode)
         {
             PotentialId = potentialId;
             PotentialName = potentialName;
