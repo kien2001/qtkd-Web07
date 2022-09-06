@@ -1,15 +1,12 @@
 <template>
   <div class="main">
     <FunctionTool />
-    <SideBarLeft v-if="this.$route.name === 'TiemNang'" />
+    <SideBarLeft />
     <MainContent />
-    <SideBarRight v-if="this.$route.name === 'TiemNang'" />
-    <ToastMessage :message="getMessage" :state="getState" :isShow="getIsShow" ref="toast" />
+    <SideBarRight />
   </div>
 </template>
 <style scoped>
-
-
 .main {
   display: grid;
   grid-template-columns: 240px auto 320px;
@@ -17,7 +14,6 @@
   grid-template-areas:
     "function function function "
     "sideBarLeft mainContent sideBarRight";
-  transition: all 2s linear;
 }
 .sidebar-left {
   grid-area: sideBarLeft;
@@ -41,17 +37,6 @@ import MainContent from '@/views/MainContent.vue'
 import SideBarRight from '@/views/SideBarRight.vue'
 export default {
   name: 'MainComp',
-  components: { SideBarLeft, SideBarRight, FunctionTool, MainContent },
-  computed:{
-    getMessage(){
-      return this.$store.state.message
-    },
-    getState(){
-      return this.$store.state.state
-    },
-    getIsShow(){
-      return this.$store.state.isShow
-    },
-  }
+  components: { SideBarLeft, SideBarRight, FunctionTool, MainContent }
 }
 </script>

@@ -24,6 +24,10 @@
     gap: 3px;
 }
 
+.paging-center-right>div {
+    align-self: center;
+    background-size: 16px 16px;
+}
 
 .paging-center-right>span {
     margin: 0 6px;
@@ -38,46 +42,17 @@
 }
 
 .btn-first {
-    -webkit-mask: url("../../img/btn-firstpage.svg") no-repeat 50% 50%;
-    mask: url("../../img/btn-firstpage.svg") no-repeat 50% 50%;
-    -webkit-mask-size: 16px 16px;
-    mask-size: 16px 16px;
-    background-color: #333;
-}
-.btn-first:hover{
-    background-color: #5A76F2;
+    background-image: url(../../img/btn-firstpage.svg);
 }
 
 .btn-prev {
-    -webkit-mask: url("../../img/btn-prev-page.svg") no-repeat 50% 50%;
-    mask: url("../../img/btn-prev-page.svg") no-repeat 50% 50%;
-    -webkit-mask-size: 16px 16px;
-    mask-size: 16px 16px;
-    background-color: #333;
-}
-.btn-prev:hover{
-    background-color: #5A76F2;
+    background-image: url(../../img/btn-prev-page.svg);
 }
 
 .btn-next {
-    -webkit-mask: url("../../img/btn-next-page.svg") no-repeat 50% 50%;
-    mask: url("../../img/btn-next-page.svg") no-repeat 50% 50%;
-    -webkit-mask-size: 16px 16px;
-    mask-size: 16px 16px;
-    background-color: #333;
-}
-
-.btn-next:hover{
-    background-color: #5A76F2;
+    background-image: url(../../img/btn-next-page.svg);
 }
 
 .btn-last {
-    -webkit-mask: url("../../img/btn-lastpage.svg") no-repeat 50% 50%;
-    mask: url("../../img/btn-lastpage.svg") no-repeat 50% 50%;
-    -webkit-mask-size: 16px 16px;
-    mask-size: 16px 16px;
-    background-color: #333;
-}
-.btn-last:hover{
-    background-color: #5A76F2;
+    background-image: url(../../img/btn-lastpage.svg);
 }

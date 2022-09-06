@@ -6,15 +6,15 @@
         select$.resolveOptions()
       }
     }" ref="multiselect">
-    <template v-slot:caret="{}" v-if="this.$attrs.isTag">
+    <template v-slot:caret="{  }" v-if="this.$attrs.isTag">
       <div class="multiselect-clear" v-show="!this.$attrs.isTag">
       </div>
     </template>
-    <template v-slot:clear="{}" v-if="this.$attrs.isTag">
+    <template v-slot:clear="{  }" v-if="this.$attrs.isTag">
       <div class="multiselect-caret" v-show="!this.$attrs.isTag">
       </div>
     </template>
-    <template v-slot:spinner="{}">
+    <template v-slot:spinner="{  }">
       <div class="spinner-custom multiselect-dropdown">
         <img class="spinner-icon" src="../assets/img/loadding-icon.svg">
       </div>
@@ -28,7 +28,7 @@ export default {
   components: { Multiselect },
   data() {
     return {
-      value: null,
+       value: null,
     }
   },
 }
@@ -92,12 +92,12 @@ export default {
   background-position-x: calc(100% - 10px);
 }
 
-.spinner-icon {
+.spinner-icon{
   width: 100px;
   height: 100px;
 }
 
-.spinner-icon {
-  margin: 0 auto;
+.spinner-icon{
+  margin:0 auto;
 }
 </style>

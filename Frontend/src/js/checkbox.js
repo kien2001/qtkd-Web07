@@ -4,6 +4,7 @@ const handleClickFilterItem = (checkedItem) => {
   let listCheckedInput = []
   // if checked and click again, remove checked
   if ($(checkedItem).attr('checked')) {
+    $(checkedItem).not('.filter-option-item').css('background-color', '#fff')
     if ($(checkedItem).children('.icon').length > 0) {
       $(checkedItem).children('.icon').removeClass('icon-checkbox-checked')
       $(checkedItem).children('.icon').addClass('icon-checkbox')
@@ -26,6 +27,7 @@ const handleCheckInput = (element, listCheckedInput) => {
   $(element).attr('checked', '')
   listCheckedInput = $('div[checked]').toArray()
   listCheckedInput?.forEach(item => {
+    $(item).filter(".tr").css('background-color', '#FAD1D1')
     if ($(item).children('.icon').length > 0) {
       $(item).children('.icon').removeClass('icon-checkbox')
       $(item).children('.icon').addClass('icon-checkbox-checked')

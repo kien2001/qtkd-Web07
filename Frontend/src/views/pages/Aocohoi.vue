@@ -1,15 +1,10 @@
 <template>
-  <h1>
-    Chức năng đang thi công, vui lòng quay lại sau!!! 😘
-  </h1>
+    <h1>
+       Ao cơ hội
+    </h1>
 </template>
 <script>
 export default {
-  name: 'AoCoHoi',
-  mounted() {
-    this.$store.commit("setState", "fail")
-    this.$store.commit("setMessage", "Chức năng đang thi công")
-    this.$store.commit("setIsShow", true)
-  }
+  name: 'AoCoHoi'
 }
 </script>

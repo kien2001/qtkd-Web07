@@ -18,92 +18,77 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: BanLamViec,
-    meta:{title:"Bàn làm việc"}
+    component: BanLamViec
   },
   {
     path: '/tiemnang',
     name: 'TiemNang',
-    component: TiemNang,
-    meta:{title: "Tiềm năng"}
+    component: TiemNang
   },
   {
     path: '/chaohang',
     name: 'ChaoHang',
-    component: ChaoHang,
-    meta:{title: "Chào hàng"}
+    component: ChaoHang
   },
   {
     path: '/lienhe',
     name: 'LienHe',
-    component: LienHe,
-    meta:{title: "Liên hệ"}
+    component: LienHe
   },
   {
     path: '/khachhang',
     name: 'KhachHang',
-    component: KhachHang,
-    meta:{title: "Khách hàng"}
+    component: KhachHang
   },
   {
     path: '/cohoi',
     name: 'CoHoi',
-    component: CoHoi,
-    meta:{title: "Cơ hội"}
+    component: CoHoi
   },
   {
     path: '/baogia',
     name: 'BaoGia',
-    component: BaoGia,
-    meta:{title: "Báo giá"}
+    component: BaoGia
   },
   {
     path: '/donhang',
     name: 'DonHang',
-    component: DonHang,
-    meta:{title: "Đơn hàng"}
+    component: DonHang
   },
   {
     path: '/hoadon',
     name: 'HoaDon',
-    component: HoaDon,
-    meta:{title: "Hoá đơn"}
+    component: HoaDon
   },
   {
     path: '/aocohoi',
     name: 'AoCoHoi',
-    component: AoCoHoi,
-    meta:{title: "Ao cơ hội"}
+    component: AoCoHoi
   },
   {
     path: '/hoatdong',
     name: 'HoatDong',
-    component: HoatDong,
-    meta:{title: "Hoạt động"}
+    component: HoatDong
   },
   {
     path: '/muctieu',
     name: 'MucTieu',
-    component: MucTieu,
-    meta:{title: "Mục tiêu"}
+    component: MucTieu
   },
   {
     path: '/chiendich',
     name: 'ChienDich',
-    component: ChienDich,
-    meta:{title: "Chiến dịch"}
+    component: ChienDich
   },
   {
     path: '/baocao',
     name: 'BaoCao',
-    component: BaoCao,
-    meta:{title: "Báo cáo"}
+    component: BaoCao
   },
   {
     path: '/khac',
     name: 'Khac',
-    component: Khac,
-    meta:{title: "Khác"}
+    component: Khac
   }
 ]
 
