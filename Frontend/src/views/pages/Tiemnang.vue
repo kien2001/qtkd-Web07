@@ -59,8 +59,10 @@
                         <div class="td">{{ customer.owner || '-' }}</div>
                         <div class="td">{{ customer.revenueName || '-' }}</div>
                         <div class="td">{{ customer.sharingUse ? 'Có' : 'Không' }}</div>
-                        <div class="td" v-if="customer.facebook"><a :href=customer.facebook target="_blank" :style="{color:'hsl(206,100%,40%)', textDecoration: 'underline'}">{{
-                                customer.facebook }}</a>
+                        <div class="td" v-if="customer.facebook"><a :href=customer.facebook target="_blank"
+                                :style="{ color: 'hsl(206,100%,40%)', textDecoration: 'underline' }">{{
+                                        customer.facebook
+                                }}</a>
                         </div>
                         <div class="td" v-else>-</div>
                     </div>
@@ -86,7 +88,7 @@
                     <div class="btn-icon medium btn-nav btn-prev" @click="returnPrevPage"></div>
                     <span><strong>{{ this.pageCurrent }} </strong> đến <strong>{{
                             getLastPage
-                            }}</strong></span>
+                    }}</strong></span>
                     <div class="btn-icon medium btn-nav btn-next" @click="toNextPage"></div>
                     <div class="btn-icon medium btn-nav btn-last" @click="toLastPage"></div>
                 </div>
@@ -155,6 +157,13 @@ export default {
         */
         getKeyWordSearch() {
             return this.$store.state.conditionSearch;
+        },
+        /**
+        * lấy giá trị của list filter 
+        * Created by LVKIEN 30/08/2022
+        */
+        getListFilter() {
+            return this.$store.state.listFilter;
         }
     },
     data() {
@@ -180,7 +189,7 @@ export default {
      * Created by LVKIEN 30/08/2022
      */
     async beforeMount() {
-        await this.getDataPaging(this.getKeyWordSearch);
+        await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
     },
     /**
     * Thêm sự kiện cho checkbox
@@ -195,13 +204,22 @@ export default {
     },
     watch: {
         /**
+         * Khi list filter thay đổi, gọi API
+         * @param {*} newValue 
+        *  Created by LVKIEN 30/08/2022
+         */
+        async getListFilter(newValue) {
+            this.pageCurrent = 1;
+            await this.getDataPaging(this.getKeyWordSearch, newValue);
+        },
+        /**
          * Khi keyword thay đổi, gọi API
          * @param {*} newValue 
         *  Created by LVKIEN 30/08/2022
          */
         async getKeyWordSearch(newValue) {
             this.pageCurrent = 1;
-            await this.getDataPaging(newValue);
+            await this.getDataPaging(newValue, this.getListFilter);
         },
         /**
          * xử lý khi delete thành công
@@ -228,7 +246,7 @@ export default {
                 this.listChecked = [];
                 // gọi lại api để lấy dữ liệu customer mới nhất
                 this.pageCurrent = 1;
-                await this.getDataPaging(this.getKeyWordSearch);
+                await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
             }
         },
         /**
@@ -241,7 +259,7 @@ export default {
                 // reset lại biến isUpdated
                 this.$store.commit("setIsUpdated", false);
                 // gọi lại api để lấy dữ liệu customer mới nhất
-                await this.getDataPaging(this.getKeyWordSearch);
+                await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
             }
         },
         // xử lý khi insert thành công
@@ -250,7 +268,7 @@ export default {
                 // reset lại biến isInserted
                 this.$store.commit("setIsInserted", false);
                 // gọi lại api để lấy dữ liệu customer mới nhất
-                await this.getDataPaging(this.getKeyWordSearch);
+                await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
             }
         },
         // thay đổi giá trị trong store khi checkList thay đổi
@@ -267,30 +285,39 @@ export default {
         },
         // khi page size thay đổi, gọi lại api
         async numberPerPage() {
-            await this.getDataPaging(this.getKeyWordSearch);
+            await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
         },
         // khi page current thay đổi, gọi lại api
         async pageCurrent() {
-            await this.getDataPaging(this.getKeyWordSearch);
+            await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
         }
     },
     methods: {
         /**
          * Gọi API phân trang
-         * @param {*} newValue
+         * @param {*} keySearch
          * created by LVKIEN 29/08/2022
          */
-        async getDataPaging(newValue) {
+        async getDataPaging(keySearch, listFilter) {
             try {
                 this.isLoading = true;
                 const offSet = (this.pageCurrent - 1) * this.numberPerPage;
-                const responsePaging = await axios(`${rootApi}Customers?pageSize=${this.numberPerPage}&pageIndex=${offSet}&keyword=${newValue}`).then(res => res.data).catch(error => error.response.data);
+                const responsePaging = await axios({
+                    method:'put',
+                    baseURL: `${rootApi}Customers`,
+                    params: {
+                        pageSize: this.numberPerPage,
+                        pageIndex: offSet,
+                        keyword: keySearch
+                    },
+                    data: listFilter
+                }).then(res => res.data).catch(error => error.response.data);
                 this.isLoading = false;
                 if (!responsePaging.flag) {
                     this.showNoValue = true;
                     this.customerList = [];
                     this.totalCount = 0;
-                    
+
                     this.$store.commit("setState", "fail")
                     this.$store.commit("setMessage", responsePaging.userMsg[0])
                     this.$store.commit("setIsShow", true)

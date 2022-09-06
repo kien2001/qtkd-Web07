@@ -16,17 +16,17 @@
                     ref="filterOptions">
                     <div class="icon-item icon-checkbox icon icon-small"></div>
                     <div class="item-content">{{ option.name }}</div>
+                    <!-- <div> -->
                     <DropDown @selected="getSelectedType" @click="showOption1" :showInput="false" :name1="option.id"
                         placeholder="Không chọn" :options="option1" ref="option1" v-if="option.type === 1"
                         :fetchDataWhenClick="false" />
                     <DropDown @selected="getSelectedType" @click="showOption2" :showInput="false" :name1="option.id"
                         placeholder="Không chọn" :options="option1" ref="option2" v-else :fetchDataWhenClick="false" />
-                    <!-- <template v-if="option.type === 1 && checkType"> -->
+                    <!-- </div> -->
                     <InputForm id="input" ref="input" />
                     <ComboBox :options="async () => {
                         return await this.getDataComboBox(option.url)
                     }" ref="combobox" />
-                    <!-- </template> -->
                 </div>
             </div>
         </div>
@@ -43,7 +43,8 @@
 import $ from 'jquery'
 import handleClickFilterItem from '../js/checkbox'
 import { handleToggleSideBar } from '../js/toggleSideBar'
-import { rootApi, fieldMappingOptions, optionType1, optionType2 } from '../js/config'
+import { rootApi, fieldMappingOptions} from '../js/config'
+import {capitalizeFirstLetter} from '../js/common'
 import InputForm from "../components/InputForm.vue";
 import axios from 'axios'
 export default {
@@ -70,7 +71,8 @@ export default {
             if (field.type === 1) {
                 objectType1 = [...objectType1, { name: field.id, type: '', value: '' }]
             } else if (field.type === 2) {
-                objectType2 = [...objectType2, { name: field.id, type: '' }]
+                // cho value để sửa lỗi backend
+                objectType2 = [...objectType2, { name: field.id, type: '', value:field.id }]
             }
         })
         this.objectResult = {
@@ -100,34 +102,39 @@ export default {
          * Created by LVKIEN 3/9/2022
          */
         listFilterOption(newValue) {
-            // Khi 1 option bị bỏ check, display none các phần tử trong nó
-            $(".filter-option-item:not([checked])").toArray().forEach(item => {
-                $(item).children(".input-container").css("display", "none")
-                $(item).children(".multiselect").css("display", "none")
-            })
-            // bật tắt thanh button
-            if (newValue.length > 0) {
-                this.showButton = true
-            } else {
-                this.showButton = false
+            console.log(newValue)
+          
+                // Khi 1 option bị bỏ check, display none các phần tử trong nó
+                $(".filter-option-item:not([checked])").toArray().forEach(item => {
+                    $(item).children(".input-container").css("display", "none")
+                    $(item).children(".multiselect").css("display", "none")
+                })
+                // bật tắt thanh button
+                if (newValue.length > 0) {
+                    this.showButton = true
+                } else {
+                    this.showButton = false
+                }
+                // console.log(newValue);
+                // reset giá trị value của field khi bỏ checked
+                this.objectResult[1].forEach(field => {
+                    let check = newValue.includes(field[Object.keys(field)[0]])
+                    if (!check) {
+                        field.type = ''
+                        field.value = ''
+                    }
+                })
+                this.objectResult[2].forEach(field => {
+                    let check = newValue.includes(field[Object.keys(field)[0]])
+                    if (!check) {
+                        field.type = ''
+                        field.value = ''
+                    }
+                })
+            // Không có ô nào đc check, gọi lại api
+             if(newValue.length=== 0){
+                this.$store.commit("setListFilter", [])
             }
-
-            // console.log(newValue);
-            // reset giá trị value của field khi bỏ checked
-            this.objectResult[1].forEach(field => {
-                let check = this.listFilterOption.includes(field[Object.keys(field)[0]])
-                if (!check) {
-                    field.type = ''
-                    field.value = ''
-                }
-            })
-            this.objectResult[2].forEach(field => {
-                let check = this.listFilterOption.includes(field[Object.keys(field)[0]])
-                if (!check) {
-                    field.type = ''
-                }
-
-            })
         },
         /**
          * Xử lý ẩn hiện các ô input nhập dữ liệu khi chọn từng kiểu dropdown
@@ -162,6 +169,28 @@ export default {
         }
     },
     methods: {
+        /**
+         * Format result, bỏ hết các trường không được chọn
+         * @param {*} result 
+         * Created by LVKIEN 4/9/2022
+         */
+        formatFilterResult(result){
+            const listKey = Object.keys(result)
+            let formatResult = listKey.map(key=>{
+                let tempArr = result[key].map(item=>{
+                    if(item.type !== '' && item.value !== ''){
+                        return item
+                    }
+                })
+                tempArr = tempArr.filter(item=> item !== undefined)
+                return tempArr
+            })
+            return formatResult.flat()
+        },
+        /**
+         * Lấy giá trị filter để lọc
+         * Created by LVKIEn 4/9/2022
+         */
         searchFilter() {
             this.$refs.filterOptions.forEach(option => {
                 if ($(option).attr("checked")) {
@@ -170,7 +199,11 @@ export default {
                             if ($(combobox.$el).parent().attr("name") === $(option).attr("name") && Object.keys(combobox.value).length > 0) {
                                 console.log(combobox.value);
                                 const indexFilterField = this.objectResult[1].findIndex(item => item[Object.keys(item)[0]] === $(option).attr("name"))
-                                this.objectResult[1][indexFilterField].value = combobox.value.map(value => value.value)
+                                if($(combobox.$el).parent().attr("name") === "Vocative"){
+                                    this.objectResult[1][indexFilterField].value = combobox.value.map(value => value.id.toString())
+                                }else{
+                                    this.objectResult[1][indexFilterField].value = combobox.value.map(value => value.value)
+                                }
                             }
                         }
                     })
@@ -183,7 +216,8 @@ export default {
                     })
                 }
             })
-
+           
+            this.$store.commit("setListFilter", this.formatFilterResult(this.objectResult))
         },
         /**
          * Lấy giá trị ô checked filter
@@ -192,9 +226,6 @@ export default {
          */
         getSelectedType(selected) {
             if (selected) {
-                // this.checkType = true
-                // this.isCheck = selected.id
-                // this.operator = selected.id
                 this.selectedOptionFilter = selected
                 // chọn vào dropdown loại 1
                 if (selected.id < 5) {
@@ -205,9 +236,11 @@ export default {
                     })
                     // chọn vào dropdown loại 2
                 } else {
+                    console.log(selected);
                     this.objectResult[2].forEach(object => {
                         if (object[Object.keys(object)[0]] === selected.name) {
                             object.type = selected.id
+                            object.value = selected.name
                         }
                     })
                 }
@@ -243,26 +276,37 @@ export default {
                 $(item).children('.icon-item').addClass('icon-checkbox')
             })
             this.listFilterOption = []
+            this.$store.commit("setListFilter", [])
         },
-        // A method that is called when the user clicks on a filter option checkbox item in the list.
+        /**
+         * Gọi mỗi khi click vào ô checkbox, xử lý bật tắt và check
+         * Created by LVKIEN 5/9/2022
+         */
         filterItemOnClick(e) {
             e.preventDefault()
-            const checkedItem = $(e.target).parent('.filter-option-item')
-            handleClickFilterItem(checkedItem)
-            const listChecked = $(this.$refs.sidebarLeft).find('[checked]').toArray()
-            const resultCheck = listChecked.map(item =>
-                $(item).children(".item-content").text().trim()
-            )
-            const idResultCheck = resultCheck.map(name => {
-                let result = ""
-                this.fieldOptions.forEach(field => {
-                    if (name === field.name) {
-                        result = field.id
-                    }
-                })
-                return result
-            })
-            this.listFilterOption = [...idResultCheck]
+            e.stopPropagation();
+            if($(e.target).parent('.filter-option-item').length > 0){
+                // thêm vào để fix lỗi liên quan đến component combobox
+                if(!$(e.target).hasClass("multiselect")){
+                    const checkedItem = $(e.target).parent('.filter-option-item')
+                    handleClickFilterItem(checkedItem)
+                    const listChecked = $(this.$refs.sidebarLeft).find('[checked]').toArray()
+                    const resultCheck = listChecked.map(item =>
+                        $(item).children(".item-content").text().trim()
+                    )
+                    const idResultCheck = resultCheck.map(name => {
+                        let result = ""
+                        this.fieldOptions.forEach(field => {
+                            if (name === field.name) {
+                                result = field.id
+                            }
+                        })
+                        return result
+                    })
+                    console.log(e.target);
+                    this.listFilterOption = [...idResultCheck]
+                }
+            }
         },
         handleClickToggle(e) {
             handleToggleSideBar('sidebar-right', e, '240px')
@@ -278,11 +322,14 @@ export default {
             if (response.flag) {
                 if (prefix === "Organizations/Domains") {
                     result = this.formatDataComboBox(response.data)
+                    console.log(result);
                 } else {
                     result = this.formatDataComboBox(response.data.map(item => {
                         const keyName = Object.keys(item)[1]
-                        return item[keyName]
+                        return { id: item[ Object.keys(item)[0]], name: item[Object.keys(item)[1]] }
+                        // return item[keyName]
                     }))
+                    console.log(result);
                 }
             } else {
                 console.log(response.userMsg);
@@ -296,7 +343,7 @@ export default {
         */
         formatDataComboBox(data) {
             return data.map(item => {
-                return { value: item, label: item }
+                return { value: item.name || item, label: item.name|| item, id:item.id || item }
             })
         },
     }

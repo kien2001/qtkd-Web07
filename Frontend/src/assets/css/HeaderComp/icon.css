@@ -21,7 +21,7 @@
     background-color: #333;
 }
 
-.active .icon-home {
+.active>.icon-home {
     background-color: #5A76F2;
 }
 
@@ -33,7 +33,7 @@
     background-color: #333;
 }
 
-.active .icon-tiemnang {
+.active>.icon-tiemnang {
     background-color: #5A76F2;
 }
 
@@ -45,7 +45,7 @@
     background-color: #333;
 }
 
-.active .icon-chaohang {
+.active>.icon-chaohang {
     background-color: #5A76F2;
 }
 
@@ -58,7 +58,7 @@
 
 }
 
-.active .icon-lienhe {
+.active>.icon-lienhe {
     background-color: #5A76F2;
 }
 
@@ -70,7 +70,7 @@
     background-color: #333;
 }
 
-.active .icon-khachhang {
+.active>.icon-khachhang {
     background-color: #5A76F2;
 }
 
@@ -83,7 +83,7 @@
     background-image: url("../../img/cohoi.svg");
 }
 
-.active .icon-cohoi {
+.active>.icon-cohoi {
     background-color: #5A76F2;
 }
 
@@ -95,7 +95,7 @@
     background-color: #333;
 }
 
-.active .icon-baogia {
+.active>.icon-baogia {
     background-color: #5A76F2;
 }
 
@@ -107,7 +107,7 @@
     background-color: #333;
 }
 
-.active .icon-donhang {
+.active>.icon-donhang {
     background-color: #5A76F2;
 }
 
@@ -119,7 +119,7 @@
     background-color: #333;
 }
 
-.active .icon-hoadon {
+.active>.icon-hoadon {
     background-color: #5A76F2;
 }
 
@@ -131,7 +131,7 @@
     background-color: #333;
 }
 
-.active .icon-aocohoi {
+.active>.icon-aocohoi {
     background-color: #5A76F2;
 }
 
@@ -143,7 +143,7 @@
     background-color: #333;
 }
 
-.active .icon-hoatdong {
+.active>.icon-hoatdong {
     background-color: #5A76F2;
 }
 
@@ -155,7 +155,7 @@
     background-color: #333;
 }
 
-.active .icon-muctieu {
+.active>.icon-muctieu {
     background-color: #5A76F2;
 }
 
@@ -167,7 +167,7 @@
     background-color: #333;
 }
 
-.active .icon-chiendich {
+.active>.icon-chiendich {
     background-color: #5A76F2;
 }
 
@@ -179,7 +179,7 @@
     background-color: #333;
 }
 
-.active .icon-baocao {
+.active>.icon-baocao {
     background-color: #5A76F2;
 }
 
@@ -191,6 +191,6 @@
     background-color: #333;
 }
 
-.active .icon-khac {
+.active>.icon-khac {
     background-color: #5A76F2;
 }

@@ -1,9 +1,9 @@
 <template>
   <div class="main">
     <FunctionTool />
-    <SideBarLeft />
+    <SideBarLeft v-if="this.$route.name === 'TiemNang'" />
     <MainContent />
-    <SideBarRight />
+    <SideBarRight v-if="this.$route.name === 'TiemNang'" />
     <ToastMessage :message="getMessage" :state="getState" :isShow="getIsShow" ref="toast" />
   </div>
 </template>

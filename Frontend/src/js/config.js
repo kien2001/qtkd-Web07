@@ -20,7 +20,7 @@ export const fieldMappingOptions =
         type: 1
     },
     {
-        id: "Position",
+        id: "PositionName",
         name: "Chức danh",
         type: 1,
         url: "Positions"
@@ -109,7 +109,7 @@ export const fieldMappingOptions =
         type: 1
     },
     {
-        id: "Revenue",
+        id: "RevenueName",
         name: "Doanh thu",
         type: 1,
         url: "Revenues"

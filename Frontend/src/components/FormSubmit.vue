@@ -990,7 +990,7 @@ export default {
 
         potential.PotentialName = potentialNames
 
-        customer.Description = $("#addressName").val()
+        customer.Description = $("#description").val()
         customer.SharingUse = !!$("#sharingUse").attr("checked")
 
         address.AddressName = $("#addressName").val()

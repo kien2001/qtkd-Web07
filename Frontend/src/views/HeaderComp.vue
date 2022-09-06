@@ -129,6 +129,41 @@
                     <span class="item-content">Khác</span>
                 </div>
             </router-link>
+            <div class="header-menu-item btn-icon-text">
+                <div class="item-icon icon-khac">
+                </div>
+                <span class="item-content">Khác</span>
+                <div class="other-menu-item">
+                    <router-link to="/hoatdong">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-hoatdong">
+                            </div>
+                            <span class="item-content">Hoạt động</span>
+                        </div>
+                    </router-link>
+                    <router-link to="/muctieu">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-muctieu">
+                            </div>
+                            <span class="item-content">Mục tiêu</span>
+                        </div>
+                    </router-link>
+                    <router-link to="/chiendich">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-chiendich">
+                            </div>
+                            <span class="item-content">Chiến dịch</span>
+                        </div>
+                    </router-link>
+                    <router-link to="/baocao">
+                        <div class="header-menu-item btn-icon-text">
+                            <div class="item-icon icon-baocao">
+                            </div>
+                            <span class="item-content">Báo cáo</span>
+                        </div>
+                    </router-link>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -165,6 +200,7 @@ export default {
         menuItemOnClick(e) {
             $('.header-menu-item.active').removeClass('active')
             const activeItem = $(e.target).parent('.header-menu-item')
+            console.log(activeItem);
             if ($(activeItem).length > 0) {
                 $(activeItem).addClass("active")
             } else {
@@ -174,9 +210,9 @@ export default {
     }
 }
 </script>
-<style src="@/assets/css/HeaderComp/icon.css"></style>
+<style src="@/assets/css/HeaderComp/icon.css">
+</style>
 <style scoped>
-
 
 .header {
     display: flex;
@@ -240,13 +276,16 @@ export default {
     padding-left: 7px;
     box-shadow: 0px 4px 8px -4px rgba(31, 34, 41, 0.16);
 }
-.header-menu>a{
+
+.header-menu>a {
     height: 100%;
-    margin:0 7px;
+    margin: 0 7px;
 }
+
 .header-menu>a:first-child {
     margin-left: 0;
 }
+
 .header-menu-item {
     position: relative;
     height: 100%;
@@ -266,5 +305,59 @@ export default {
 
 .header-menu-item.active>.item-content {
     color: #4262F0;
+}
+
+.header-menu>.header-menu-item:last-child {
+    display:none;
+    position: relative;
+}
+
+.header-menu>.header-menu-item:last-child>.other-menu-item {
+    position: absolute;
+    height: fit-content;
+    padding: 4px;
+    transform: translateY(60%);
+    min-width: 150px;
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: -2px 2px 7px rgba(31, 34, 41, 0.16);
+}
+
+/* .other-menu-item>a {
+} */
+.other-menu-item .header-menu-item {
+    padding: 4px 6px;
+}
+
+/******************Responsive****************/
+@media screen and (max-width: 1280px) {
+
+    .header-menu>a[href="#/chiendich"],
+    .header-menu>a[href="#/muctieu"],
+    .header-menu>a[href="#/hoatdong"],
+    .header-menu>a[href="#/khac"],
+    .header-menu>a[href="#/baocao"] {
+        display: none
+    }
+
+    .header-menu>.header-menu-item:last-child {
+        display: flex;
+        margin-left: 7px
+    }
+
+    .header-menu>.header-menu-item:last-child .icon-khac {
+        background-color: #333;
+    }
+
+    .header-menu>.header-menu-item:last-child .item-content {
+        color: #333;
+    }
+
+    .header-menu>.header-menu-item.active:last-child .other-menu-item {
+        display: flex;
+    }
 }
 </style>

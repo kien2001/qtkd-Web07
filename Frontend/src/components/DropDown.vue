@@ -13,7 +13,7 @@
         <div v-if="showNoValue" :style="{ textAlign: 'center', backgroundColor: '#fff' }">
           Không có dữ liệu
         </div>
-        <div class="dropdown-item" @mousedown="selectOption(option)" v-for="(option, index) in filteredOptions"
+        <div class="dropdown-item" @mousedown.self="selectOption(option)" v-for="(option, index) in filteredOptions"
           :key="index" :value="option.id" ref="filteredOptions">
           {{  option.name  }}
         </div>
