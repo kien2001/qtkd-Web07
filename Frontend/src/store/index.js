@@ -44,11 +44,11 @@ export default createStore({
     },
     // set giá trị cho điều kiện tìm kiếm
     setConditionSearch(state, payload) {
-      if (payload.trim() === '') {
-        this.state.conditionSearch = null
-      } else {
+      // if (payload.trim() === '') {
+      //   this.state.conditionSearch = null
+      // } else {
         this.state.conditionSearch = payload
-      }
+      // }
     },
     // set giá trị cho mảng listCheckedCustomer'
     setListCheckedCustomer(state, payload) {

@@ -22,7 +22,7 @@ export default {
             const day = date.getDate()
             const month = date.getMonth() + 1
             const year = date.getFullYear()
-            return `${day}-${month}-${year}`
+            return `${day}/${month}/${year}`
         }
         const setDate = (value) => {
             date.value = value
@@ -53,11 +53,12 @@ export default {
     font-size: 13px;
     height: 32px;
 }
-
+.dp__input_icons{
+    padding:0!important;
+}
 .dp__input_icon {
-    right: 0;
+    right: 8px;
     left: auto !important;
-    ;
 }
 
 .dp__input_icon_pad {
@@ -65,7 +66,7 @@ export default {
 }
 
 .dp__input {
-    padding: 6px 10px !important;
+    padding: 6px 8px 6px 16px !important;
 }
 
 .dp__input:hover {

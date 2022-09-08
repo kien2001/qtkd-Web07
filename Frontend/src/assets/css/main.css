@@ -1,10 +1,7 @@
 @import url(./common/input.css);
 @import url(./common/icon.css);
-@import url(./common/btn-icon.css);
-@import url(./common/btn-icon-text-color.css);
 @import url(./common/table.css);
 @import url(./common/paging.css);
-@import url(./common/drop-down.css);
 
 @font-face {
     font-family: Roboto V20;

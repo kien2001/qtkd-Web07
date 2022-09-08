@@ -1,21 +1,43 @@
 <template>
-  <div class="dropdown" v-if="options" @click="showOptions" ref="dropdown" :name="name">
+  <div
+    class="dropdown"
+    v-if="options"
+    @click="showOptions"
+    ref="dropdown"
+    :name="name"
+  >
     <div class="dropdown-header" ref="dropdown-header">
-      {{  this.oldSearchFilter || placeholder || "-Không chọn-"  }}
+      {{ this.oldSearchFilter || placeholder || "-Không chọn-" }}
+      <span class="icon-dropdown"></span>
     </div>
     <div class="dropdown-container" v-show="optionsShown">
       <!-- Dropdown Input -->
-      <input class="dropdown-input" :id="id" v-model="searchFilter" placeholder="Tìm kiếm" ref="input"
-        v-show="showInput" />
+      <input
+        class="dropdown-input"
+        :id="id"
+        v-model="searchFilter"
+        placeholder="Tìm kiếm"
+        ref="input"
+        v-show="showInput"
+      />
 
       <!-- Dropdown Menu -->
       <div class="dropdown-content">
-        <div v-if="showNoValue" :style="{ textAlign: 'center', backgroundColor: '#fff' }">
+        <div
+          v-if="showNoValue"
+          :style="{ textAlign: 'center', backgroundColor: '#fff' }"
+        >
           Không có dữ liệu
         </div>
-        <div class="dropdown-item" @mousedown.self="selectOption(option)" v-for="(option, index) in filteredOptions"
-          :key="index" :value="option.id" ref="filteredOptions">
-          {{  option.name  }}
+        <div
+          class="dropdown-item"
+          @mousedown.self="selectOption(option)"
+          v-for="(option, index) in filteredOptions"
+          :key="index"
+          :value="option.id"
+          ref="filteredOptions"
+        >
+          {{ option.name }}
         </div>
         <Loading v-if="showLoading" />
       </div>
@@ -34,7 +56,7 @@ export default {
   props: {
     id: {
       type: String,
-      required: false
+      required: false,
     },
     placeholder: {
       type: String,
@@ -78,13 +100,15 @@ export default {
         }
       }
       return filtered;
-    }
+    },
   },
   methods: {
     selectOption(option) {
+      $(this.$refs["dropdown-header"]).css("color", "#1F2229");
       this.optionsShown = false;
       this.selected = option;
       this.searchFilter = option.name;
+      $(this.$refs["dropdown-header"]).removeAttr("show");
       if (this.showInput) {
         this.$emit(
           "selected",
@@ -93,7 +117,12 @@ export default {
             : { id: this.selected.id, name: this.selected.name }
         );
       } else {
-        this.$emit("selected", this.selected.id === 0 ? "" :{ id:this.selected.id, name:this.$attrs.name1 || ""});
+        this.$emit(
+          "selected",
+          this.selected.id === 0
+            ? ""
+            : { id: this.selected.id, name: this.$attrs["name-value"] || "" }
+        );
       }
     },
     setOptions(values) {
@@ -102,10 +131,13 @@ export default {
     async showOptions(e) {
       e.stopPropagation();
       const dropdownContainer = $(".dropdown-container").toArray();
-      const currentDropdown = $(this.$refs.dropdown).find(".dropdown-container")
-      dropdownContainer.forEach(dropdown=>{
-        $(dropdown).not(currentDropdown).css("display", "none")
-      })
+      const currentDropdown = $(this.$refs.dropdown).find(
+        ".dropdown-container"
+      );
+      dropdownContainer.forEach((dropdown) => {
+        $(dropdown).not(currentDropdown).css("display", "none");
+      });
+      $(this.$refs["dropdown-header"]).attr("show", "show");
       this.optionsShown = true;
       this.searchFilter = "";
       this.$nextTick(() => this.$refs.input.focus());
@@ -127,9 +159,9 @@ export default {
               this.showLoading = false;
               // get dữ liệu lỗi
               if (!data.flag) {
-                this.$store.commit("setState", "fail")
-                this.$store.commit("setMessage", data.userMsg[0])
-                this.$store.commit("setIsShow", true)
+                this.$store.commit("setState", "fail");
+                this.$store.commit("setMessage", data.userMsg[0]);
+                this.$store.commit("setIsShow", true);
                 this.showNoValue = true;
               } else {
                 this.getSuccess = true;
@@ -138,7 +170,7 @@ export default {
               }
             }
           } else {
-            if(!sessionStorage.getItem(this.name)){
+            if (!sessionStorage.getItem(this.name)) {
               this.showLoading = true;
               const data = await axios
                 .get(`${rootApi}${this.name}`)
@@ -148,19 +180,19 @@ export default {
               let result;
               // get dữ liệu lỗi
               if (!data.flag) {
-                this.$store.commit("setState", "fail")
-                this.$store.commit("setMessage", data.userMsg[0])
-                this.$store.commit("setIsShow", true)
+                this.$store.commit("setState", "fail");
+                this.$store.commit("setMessage", data.userMsg[0]);
+                this.$store.commit("setIsShow", true);
                 this.showNoValue = true;
               } else {
-                this.success = true
+                this.success = true;
                 result = this.handleTransferObject(data.data);
                 console.log(result);
                 this.options = result;
                 sessionStorage.setItem(this.name, JSON.stringify(result));
               }
-            }else{
-              this.options = JSON.parse(sessionStorage.getItem(this.name))
+            } else {
+              this.options = JSON.parse(sessionStorage.getItem(this.name));
             }
           }
         }
@@ -186,6 +218,7 @@ export default {
       } else {
         this.searchFilter = this.selected.name;
       }
+      $(this.$refs["dropdown-header"]).removeAttr("show");
       this.optionsShown = false;
       $(this.$refs["dropdown-header"]).css("border-color", "#D3D7DE");
     },
@@ -193,7 +226,7 @@ export default {
   updated() {
     if (this.selected.id) {
       const arr = this.$refs.filteredOptions;
-      arr.forEach((item) => {
+      arr?.forEach((item) => {
         $(item).removeClass("selected");
         if ($(item).is(`[value=${this.selected.id}]`)) {
           $(item).addClass("selected");
@@ -201,7 +234,7 @@ export default {
       });
     }
   },
-  mounted(){
+  mounted() {
     $(window).click(this.exit);
   },
   watch: {
@@ -209,7 +242,7 @@ export default {
       if (newVal && newVal !== "") {
         this.oldSearchFilter = newVal;
       }
-    }
+    },
   },
   components: { Loading },
 };
@@ -233,19 +266,27 @@ export default {
   text-align: left;
   line-height: 32px;
   height: 32px;
-  padding: 0 8px 0 16px;
+  color: #99a1b2;
+  padding: 0 16px 0 16px;
   border-radius: 4px;
-  color: #1f2229;
-  background-image: url("../assets/img/arrow-down.svg");
-  background-size: 16px 16px;
-  background-repeat: no-repeat;
-  background-position-y: center;
-  background-position-x: calc(100% - 8px);
   user-select: none;
+  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.dropdown .dropdown-header .icon-dropdown {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  background: url("../assets/img/icon_collection.svg") no-repeat -52px -38px;
+  width: 9px;
+  height: 5px;
+  transform: translateY(-50%);
+}
+.dropdown .dropdown-header[show] .icon-dropdown {
+  background: url("../assets/img/icon_collection.svg") no-repeat -36px -38px;
 }
 
 .dropdown .dropdown-header:hover {
-  border-color: #7189f4;
+  border-color: #7189f4 !important;
 }
 
 .dropdown .dropdown-header:focus,
@@ -260,7 +301,7 @@ export default {
   width: var(--width-dropdown);
 }
 
-.dropdown .dropdown-container>div:last-child {
+.dropdown .dropdown-container > div:last-child {
   max-height: 200px;
   overflow-y: auto;
 }
@@ -274,7 +315,6 @@ export default {
   display: block;
   padding: 6px;
   min-width: var(--width-dropdown);
-  /* max-width: var(--width-dropdown); */
   padding: 8px 8px 8px 16px;
   background-image: url("../assets/img/search1.svg");
   background-size: 16px 16px;

@@ -6,14 +6,14 @@
         select$.resolveOptions()
       }
     }" ref="multiselect">
-    <template v-slot:caret="{}" v-if="this.$attrs.isTag">
+    <!-- <template v-slot:caret="{}" v-if="this.$attrs.isTag">
       <div class="multiselect-clear" v-show="!this.$attrs.isTag">
       </div>
     </template>
     <template v-slot:clear="{}" v-if="this.$attrs.isTag">
       <div class="multiselect-caret" v-show="!this.$attrs.isTag">
       </div>
-    </template>
+    </template> -->
     <template v-slot:spinner="{}">
       <div class="spinner-custom multiselect-dropdown">
         <img class="spinner-icon" src="../assets/img/loadding-icon.svg">
@@ -50,6 +50,7 @@ export default {
   --ms-tag-font-weight: 500;
   --ms-option-bg-pointed: #F0F2F4;
   min-height: 32px !important;
+  transition: border-color .2s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .multiselect:hover {
@@ -100,4 +101,14 @@ export default {
 .spinner-icon {
   margin: 0 auto;
 }
+.multiselect-tags-search-wrapper{
+  display:none!important;
+}
+.multiselect-tags{
+    max-height: 60px;
+    overflow-y: auto;
+    align-items: flex-start!important;
+    padding-left: 14px!important;
+}
+
 </style>

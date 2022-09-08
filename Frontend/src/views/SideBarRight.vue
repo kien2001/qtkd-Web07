@@ -1,10 +1,10 @@
 <template>
     <div class="sidebar-right">
         <div class="sidebar-right-menu">
-            <div class="menu-item btn-icon small btn-hover phone-fill"></div>
-            <div class="menu-item btn-icon small btn-hover note-checked-fill"></div>
-            <div class="menu-item btn-icon small btn-hover lich-fill"></div>
-            <div class="menu-item btn-icon small btn-hover mail-fill"></div>
+            <div class="menu-item small btn-hover phone-fill"></div>
+            <div class="menu-item small btn-hover note-checked-fill"></div>
+            <div class="menu-item small btn-hover lich-fill"></div>
+            <div class="menu-item small btn-hover mail-fill"></div>
         </div>
         <div class="sidebar-right-main">
             <div class="main-header">Lịch sử giao dịch</div>
@@ -61,7 +61,6 @@ export default {
     display: flex;
     flex-direction: column;
     border-left: 1px solid rgb(226, 228, 233);
-    /* padding: 0 15px; */
 }
 
 .sidebar-right-menu {
@@ -78,7 +77,9 @@ export default {
     flex-direction: column;
     gap: 15px;
 }
-
+.menu-item{
+    cursor: pointer;
+}
 .main-header {
     font-size: 13px;
     font-weight: 700;

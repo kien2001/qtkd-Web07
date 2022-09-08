@@ -23,7 +23,7 @@
             <div class="box-footer">
                 <Button name="Huỷ bỏ" color="#fff" @clickBtn="closeUpdateMultipleForm" colorHover="#D0D8FB" />
                 <Button name="Cập nhật" color="#4262F0" colorHover="#2B4EEE" colorText="#FFFFFF" :disabled="isDisabled"
-                    @clickBtn="updateMultiple" />
+                    @clickBtn="updateMultiple" ref = "update-btn"/>
             </div>
         </div>
         <Loading v-if="isLoading" position="fixed" />
@@ -48,7 +48,7 @@
 }
 
 .box-main {
-    min-width: 600px;
+    width: 600px;
     height: fit-content;
     background-color: #fff;
     display: flex;
@@ -159,7 +159,9 @@ export default {
          * Created by LVKIEN 30/08/2022
          */
         updateMultiple() {
-            this.$refs.showConfirm.isShow = true
+            if($(this.$refs["update-btn"]).hasClass("disabled")){
+                this.$refs.showConfirm.isShow = true
+            }
         },
         /**
          * Gọi api để update nhiều bản ghi 

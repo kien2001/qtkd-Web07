@@ -15,6 +15,7 @@ const StatusCode = {
         DeletedFail: "E013",
         DuplicateValue: "E014",
         EmptyFirstName: "E015",
+        ExportExcelError: "E016"
     },
     SuccessCode: {
         GetSuccess: "S01",
@@ -39,7 +40,8 @@ const StatusCode = {
         ProcessError: "Có lỗi trong quá trình xử lý.",
         InsertFail: "Thêm mới thất bại.",
         DeleteFail: "Xóa bản ghi thất bại.",
-        UpdateFail: "Cập nhật thông tin thất bại."
+        UpdateFail: "Cập nhật thông tin thất bại.",
+        ExportExcelError: "Xuất khẩu excel thất bại."
     },
     MessageSuccess:
     {

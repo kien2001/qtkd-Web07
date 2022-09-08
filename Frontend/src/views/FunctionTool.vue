@@ -6,27 +6,59 @@
         <div class="btn-icon small arrow-down"></div>
       </div>
       <div class="edit-btn btn-hover">Sửa</div>
-      <div class=" btn-icon small btn-hover reload"></div>
+      <div class="btn-icon small btn-hover reload" @click="handleReload"></div>
     </div>
     <div class="function-filter" v-else>
-      <div class="selected-item">Đã chọn <span> {{ getListIdChecked.length }}</span></div>
-      <div class="edit-btn btn-hover">Bỏ chọn</div>
-      <Button name="Cập nhật thông tin" color="#fff" colorHover="#D0D8FB" :hasIcon="true" :urlMainBtn="iconEdit"
-        @clickBtn="editMultipleRow" border="#fff" borderHover="#D3D7DE" />
+      <div class="selected-item">
+        Đã chọn <span> {{ getListIdChecked.length }}</span>
+      </div>
+      <div class="edit-btn btn-hover" @click="handleDeselect">Bỏ chọn</div>
+      <Button
+        name="Cập nhật thông tin"
+        color="#fff"
+        colorHover="#D0D8FB"
+        :hasIcon="true"
+        :urlMainBtn="iconEdit"
+        @clickBtn="editMultipleRow"
+        border="#fff"
+        borderHover="#D3D7DE"
+      />
       <div class="option-detail">
         <div class="btn-icon more-option" @click="showOptions"></div>
         <div class="more-option-container" v-show="showOptionList">
-          <Button name="Xuất khẩu" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconExport"
-            @clickBtn="exportExcel" />
-          <Button name="Xoá" color="#fff" colorHover="#E2E4E9" :hasIcon="true" :urlMainBtn="iconDelete"
-            colorText="#EC4141" @clickBtn="deleteRow" />
+          <Button
+            name="Xuất khẩu"
+            color="#fff"
+            colorHover="#E2E4E9"
+            :hasIcon="true"
+            :urlMainBtn="iconExport"
+            @clickBtn="exportExcel"
+          />
+          <Button
+            name="Xoá"
+            color="#fff"
+            colorHover="#E2E4E9"
+            :hasIcon="true"
+            :urlMainBtn="iconDelete"
+            colorText="#EC4141"
+            @clickBtn="deleteRow"
+          />
         </div>
       </div>
     </div>
     <div class="function-manipulation">
-      <div class=" ">
-        <Button name="Thêm" color="#4262F0" colorHover="#2B4EEE" :hasIcon="true" :urlMainBtn="iconAdd"
-          :isComboBtn="true" :urlSecondBtn="iconArrowDownWhite" @clickBtn="openForm" colorText="#fff" />
+      <div class="">
+        <Button
+          name="Thêm"
+          color="#4262F0"
+          colorHover="#2B4EEE"
+          :hasIcon="true"
+          :urlMainBtn="iconAdd"
+          :isComboBtn="true"
+          :urlSecondBtn="iconArrowDownWhite"
+          @clickBtn="openForm"
+          colorText="#fff"
+        />
       </div>
       <div class="btn-icon more-option" @click="handleExport"></div>
       <div class="btn-icon more-option2">
@@ -34,24 +66,27 @@
         <div class="item-sub btn-addition icon-arrow-down"></div>
       </div>
     </div>
-    <PopUp text="Bạn có chắc chắn muốn xoá tiềm năng này không?" colorBtn="#EC4141" colorHoverBtn="#EA2E2E"
-      ref="showConfirm" @handlePopUp="sendRequestDelete" />
+    <PopUp
+      text="Bạn có chắc chắn muốn xoá tiềm năng này không?"
+      colorBtn="#EC4141"
+      colorHoverBtn="#EA2E2E"
+      ref="showConfirm"
+      @handlePopUp="sendRequestDelete"
+    />
   </div>
 </template>
 <script>
-import $ from 'jquery'
-import axios from 'axios'
-import iconEdit from '../assets/img/edit.svg'
-import iconAdd from '../assets/img/add.svg'
-import iconExport from '../assets/img/export.svg'
-import iconDelete from '../assets/img/delete.svg'
-import iconArrowDownWhite from '../assets/img/arrow-down-white.svg'
-import { rootApi } from '@/js/config'
-import exportToExcelPro from '@/js/exportToExcel'
-import { fieldOptions } from '../js/config'
-import CustomerTable from '@/entities/CustomerTable'
-import { capitalizeFirstLetter, lowerCaseFirstLetter } from '@/js/common'
-import PopUp from '@/components/PopUp.vue'
+import $ from "jquery";
+import axios from "axios";
+import iconEdit from "../assets/img/edit.svg";
+import iconAdd from "../assets/img/add.svg";
+import iconExport from "../assets/img/export.svg";
+import iconDelete from "../assets/img/delete.svg";
+import iconArrowDownWhite from "../assets/img/arrow-down-white.svg";
+import { rootApi } from "@/js/config";
+import PopUp from "@/components/PopUp.vue";
+import emitter from "@/js/emitter";
+import StatusCode from "@/entities/StatusCode";
 export default {
   name: "FunctionTool",
   data() {
@@ -62,44 +97,68 @@ export default {
       iconExport,
       iconDelete,
       showOptionList: false,
-      isItemChecked: true // biến kiểm tra xem liệu đã có row nào trong table đc check hay chưa
+      isItemChecked: true, // biến kiểm tra xem liệu đã có row nào trong table đc check hay chưa
     };
   },
   watch: {
     /**
      * Xem liệu đã có ô nào đc check hay chưa, set giá trị biến isItemChecked theo đó
-     * @param {*} newValue 
+     * @param {*} newValue
      * Created by LVKIEN 30/08/2022
      */
     getListIdChecked(newValue) {
       if (newValue.length !== 0) {
         this.isItemChecked = false;
-      }
-      else {
+      } else {
         this.isItemChecked = true;
       }
-    }
+    },
   },
   computed: {
+    /**
+     * lấy giá trị của key search
+     * Created by LVKIEN 30/08/2022
+     */
+    getConditionSearch() {
+      return this.$store.state.conditionSearch + " ";
+    },
     /**
      * Lấy danh sách row dc check trong store
      * Created by LVKIEN 30/08/2022
      */
     getListIdChecked() {
       return this.$store.state.listIdChecked;
-    }
+    },
   },
   created() {
     $(window).click(this.exit);
   },
   methods: {
     /**
-     *  tắt thẻ div show detail option
-     * @param {*} e 
-     * Created by LVKIEN 30/08/2022
+     * TODO: Bỏ select tất cả checkbox
+     *! Created by LVKIEN 6/9/2022
+     */
+    handleDeselect() {
+      emitter.emit("deselectAll");
+    },
+    /**
+     * TODO: Reload lại danh sách
+     * ! Created by LVKIEN 6/9/2022
+     */
+    handleReload() {
+      const keyTemp = this.getConditionSearch + " ";
+      this.$store.commit("setConditionSearch", keyTemp);
+    },
+    /**
+     * TODO:  tắt thẻ div show detail option
+     * @param {*} e
+     * ! Created by LVKIEN 30/08/2022
      */
     exit(e) {
-      if ($(e.target).attr("class") !== $(this.$refs.function).find(".btn-icon.more-option").attr("class")) {
+      if (
+        $(e.target).attr("class") !==
+        $(this.$refs.function).find(".btn-icon.more-option").attr("class")
+      ) {
         this.showOptionList = false;
       }
     },
@@ -109,80 +168,76 @@ export default {
      */
     async sendRequestDelete() {
       try {
-        const resDeleteRows = await axios.post(`${rootApi}Customers/ListCustomerId`, this.getListIdChecked)
-          .then(res => res.data)
-          .catch(error => error.response.data);
+        const resDeleteRows = await axios
+          .post(`${rootApi}Customers/ListCustomerId`, this.getListIdChecked)
+          .then((res) => res.data)
+          .catch((error) => error.response.data);
         if (resDeleteRows.flag) {
-          this.$store.commit("setState", "success")
-          this.$store.commit("setMessage", "Thành công")
-          this.$store.commit("setIsShow", true)
+          this.$store.commit("setState", "success");
+          this.$store.commit("setMessage", "Thành công");
+          this.$store.commit("setIsShow", true);
           this.$store.commit("resetListIdChecked");
           this.$store.commit("setIsDeleted", true);
-        }
-        else {
-          this.$store.commit("setState", "fail")
-          this.$store.commit("setMessage", resDeleteRows.userMsg[0])
-          this.$store.commit("setIsShow", true)
+        } else {
+          this.$store.commit("setState", "fail");
+          this.$store.commit("setMessage", resDeleteRows.userMsg[0]);
+          this.$store.commit("setIsShow", true);
         }
       } catch (error) {
-        this.$store.commit("setState", "fail")
-        this.$store.commit("setMessage", error)
-        this.$store.commit("setIsShow", true)
+        this.$store.commit("setState", "fail");
+        this.$store.commit("setMessage", error);
+        this.$store.commit("setIsShow", true);
       }
-      
     },
     /**
      * Hiển thị PopUp xoá
      * Created by LVKIEN 29/08/2022
      */
     deleteRow() {
-      this.$refs.showConfirm.isShow = true
+      this.$refs.showConfirm.isShow = true;
     },
-    exportExcel() {
-      let resultData = [];
-      const customerTable = new CustomerTable();
-      const keyCustomerTableArr = Object.keys(customerTable);
-      const keyLowerArr = keyCustomerTableArr.map(key => lowerCaseFirstLetter(key));
-      if (this.$store.state.listCheckedCustomer?.length > 0) {
-        this.$store.state.listCheckedCustomer.forEach(checkedCustomer => {
-          const customerTable = new CustomerTable();
-          keyLowerArr.forEach(key => {
-            customerTable[capitalizeFirstLetter(key)] = checkedCustomer[key];
-          });
-          if (checkedCustomer.lastMiddleName) {
-            customerTable.FullName = `${checkedCustomer.lastMiddleName.trim()} ${checkedCustomer.firstName.trim()}`;
-          }
-          else {
-            customerTable.FullName = checkedCustomer.firstName.trim();
-          }
-          resultData = [...resultData, customerTable];
-        });
+    /**
+     * TODO: gọi API export file excel
+     * !Created by LVKIEN 7/9/2022
+     */
+    async exportExcel() {
+      try {
+        if (this.$store.state.listCheckedCustomer?.length > 0) {
+          const listCustomer = this.$store.state.listCheckedCustomer.map(
+            (item) => item.customerId
+          );
+          await axios({
+            url: "http://localhost:5057/api/v1/Customers/CustomerExcel",
+            data: listCustomer,
+            method: "POST",
+            responseType: "blob",
+          })
+            .then((response) => {
+              const url = window.URL.createObjectURL(new Blob([response.data]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", "Customer.xlsx");
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              this.$store.commit("setState", "success");
+              this.$store.commit("setMessage", "Thành công");
+              this.$store.commit("setIsShow", true);
+            })
+            .catch((e) => {
+              this.$store.commit("setState", "fail");
+              this.$store.commit(
+                "setMessage",
+                StatusCode.MessageError.ExportExcelError
+              );
+              this.$store.commit("setIsShow", true);
+            });
+        }
+      } catch (error) {
+        this.$store.commit("setState", "fail");
+        this.$store.commit("setMessage", error.message);
+        this.$store.commit("setIsShow", true);
       }
-      console.log(resultData);
-      const widthArr = [
-        { width: 15 },
-        { width: 30 },
-        { width: 20 },
-        { width: 20 },
-        { width: 15 },
-        { width: 30 },
-        { width: 30 },
-        { width: 20 },
-        { width: 30 },
-        { width: 25 },
-        { width: 25 },
-        { width: 20 },
-        { width: 20 },
-        { width: 20 },
-        { width: 20 },
-        { width: 40 },
-        { width: 30 },
-        { width: 20 },
-        { width: 30 },
-        { width: 20 },
-        { width: 30 }
-      ];
-      exportToExcelPro(resultData, "ListCustomer", "ListCustomer", "Danh sách khách hàng", fieldOptions, widthArr);
     },
     /**
      * KHi click vào button Cập nhật thông tin, mở component EditMultipleRow
@@ -207,17 +262,15 @@ export default {
         this.$store.commit("setFormState", true);
         this.$store.commit("setEditForm", false);
       }
-    }
+    },
   },
-  components: { PopUp }
-}
+  components: { PopUp },
+};
 </script>
 <style scoped>
-
-
 /* =======Header-footer ========== */
 .function {
-  background-color: #E2E4E9;
+  background-color: #e2e4e9;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -230,7 +283,7 @@ export default {
   gap: 10px;
 }
 
-.function-filter>div {
+.function-filter > div {
   align-self: center;
   /* height: inherit; */
   display: flex;
@@ -264,12 +317,12 @@ export default {
   transform: translate(36%, 100%);
 }
 
-.more-option-container>div {
+.more-option-container > div {
   width: 100%;
 }
 
 .edit-btn {
-  color: #4262F0;
+  color: #4262f0;
   cursor: pointer;
   font-weight: 500;
   padding: 5px 7px;
@@ -281,7 +334,7 @@ export default {
   gap: 6px;
 }
 
-.selected-item>span {
+.selected-item > span {
   font-weight: 600;
 }
 
@@ -289,28 +342,46 @@ export default {
   display: flex;
   gap: 5px;
 }
-
+.btn-icon {
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
 .more-option {
   width: 32px;
   height: 32px;
   background-color: #fff;
   background-size: 20px 20px !important;
   border-radius: 4px;
-  border:1px solid #fff;
+  border: 1px solid #fff;
 }
 
 .more-option:hover,
 .more-option:focus,
-.more-option2>div:hover,
-.more-option2>div:focus {
-  background-color: #D0D8FB;
-  border-color: #D3D7DE;
+.more-option2 > div:hover,
+.more-option2 > div:focus {
+  background-color: #d0d8fb;
+  border-color: #d3d7de;
   border-radius: 4px;
+}
+.btn-addition {
+  width: 32px;
+  height: inherit;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+  padding: 8px;
+}
+.icon-3dot3line {
+  background-image: url("../assets/img/3dot3line.svg");
+}
+.icon-arrow-down {
+  background-image: url("../assets/img/arrow-down.svg");
 }
 
 .more-option:active,
-.more-option2>div:active {
-  background-color: #D3D7DE;
+.more-option2 > div:active {
+  background-color: #d3d7de;
 }
 
 .more-option2 {
@@ -320,7 +391,7 @@ export default {
   border-radius: 4px;
 }
 
-.more-option2>.item-sub {
+.more-option2 > .item-sub {
   width: 32px;
 }
 </style>

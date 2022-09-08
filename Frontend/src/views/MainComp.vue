@@ -4,12 +4,15 @@
     <SideBarLeft v-if="this.$route.name === 'TiemNang'" />
     <MainContent />
     <SideBarRight v-if="this.$route.name === 'TiemNang'" />
-    <ToastMessage :message="getMessage" :state="getState" :isShow="getIsShow" ref="toast" />
+    <ToastMessage
+      :message="getMessage"
+      :state="getState"
+      :isShow="getIsShow"
+      ref="toast"
+    />
   </div>
 </template>
 <style scoped>
-
-
 .main {
   display: grid;
   grid-template-columns: 240px auto 320px;
@@ -30,28 +33,28 @@
 .sidebar-right {
   grid-area: sideBarRight;
 }
-.main-content{
-  grid-area : mainContent;
+.main-content {
+  grid-area: mainContent;
 }
 </style>
 <script>
-import SideBarLeft from '@/views/SideBarLeft.vue'
-import FunctionTool from '@/views/FunctionTool.vue'
-import MainContent from '@/views/MainContent.vue'
-import SideBarRight from '@/views/SideBarRight.vue'
+import SideBarLeft from "@/views/SideBarLeft.vue";
+import FunctionTool from "@/views/FunctionTool.vue";
+import MainContent from "@/views/MainContent.vue";
+import SideBarRight from "@/views/SideBarRight.vue";
 export default {
-  name: 'MainComp',
+  name: "MainComp",
   components: { SideBarLeft, SideBarRight, FunctionTool, MainContent },
-  computed:{
-    getMessage(){
-      return this.$store.state.message
+  computed: {
+    getMessage() {
+      return this.$store.state.message;
     },
-    getState(){
-      return this.$store.state.state
+    getState() {
+      return this.$store.state.state;
     },
-    getIsShow(){
-      return this.$store.state.isShow
+    getIsShow() {
+      return this.$store.state.isShow;
     },
-  }
-}
+  },
+};
 </script>
