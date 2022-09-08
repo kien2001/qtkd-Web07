@@ -13,7 +13,7 @@ namespace Entities
     /// Created By: LVKien (08/11/2022)
     public class Customer
     {
-        // crtl K S
+
         public Guid CustomerId { get; set; } // Id khách hàng
         
         public Guid? PotentialId { get; set; } // Id tiềm năng

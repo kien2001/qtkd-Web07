@@ -26,6 +26,8 @@ namespace Services
         /// <param name="customerId"></param>
         /// <returns></returns>
         /// Created by: LVKien (11/08/2022)
-        Result UpdateService(CustomerUpdate customer, Guid customerId);   
+        Result UpdateService(CustomerUpdate customer, Guid customerId);
+
+        Result ExportExcel(List<Guid> customerId);
     }
 }

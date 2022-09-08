@@ -29,6 +29,8 @@ namespace Constants
             public const string InsertFail = "Thêm mới thất bại.";
             public const string DeleteFail = "Xóa bản ghi thất bại.";
             public const string UpdateFail = "Cập nhật thông tin thất bại.";
+            public const string ExportExcelError = "Xuất khẩu excel thất bại.";
+
         }
 
         /// <summary>
@@ -52,6 +54,7 @@ namespace Constants
             public const string DeletedFail = "E013";
             public const string DuplicateValue = "E014";
             public const string EmptyFirstName = "E015";
+            public const string ExportExcelError = "E016";
 
         }
     }

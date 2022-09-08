@@ -13,6 +13,7 @@ using Infrastructure;
 using Exceptions;
 using Entities;
 using Constants;
+using Enums;
 using System.Collections;
 using System.Reflection;
 
@@ -29,9 +30,11 @@ namespace Repository
         /// Created by LVKIEn 25/08/2022
         public Result Delete(IEnumerable<Guid> listCustomerId)
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -85,9 +88,11 @@ namespace Repository
         /// Created by LVKIEN 18/05/2022
         public Result UpdateMultiple(UpdatedMultiple<Guid> updatedMultiple)
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
             try
             {
                 var stringIdList = updatedMultiple.ListId.ConvertAll<string>(g => g.ToString());
@@ -249,9 +254,11 @@ namespace Repository
         /// Created by LVKIEN 19/08/2022
         public Result Insert(Customer customer)
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -325,9 +332,11 @@ namespace Repository
         /// Created by LVKIEN 25/08/2022
         public Result Update(CustomerUpdate customer, Guid customerId)
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
@@ -408,8 +417,90 @@ namespace Repository
                 result.Flag = false;
             }
             return result;
-
         }
+
+        /// <summary>
+        /// Lấy dữ liệu về cho export excel
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        /// Created by LvKIEn 7/9/2022
+        public Result GetDataExcel(
+            List<Guid> customerId)
+        {
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            try
+            {
+                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+
+                var pagingProc = "Proc_Customer_GetPaging";
+                List<string> idStrList = new();
+                string idStr;
+                foreach (Guid item in customerId)
+                {
+                    string guidStr = item.ToString();
+                    idStrList.Add($"'{guidStr}'");
+                }
+
+                idStr = $"({string.Join(", ", idStrList)})";
+                string whereClause = $" CustomerId IN {idStr}";
+               
+                DynamicParameters dynamicParameters = new();
+                dynamicParameters.Add("@v_Offset", 0);
+                dynamicParameters.Add("@v_Limit", customerId.Count);
+                dynamicParameters.Add("@v_Sort", default(Plane[]));
+                dynamicParameters.Add("@v_Where", whereClause);
+
+
+                var multipleResults = mySqlConnection.QueryMultiple(sql: pagingProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (multipleResults == null)
+                {
+                    result.Data = new { };
+                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                    result.Flag = false;
+                }
+                else
+                {
+                    List< CustomerTable> customerTable = (List<CustomerTable>)multipleResults.Read<CustomerTable>();
+                    var totalCount = multipleResults.Read<long>().Single();
+
+                    if (totalCount == 0)
+                    {
+                        result.Data = new { };
+                        result.DevMsg.Add(FailMessage.CodeError.NotFound);
+                        result.UserMsg.Add(FailMessage.MessageError.NotFound);
+                        result.Flag = false;
+                    }
+                    else
+                    {
+                        result.Data = customerTable;
+                        result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                        result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                        result.Flag = true;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                result.Data = ex.Message;
+                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                result.Flag = false;
+            }
+            return result;
+        }
+
+
+
+
         /// <summary>
         /// Xử lý lấy được FirstName và LastName
         /// </summary>
@@ -447,6 +538,8 @@ namespace Repository
             }
         }
      
+
+
         /// <summary>
         /// Tạo câu lệnh andClause từ mảng ở frontend
         /// </summary>

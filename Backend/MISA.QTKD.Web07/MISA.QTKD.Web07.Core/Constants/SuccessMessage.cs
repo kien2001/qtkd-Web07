@@ -19,6 +19,8 @@ namespace Constants
             public const string DeleteSuccess = "Xóa bản ghi thành công!";
             public const string SearchSuccess = "Tìm kiếm bản ghi thành công!";
             public const string InsertSuccess = "Tạo bản ghi thành công!";
+            public const string ExportSuccess = "Export excel thành công!";
+
         }
 
         /// <summary>
@@ -32,6 +34,7 @@ namespace Constants
             public const string DeleteSuccess = "S03";
             public const string SearchSuccess = "S04";
             public const string InsertSuccess = "S05";
+            public const string ExportSuccess = "S06";
         }
     }
 }
