@@ -112,3 +112,16 @@ E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\obj\Debug\net6.0\MISA.QTKD.Web07.Api.pdb
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\obj\Debug\net6.0\MISA.QTKD.Web07.Api.genruntimeconfig.cache
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\obj\Debug\net6.0\ref\MISA.QTKD.Web07.Api.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\ClosedXML.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\DocumentFormat.OpenXml.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\ExcelNumberFormat.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\System.Drawing.Common.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\System.IO.Packaging.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\EPPlus.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\EPPlus.Interfaces.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\EPPlus.System.Drawing.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\Microsoft.IO.RecyclableMemoryStream.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll

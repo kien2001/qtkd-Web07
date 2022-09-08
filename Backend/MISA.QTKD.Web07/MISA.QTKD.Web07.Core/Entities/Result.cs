@@ -10,13 +10,13 @@ namespace Entities
     {
         public object Data { get; set; }
 
-        public string DevMsg { get; set; }
+        public List<string> DevMsg { get; set; }
 
-        public string UserMsg { get; set; }
+        public List<string> UserMsg { get; set; }
 
         public bool Flag { get; set; }
 
-        public Result(object data, string devMsg, string userMsg, bool flag)
+        public Result(object data, List<string> devMsg, List<string> userMsg, bool flag)
         {
             Data = data;
             DevMsg = devMsg;

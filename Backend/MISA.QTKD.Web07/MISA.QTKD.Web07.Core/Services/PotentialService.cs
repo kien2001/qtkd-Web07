@@ -44,11 +44,11 @@ namespace Services
                     bool checkDuplicateCode = _potentialRepository.CheckDuplicateCode(potential.PotentialCode);
                     if (checkDuplicateCode == true)
                     {
-                        result = new Result(data: null,
-                               devMsg: FailMessage.CodeError.DuplicatePotentialCode,
-                               userMsg: FailMessage.MessageError.DuplicatePotentialCode,
-                               flag: false
-                               );
+                        //result = new Result(data: null,
+                        //       devMsg: FailMessage.CodeError.DuplicatePotentialCode,
+                        //       userMsg: FailMessage.MessageError.DuplicatePotentialCode,
+                        //       flag: false
+                        //       );
                     }
                     else
                     {
@@ -58,15 +58,16 @@ namespace Services
             }
             catch (Exception ex)
             {
-                result = new Result(data: ex.Message,
-                               devMsg: FailMessage.CodeError.ProcessError,
-                               userMsg: FailMessage.MessageError.ProcessError,
-                               flag: false
-                               );
+                //result = new Result(data: ex.Message,
+                //               devMsg: result.DevMsg.Append(FailMessage.CodeError.ProcessError).ToArray(),
+                //               userMsg: result.UserMsg.Append(FailMessage.MessageError.ProcessError).ToArray(),
+                //               flag: false
+                //               );
             }
 
 
-            return result;
+            //return result;
+            return null;
         }
     }
 

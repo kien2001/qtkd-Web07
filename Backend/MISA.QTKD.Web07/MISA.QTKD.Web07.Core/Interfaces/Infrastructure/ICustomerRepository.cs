@@ -22,7 +22,9 @@ namespace Infrastructure
 
         Result Delete(IEnumerable<Guid> listCustomerId);
 
-        Result GetPaging(int? pageSize, int? pageIndex, string? keyword);
+        Result GetPaging(int? pageSize, int? pageIndex, string? keyword, FilterObject[]? listFilter);
+
+        Result GetDataExcel(List<Guid> customerId);
 
     }
 }

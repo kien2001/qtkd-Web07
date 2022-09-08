@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MISA.QTKD.Web07.Core.Entities
+namespace Entities
 {
 
     /// <summary>
@@ -13,7 +13,7 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created By: LVKien (08/11/2022)
     public class Customer
     {
-        // crtl K S
+
         public Guid CustomerId { get; set; } // Id khách hàng
         
         public Guid? PotentialId { get; set; } // Id tiềm năng

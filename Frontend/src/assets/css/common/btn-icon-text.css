@@ -1,0 +1,137 @@
+.btn-icon-text {
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+}
+
+.item-icon {
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.item-content {
+    font-weight: 500px;
+}
+
+.icon-ngoinha {
+    background-image: url("../../img/home.svg");
+}
+
+.icon-tiemnang {
+    background-image: url("../../img/tiemnang.svg");
+}
+
+.icon-chaohang {
+    background-image: url("../../img/chaohang.svg");
+}
+
+.icon-lienhe {
+    background-image: url("../../img/lienhe.svg");
+}
+
+.icon-khachhang {
+    background-image: url("../../img/khachhang.svg");
+}
+
+.icon-cohoi {
+    background-image: url("../../img/cohoi.svg");
+}
+
+.icon-baogia {
+    background-image: url("../../img/baogia.svg");
+}
+
+.icon-donhang {
+    background-image: url("../../img/giohang.svg");
+}
+
+.icon-hoadon {
+    background-image: url("../../img/hoadon.svg");
+}
+
+.icon-aocohoi {
+    background-image: url("../../img/aocohoi.svg");
+}
+
+.icon-hoatdong {
+    background-image: url("../../img/hoatdong.svg");
+}
+
+.icon-muctieu {
+    background-image: url("../../img/muctieu.svg");
+}
+
+.icon-chiendich {
+    background-image: url("../../img/chiendich.svg");
+}
+
+.icon-baocao {
+    background-image: url("../../img/baocao.svg");
+}
+
+.icon-khac {
+    background-image: url("../../img/khac.svg");
+}
+
+.icon-ngoinha-active {
+    background-image: url("../../img/blue-active/home.svg");
+}
+
+.icon-tiemnang-active {
+    background-image: url("../../img/blue-active/tiemnang.svg");
+}
+
+.icon-chaohang-active {
+    background-image: url("../../img/blue-active/chaohang.svg");
+}
+
+.icon-lienhe-active {
+    background-image: url("../../img/blue-active/lienhe.svg");
+}
+
+.icon-khachhang-active {
+    background-image: url("../../img/blue-active/khachhang.svg");
+}
+
+.icon-cohoi-active {
+    background-image: url("../../img/blue-active/cohoi.svg");
+}
+
+.icon-baogia-active {
+    background-image: url("../../img/blue-active/baogia.svg");
+}
+
+.icon-donhang-active {
+    background-image: url("../../img/blue-active/giohang.svg");
+}
+
+.icon-hoadon-active {
+    background-image: url("../../img/blue-active/hoadon.svg");
+}
+
+.icon-aocohoi-active {
+    background-image: url("../../img/blue-active/aocohoi.svg");
+}
+
+.icon-hoatdong-active {
+    background-image: url("../../img/blue-active/hoatdong.svg");
+}
+
+.icon-muctieu-active {
+    background-image: url("../../img/blue-active/muctieu.svg");
+}
+
+.icon-chiendich-active {
+    background-image: url("../../img/blue-active/chiendich.svg");
+}
+
+.icon-baocao-active {
+    background-image: url("../../img/blue-active/baocao.svg");
+}
+
+.icon-khac-active {
+    background-image: url("../../img/blue-active/khac.svg");
+}
