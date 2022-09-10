@@ -1,7 +1,7 @@
 export const rootApi = 'http://localhost:5057/api/v1/'
 
 // các trường dùng để cập nhật nhiều
-export const fieldOptions = ["Xưng hô", "Họ và tên", "Chức danh", "ĐT di động", "ĐT cơ quan", "Email cơ quan", "Email cá nhân", "Tổ chức", "Địa chỉ", "Tỉnh/Thành phố", "Quận/Huyện", "Phường/Xã", "Nguồn gốc", "Loại hình", "Lĩnh vực", "Mô tả", "Bố cục", "Chủ sở hữu", "Doanh thu", "Dùng chung", "Facebook"]
+export const fieldOptions = ["Xưng hô", "Họ và tên", "Chức danh", "ĐT di động", "ĐT cơ quan", "Email cơ quan", "Email cá nhân", "Tổ chức", "Địa chỉ", "Tỉnh/Thành phố", "Quận/Huyện", "Phường/Xã", "Nguồn gốc", "Loại hình", "Lĩnh vực", "Mô tả", "Bố cục", "Chủ sở hữu", "Doanh thu",  "Facebook"]
 
 export const dropdownField = [
     "vocative", "departmentId", "positionId", "sourceId", "typeId", "revenueId", "countryId", "cityId", "districtId", "wardId"
@@ -115,11 +115,6 @@ export const fieldMappingOptions =
         url: "Revenues"
     },
 
-    {
-        id: "SharingUse",
-        name: "Dùng chung",
-        type: 2
-    },
     {
         id: "Facebook",
         name: "Facebook",

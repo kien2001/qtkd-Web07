@@ -58,9 +58,8 @@ export default {
     position: absolute;
     z-index: 1;
     bottom: 150%;
-    margin-left: -50%;
     opacity: 0;
-        transition: opacity 1s;
+    transition: opacity 1s;
 }
 
 .tooltip .tooltip-text::after {

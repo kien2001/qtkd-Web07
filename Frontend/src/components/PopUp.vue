@@ -56,6 +56,7 @@
     width: 10px;
     height: 10px;
     background-size: contain;
+    cursor:pointer;
 }
 
 .pop-up .btn-close:hover {

@@ -26,7 +26,7 @@
     </div>
     <div class="header-menu">
       <router-link to="/">
-        <div class="header-menu-item btn-icon-text active">
+        <div class="header-menu-item btn-icon-text">
           <div class="item-icon icon-home"></div>
           <span class="item-content">Bàn làm việc</span>
         </div>
@@ -189,23 +189,6 @@ export default {
         me.$store.commit("setConditionSearch", $(this.$refs.searchInput).val());
       }, this.timer);
     },
-    /**
-     * TODO: Xử lý active menu item khi click
-     * @param {*} e
-     * ! Created by LVKIEN 6/9/2022
-     */
-    menuItemOnClick(e) {
-      const activeItem = $(e.target).parent(".header-menu-item");
-      if (!$(e.target).is($("#other").children())) {
-        if ($(activeItem).length > 0) {
-          $(".header-menu-item.active").removeClass("active");
-          $(activeItem).addClass("active");
-        } else {
-          $(".header-menu-item.active").removeClass("active");
-          $(e.target).addClass("active");
-        }
-      }
-    },
   },
 };
 </script>
@@ -299,14 +282,24 @@ export default {
   height: 100%;
   align-items: center;
 }
-.header-menu-item:not(.active):hover {
+
+.header-menu a:not(.router-link-active.router-link-exact-active) .header-menu-item:hover{
   border-radius: 4px;
   background-color: #d3d7de;
 }
 
-.header-menu-item.active:not(.header-menu > .header-menu-item:last-child) {
+.router-link-active.router-link-exact-active .header-menu-item{
   border-bottom: 2px solid #5a76f2;
 }
+
+.router-link-active.router-link-exact-active .header-menu-item > .item-content{
+    color: #4262f0 !important;
+}
+
+
+/* .header-menu-item.active:not(.header-menu > .header-menu-item:last-child) {
+  border-bottom: 2px solid #5a76f2;
+} */
 
 .header-menu-item.active > .item-content {
   color: #4262f0 !important;
@@ -329,6 +322,9 @@ export default {
   background-color: #fff;
   border-radius: 4px;
   box-shadow: -2px 2px 7px rgba(31, 34, 41, 0.16);
+}
+.other-menu-item .router-link-active.router-link-exact-active .header-menu-item{
+  border:none;
 }
 .btn-icon-text {
     cursor: pointer;

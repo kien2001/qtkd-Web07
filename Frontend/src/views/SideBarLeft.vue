@@ -103,6 +103,10 @@ export default {
       selectedOptionFilter: {},
     };
   },
+  /**
+   * TODO: tạo 1 object lưu tất cả các trường dùng để lọc
+   * !Created by LVKIEN 7/9/2022
+   */
   beforeMount() {
     this.fieldOptions = fieldMappingOptions;
     let objectType1 = [];
@@ -140,7 +144,6 @@ export default {
     this.$refs.combobox.forEach((item) => {
       $(item.$el).css("display", "none");
     });
-    
   },
   watch: {
     /**
@@ -177,10 +180,26 @@ export default {
           field.value = "";
         }
       });
-      // Không có ô nào đc check, gọi lại api
+      // Khi bỏ check và Không có ô nào đc check, gọi lại api
       if (newValue.length === 0) {
         this.$store.commit("setListFilter", []);
       }
+
+      // reset lại giá trị selected của dropdown khi bỏ check
+      this.$refs.option1.forEach(option1=>{
+        if(!$(option1.$el).parent().attr("checked")){
+          option1.selected = {}
+          option1.oldSearchFilter=""
+          $(option1.$el).find(".dropdown-item.selected").removeClass("selected")
+        }
+      })
+      this.$refs.option2.forEach(option2=>{
+        if(!$(option2.$el).parent().attr("checked")){
+          option2.selected = {}
+          option2.oldSearchFilter=""
+           $(option2.$el).find(".dropdown-item.selected").removeClass("selected")
+        }
+      })
     },
     /**
      * TODO: Xử lý ẩn hiện các ô input nhập dữ liệu khi chọn từng kiểu dropdown
@@ -244,52 +263,107 @@ export default {
       });
       return formatResult.flat();
     },
+     /**
+     * TODO: Kiểm tra xem user có nhập đủ các trường filter hay chưa
+     * !Created by LVKIEN 8/9/2022
+     */
+    checkEmptyField() {
+      let checkInput = false;
+      let checkCombobox = false;
+      // Kiểm tra empty tát cả các input
+      this.$refs.input.every((input) => {
+        if ($(input.$el).css("display") !== "none") {
+          if (!input?.name || !input.name?.trim()) {
+            checkInput = true;
+            return false;
+          }
+        }
+        return true;
+      });
+      // Kiểm tra empty tát cả các combobox
+      this.$refs.combobox.every((combobox) => {
+        if ($(combobox.$el).css("display") !== "none") {
+          const objectKeyCombobox = combobox.value
+            ? Object.keys(combobox.value)
+            : null;
+          if (!objectKeyCombobox || objectKeyCombobox.length === 0) {
+            checkCombobox = true;
+            return false;
+          }
+        }
+        return true;
+      });
+      // đếm số lượng dropdown đã đc selected
+      let countSelectedField = 0;
+      this.$refs.option1.forEach(item=>{
+        if(Object.keys(item.selected).length>0){
+          countSelectedField++
+        }
+      })
+      this.$refs.option2.forEach(item=>{
+        if(Object.keys(item.selected).length>0){
+          countSelectedField++
+        }
+      })
+      // nếu input, combobox trống hoặc số field đc check khác số giá trị option của dropdown được chọn
+      if (checkInput || checkCombobox || countSelectedField !== this.listFilterOption.length ) {
+        
+        return true;
+      }
+      return false;
+    },
     /**
      * Lấy giá trị filter để lọc
      * Created by LVKIEn 4/9/2022
      */
     searchFilter() {
-      this.$refs.filterOptions.forEach((option) => {
-        if ($(option).attr("checked")) {
-          this.$refs.combobox.forEach((combobox) => {
-            if (combobox.value) {
+      if (!this.checkEmptyField()) {
+        this.$refs.filterOptions.forEach((option) => {
+          if ($(option).attr("checked")) {
+            this.$refs.combobox.forEach((combobox) => {
+              if (combobox.value) {
+                if (
+                  $(combobox.$el).parent().attr("name") ===
+                    $(option).attr("name") &&
+                  Object.keys(combobox.value).length > 0
+                ) {
+                  const indexFilterField = this.objectResult[1].findIndex(
+                    (item) =>
+                      item[Object.keys(item)[0]] === $(option).attr("name")
+                  );
+                  if ($(combobox.$el).parent().attr("name") === "Vocative") {
+                    this.objectResult[1][indexFilterField].value =
+                      combobox.value.map((value) => value.id.toString());
+                  } else {
+                    this.objectResult[1][indexFilterField].value =
+                      combobox.value.map((value) => value.value);
+                  }
+                }
+              }
+            });
+            this.$refs.input.forEach((input) => {
               if (
-                $(combobox.$el).parent().attr("name") ===
-                  $(option).attr("name") &&
-                Object.keys(combobox.value).length > 0
+                $(input.$el).parent().attr("name") === $(option).attr("name") &&
+                input.name.trim() !== ""
               ) {
                 const indexFilterField = this.objectResult[1].findIndex(
                   (item) =>
                     item[Object.keys(item)[0]] === $(option).attr("name")
                 );
-                if ($(combobox.$el).parent().attr("name") === "Vocative") {
-                  this.objectResult[1][indexFilterField].value =
-                    combobox.value.map((value) => value.id.toString());
-                } else {
-                  this.objectResult[1][indexFilterField].value =
-                    combobox.value.map((value) => value.value);
-                }
+                this.objectResult[1][indexFilterField].value = input.name;
               }
-            }
-          });
-          this.$refs.input.forEach((input) => {
-            if (
-              $(input.$el).parent().attr("name") === $(option).attr("name") &&
-              input.name.trim() !== ""
-            ) {
-              const indexFilterField = this.objectResult[1].findIndex(
-                (item) => item[Object.keys(item)[0]] === $(option).attr("name")
-              );
-              this.objectResult[1][indexFilterField].value = input.name;
-            }
-          });
-        }
-      });
-
-      this.$store.commit(
-        "setListFilter",
-        this.formatFilterResult(this.objectResult)
-      );
+            });
+          }
+        });
+        this.$store.commit(
+          "setListFilter",
+          this.formatFilterResult(this.objectResult)
+        );
+      } else {
+        this.$store.commit("setState", "fail");
+        this.$store.commit("setMessage", "Bạn chưa nhập đủ thông tin");
+        this.$store.commit("setIsShow", true);
+      }
     },
     /**
      * Lấy giá trị ô checked filter
@@ -322,8 +396,15 @@ export default {
      * Created by LVKIEN 2/9/2022
      */
     showOption1() {
+      const optionsVocative = [
+        { id: 1, name: "Là" },
+        { id: 3, name: "Không là" },
+      ];
+      this.$refs["option1"][0].setOptions(optionsVocative);
       this.$refs["option1"].forEach((option1) => {
-        option1.setOptions(this.option1);
+        if ($(option1.$el).attr("name-value") !== "Vocative") {
+          option1.setOptions(this.option1);
+        }
       });
     },
     /**
@@ -432,6 +513,10 @@ export default {
 };
 </script>
 <style scoped>
+.btn-icon {
+  width: 16px;
+  height: 16px;
+}
 .sidebar-left {
   padding-top: 5px;
   gap: 10px;

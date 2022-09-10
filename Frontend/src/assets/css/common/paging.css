@@ -6,7 +6,6 @@
     padding: 10px;
 }
 
-.paging-left {}
 
 .paging-right {
     display: flex;
@@ -30,7 +29,7 @@
 }
 
 .btn-nav {
-    border-radius: 50%;
+    cursor: pointer;
 }
 
 .btn-nav:hover {

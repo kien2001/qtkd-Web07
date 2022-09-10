@@ -226,7 +226,7 @@
     background-color: #333;
 }
 
-.active>.icon-home {
+.router-link-active.router-link-exact-active .icon-home {
     background-color: #5A76F2;
 }
 
@@ -238,7 +238,7 @@
     background-color: #333;
 }
 
-.active>.icon-tiemnang {
+.router-link-active.router-link-exact-active .icon-tiemnang {
     background-color: #5A76F2;
 }
 
@@ -250,7 +250,7 @@
     background-color: #333;
 }
 
-.active>.icon-chaohang {
+.router-link-active.router-link-exact-active .icon-chaohang {
     background-color: #5A76F2;
 }
 
@@ -263,7 +263,7 @@
 
 }
 
-.active>.icon-lienhe {
+.router-link-active.router-link-exact-active .icon-lienhe {
     background-color: #5A76F2;
 }
 
@@ -275,7 +275,7 @@
     background-color: #333;
 }
 
-.active>.icon-khachhang {
+.router-link-active.router-link-exact-active .icon-khachhang {
     background-color: #5A76F2;
 }
 
@@ -288,7 +288,7 @@
     background-image: url("../../img/cohoi.svg");
 }
 
-.active>.icon-cohoi {
+.router-link-active.router-link-exact-active .icon-cohoi {
     background-color: #5A76F2;
 }
 
@@ -300,7 +300,7 @@
     background-color: #333;
 }
 
-.active>.icon-baogia {
+.router-link-active.router-link-exact-active .icon-baogia {
     background-color: #5A76F2;
 }
 
@@ -312,7 +312,7 @@
     background-color: #333;
 }
 
-.active>.icon-donhang {
+.router-link-active.router-link-exact-active .icon-donhang {
     background-color: #5A76F2;
 }
 
@@ -324,7 +324,7 @@
     background-color: #333;
 }
 
-.active>.icon-hoadon {
+.router-link-active.router-link-exact-active .icon-hoadon {
     background-color: #5A76F2;
 }
 
@@ -336,7 +336,7 @@
     background-color: #333;
 }
 
-.active>.icon-aocohoi {
+.router-link-active.router-link-exact-active .icon-aocohoi {
     background-color: #5A76F2;
 }
 
@@ -348,7 +348,7 @@
     background-color: #333;
 }
 
-.active>.icon-hoatdong {
+.router-link-active.router-link-exact-active .icon-hoatdong {
     background-color: #5A76F2;
 }
 
@@ -360,7 +360,7 @@
     background-color: #333;
 }
 
-.active>.icon-muctieu {
+.router-link-active.router-link-exact-active .icon-muctieu {
     background-color: #5A76F2;
 }
 
@@ -372,7 +372,7 @@
     background-color: #333;
 }
 
-.active>.icon-chiendich {
+.router-link-active.router-link-exact-active .icon-chiendich {
     background-color: #5A76F2;
 }
 
@@ -384,7 +384,7 @@
     background-color: #333;
 }
 
-.active>.icon-baocao {
+.router-link-active.router-link-exact-active .icon-baocao {
     background-color: #5A76F2;
 }
 
@@ -396,6 +396,6 @@
     background-color: #333;
 }
 
-.active>.icon-khac {
+.router-link-active.router-link-exact-active .icon-khac {
     background-color: #5A76F2;
 }

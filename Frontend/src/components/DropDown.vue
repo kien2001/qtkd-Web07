@@ -259,6 +259,7 @@ export default {
 }
 
 .dropdown .dropdown-header {
+  position: relative;
   overflow: hidden;
   border-width: 1px;
   border-style: solid;

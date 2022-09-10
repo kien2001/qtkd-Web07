@@ -784,15 +784,11 @@ export default {
   },
   watch: {
     customerEdit(newValue) {
-      console.log(1);
       if (newValue.firstName) {
-        // this.customerEdit = newValue
         this.mountDataEditForm();
-        console.log(1);
       }
     },
     countryName() {
-      // this.countryName = ""
       this.cityName = "";
       this.districtName = "";
       this.wardName = "";
