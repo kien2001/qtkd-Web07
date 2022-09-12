@@ -21,12 +21,15 @@ namespace Repository
         /// Created by LVKIEN 18/08/2022
         public Result Get()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 string query = "Select Gender from customer where Gender is not null group by Gender order by Gender";
                 var genderArray = mySqlConnection.Query<Genders>(query);
                 if (!genderArray.Any())

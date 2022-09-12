@@ -17,12 +17,15 @@ namespace Repository
         /// Created by LVKIEN 18/08/2022
         public Result Get()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 string query = "Select PotentialId, PotentialName , PotentialCode from potential";
                 var potentialArray = mySqlConnection.Query<Potential>(query);
                 if (!potentialArray.Any())
@@ -62,9 +65,10 @@ namespace Repository
         public bool CheckDuplicateCode(string potentialCode)
         {
             bool checkDuplicate = true;
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
 
                 var sqlCheck = "Select PotentialCode from potential where PotentialCode = @PotentialCode limit 1";
                 var dynamicParams = new DynamicParameters();
@@ -90,47 +94,55 @@ namespace Repository
 
         public Result Insert(Potential potential)
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
-            try
+            Result result = new()
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-                var command = "INSERT INTO potential( PotentialId, PotentialName, PotentialCode, CreatedAt,ModifiedAt)" +
-                    "values (@PotentialId, @PotentialName, @PotentialCode, @CreatedAt, @ModifiedAt)";
-                var dynamicParams = new DynamicParameters();
-                Guid potentialId = Guid.NewGuid();
-                dynamicParams.Add("@PotentialId", potentialId);
-                dynamicParams.Add("@PotentialName", potential.PotentialName);
-                dynamicParams.Add("@PotentialCode", potential.PotentialCode);
-                dynamicParams.Add("@CreatedAt", DateTime.Now);
-                dynamicParams.Add("@ModifiedAt", DateTime.Now);
-
-                var res = mySqlConnection.Execute(sql: command, param: dynamicParams);
-                if (res == 0)
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using (MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString))
+            {
+                mySqlConnection.Open();
+                using MySqlTransaction mySqlTransaction = mySqlConnection.BeginTransaction();
+                try
                 {
-                    result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.InsertFailed);
-                    result.UserMsg.Add(FailMessage.MessageError.InsertFail);
+                    var command = "INSERT INTO potential( PotentialId, PotentialName, PotentialCode, CreatedAt,ModifiedAt)" +
+                        "values (@PotentialId, @PotentialName, @PotentialCode, @CreatedAt, @ModifiedAt)";
+                    var dynamicParams = new DynamicParameters();
+                    Guid potentialId = Guid.NewGuid();
+                    dynamicParams.Add("@PotentialId", potentialId);
+                    dynamicParams.Add("@PotentialName", potential.PotentialName);
+                    dynamicParams.Add("@PotentialCode", potential.PotentialCode);
+                    dynamicParams.Add("@CreatedAt", DateTime.Now);
+                    dynamicParams.Add("@ModifiedAt", DateTime.Now);
+
+                    var res = mySqlConnection.Execute(sql: command, param: dynamicParams, transaction:mySqlTransaction);
+                    if (res == 0)
+                    {
+                        result.Data = new { };
+                        result.DevMsg.Add(FailMessage.CodeError.InsertFailed);
+                        result.UserMsg.Add(FailMessage.MessageError.InsertFail);
+                        result.Flag = false;
+                    }
+                    else
+                    {
+                        result.Data = potentialId;
+                        result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
+                        result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
+                        result.Flag = true;
+                    }
+                    mySqlTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    result.Data = ex.Message;
+                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                     result.Flag = false;
-                }
-                else
-                {
-                    result.Data = potentialId;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
-                    result.Flag = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
-                result.Flag = false;
-            }
-            return result;
 
+                    mySqlTransaction.Rollback();
+                }
+                return result;
+            }
         }
         /// <summary>
         /// Tạo mã tiềm năng mới bằng mã tiềm năng lớn nhất + 1
@@ -140,12 +152,15 @@ namespace Repository
         /// Created by LVKIEN 19/08/2022
         public Result GetMaxCode()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 var pagingProc = "Proc_Potential_GetMaxCode";
                 string maxCode = mySqlConnection.QueryFirstOrDefault<string>(sql: pagingProc, commandType: System.Data.CommandType.StoredProcedure);
                 if (maxCode == null)
@@ -188,12 +203,15 @@ namespace Repository
         /// Created by LVKIEN 23/08/2022
         public Result GetPotentialName()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 var query = "SELECT PotentialName FROM potential p WHERE p.PotentialName IS NOT null GROUP BY p.PotentialName ";
                 var listPotential = mySqlConnection.Query<string>(sql: query);
                 if (!listPotential.Any())

@@ -23,12 +23,15 @@ namespace Repository
         /// Created by LVKIEn 18/08/2022
         public Result Get()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 string query = "Select SourceId, SourceName from source group by SourceId";
                 var sourceArray = mySqlConnection.Query<Source>(query);
                 if (!sourceArray.Any())

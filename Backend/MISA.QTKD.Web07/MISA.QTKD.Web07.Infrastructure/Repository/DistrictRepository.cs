@@ -24,12 +24,15 @@ namespace Repository
         /// Created by LVKIEN 18/05/2022
         public Result Get(int cityId)
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 string query = "Select DistrictId, DistrictName from district where cityId = @cityId group by DistrictId";
                 var dynamicParams = new DynamicParameters();
                 dynamicParams.Add("@cityId", cityId);
@@ -68,12 +71,15 @@ namespace Repository
         /// Created by LVKIEN 18/05/2022
         public Result GetAll()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 string query = "Select DistrictId, DistrictName from district group by DistrictId";
                 var districtArray = mySqlConnection.Query<District>(sql: query);
                 if (!districtArray.Any())

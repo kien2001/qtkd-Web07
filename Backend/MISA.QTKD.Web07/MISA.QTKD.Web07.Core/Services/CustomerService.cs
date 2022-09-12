@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using Constants;
@@ -61,13 +62,23 @@ namespace Services
                 result.UserMsg.Add(FailMessage.MessageError.NotValidEmail);
                 result.Flag = false;
             }
-            if (customerInsert.Potential != null &&  _potentialRepository.CheckDuplicateCode(customerInsert.Potential.PotentialCode))
+            if ((customerInsert.Customer.CustomerPhoneNum != null && !IsValidPhoneNumber(customerInsert.Customer.CustomerPhoneNum)) || (customerInsert.Customer.Zalo != null && !IsValidPhoneNumber(customerInsert.Customer.Zalo)) || (customerInsert.Customer.CompanyPhoneNum != null && !IsValidPhoneNumber(customerInsert.Customer.CompanyPhoneNum)))
+            {
+                check = false;
+
+
+                result.Data = new { };
+                result.DevMsg.Add(FailMessage.CodeError.NotValidPhone);
+                result.UserMsg.Add(FailMessage.MessageError.NotValidPhone);
+                result.Flag = false;
+            }
+            if (customerInsert.Potential != null && _potentialRepository.CheckDuplicateCode(customerInsert.Potential.PotentialCode))
             {
                 check = false;
 
                 result.Data = new { };
-               result.DevMsg.Add(FailMessage.CodeError.DuplicatePotentialCode);
-               result.UserMsg.Add(FailMessage.MessageError.DuplicatePotentialCode);
+                result.DevMsg.Add(FailMessage.CodeError.DuplicatePotentialCode);
+                result.UserMsg.Add(FailMessage.MessageError.DuplicatePotentialCode);
                 result.Flag = false;
             }
             if (check)
@@ -90,7 +101,7 @@ namespace Services
                 {
                     result.Data = new { };
                     result.DevMsg.Add(resultOrganization.DevMsg.FirstOrDefault());
-                   result.UserMsg.Add(resultOrganization.UserMsg.FirstOrDefault());
+                    result.UserMsg.Add(resultOrganization.UserMsg.FirstOrDefault());
                     result.Flag = false;
                 }
                 else
@@ -116,7 +127,7 @@ namespace Services
                 {
                     result.Data = new { };
                     result.DevMsg.Add(resultCustomer.DevMsg.FirstOrDefault());
-                     result.UserMsg.Add(resultCustomer.UserMsg.FirstOrDefault());
+                    result.UserMsg.Add(resultCustomer.UserMsg.FirstOrDefault());
                     result.Flag = false;
                 }
                 else
@@ -148,7 +159,7 @@ namespace Services
                 result.UserMsg.Add(FailMessage.MessageError.EmptyFirstName);
                 result.Flag = false;
             }
-            if ((customer.CompanyEmail != null && !IsValidEmail(email: customer.CompanyEmail)) 
+            if ((customer.CompanyEmail != null && !IsValidEmail(email: customer.CompanyEmail))
                 || (customer.CustomerEmail != null && !IsValidEmail(email: customer.CustomerEmail))
                )
             {
@@ -156,6 +167,16 @@ namespace Services
                 result.Data = new { };
                 result.DevMsg.Add(FailMessage.CodeError.NotValidEmail);
                 result.UserMsg.Add(FailMessage.MessageError.NotValidEmail);
+                result.Flag = false;
+            }
+            if ((customer.CustomerPhoneNum != null && !IsValidPhoneNumber(customer.CustomerPhoneNum)) || (customer.OtherPhoneNum != null && !IsValidPhoneNumber(customer.OtherPhoneNum)) || (customer.CompanyPhoneNum != null && !IsValidPhoneNumber(customer.CompanyPhoneNum)))
+            {
+                check = false;
+
+
+                result.Data = new { };
+                result.DevMsg.Add(FailMessage.CodeError.NotValidPhone);
+                result.UserMsg.Add(FailMessage.MessageError.NotValidPhone);
                 result.Flag = false;
             }
             if (check)
@@ -189,6 +210,28 @@ namespace Services
             }
         }
 
+
+        public static bool IsValidPhoneNumber(string phoneNumber)
+        {
+            var trimmedPhoneNumber = phoneNumber.Trim();
+            try
+            {
+                Regex validatePhoneNumberRegex = new("^0[1-9][0-9]{7,14}$");
+                return validatePhoneNumberRegex.IsMatch(trimmedPhoneNumber);
+            }
+            catch 
+            {
+                return false;
+            }
+            
+        }
+
+        /// <summary>
+        /// Xử lý tạo ra file excel
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        /// Created by LVKIEN 11/09/2022
         public Result ExportExcel(List<Guid> customerId)
         {
             Result customerResult = _customerRepository.GetDataExcel(customerId);
@@ -253,9 +296,9 @@ namespace Services
                     }
                     #endregion
 
-                        using var stream = new MemoryStream();
-                        workbook.SaveAs(stream);
-                        var content = stream.ToArray();
+                    using var stream = new MemoryStream();
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
 
                     customerResult.Flag = true;
                     customerResult.DevMsg.Clear();

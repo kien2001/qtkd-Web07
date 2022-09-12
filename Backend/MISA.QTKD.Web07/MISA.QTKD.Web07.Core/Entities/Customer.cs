@@ -59,15 +59,15 @@ namespace Entities
 
         public bool? DisableMail { get; set; }// Không gửi mai(0- có thể gửi mail, 1- không thể gửi mail)
 
-        public int? Gender { get; set; }// GIới tính(0- nam, 1- nữ, 2- khác)
+        public int? Gender { get; set; }// GIới tính(1- nam, 2- nữ, _ - khác)
 
         public string? GenderName { 
             get
             {
                 return Gender switch
                 {
-                    0 => "Nam",
-                    1 => "Nữ",
+                    1 => "Nam",
+                    2 => "Nữ",
                     _ => "Khác",
                 };
             }

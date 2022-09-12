@@ -22,12 +22,15 @@ namespace Repository
         /// Created by LVKIEN 26/08/2022
         public Result Get()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 string query = "Select PositionId, PositionName from positions group by PositionId";
                 var positionArray = mySqlConnection.Query<Position>(query);
                 if (!positionArray.Any())

@@ -17,7 +17,7 @@ namespace Constants
             public const string EmptyFirstName = "Tên không được phép để trống!";
             public const string DuplicateName = "Tên đã bị trùng. Vui lòng đổi tên khác!";
             public const string NotValidEmail = "Email không hợp lệ";
-            public const string DuplicatePhone = "Số điện thoại đã đăng ký. Vui lòng đổi số khác!";
+            public const string NotValidPhone = "Số điện thoại không hợp lệ";
             public const string DuplicateTaxCode = "Mã số thuế đã bị trùng. Vui lòng đổi mã khác!";
             public const string DuplicatePotentialCode = "Mã tiềm năng bị trùng";
             public const string DuplicateBankAccount = "Tài khoản này đã có người sử dụng. Vui lòng đổi tài khoản khác!";
@@ -48,7 +48,7 @@ namespace Constants
             public const string UpdateFailed = "E007";
             public const string NotExists = "E008";
             public const string NotValidEmail = "E009";
-            public const string DuplicatePhone = "E010";
+            public const string NotValidPhone = "E010";
             public const string DuplicateTaxCode = "E011";
             public const string DuplicateBankAccount = "E012";
             public const string DeletedFail = "E013";

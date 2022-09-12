@@ -24,12 +24,15 @@ namespace Repository
         /// Created by LVKIEN 18/05/2022
         public Result Get()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
             try
             {
                 using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+                mySqlConnection.Open();
                 string query = "Select CountryId, CountryName from country group by CountryId";
                 var sourceArray = mySqlConnection.Query<Country>(query);
                 if (!sourceArray.Any())

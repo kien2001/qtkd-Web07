@@ -35,48 +35,57 @@ namespace Repository
                 UserMsg = new List<string>(),
                 DevMsg = new List<string>()
             };
-            try
+            using (MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString))
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-                bool checkSuccess = true;
-                int count = 0;
-                foreach (var item in listCustomerId)
+                mySqlConnection.Open();
+                using MySqlTransaction mySqlTransaction = mySqlConnection.BeginTransaction();
+                try
                 {
-                    string processQuery = "DELETE FROM customer WHERE CustomerId =  @CustomerId";
-                    var dynamicParams = new DynamicParameters();
-                    dynamicParams.Add("@CustomerId", item);
-                    var res = mySqlConnection.Execute(processQuery, dynamicParams);
-                    if (res == 0)
+                    bool checkSuccess = true;
+                    int count = 0;
+                    foreach (var item in listCustomerId)
                     {
-                        checkSuccess = false;
-                        break;
+                        string processQuery = "DELETE FROM customer WHERE CustomerId =  @CustomerId";
+                        var dynamicParams = new DynamicParameters();
+                        dynamicParams.Add("@CustomerId", item);
+                        var res = mySqlConnection.Execute(processQuery, dynamicParams, transaction: mySqlTransaction);
+                        if (res == 0)
+                        {
+                            checkSuccess = false;
+                            break;
+                        }
+                        count++;
                     }
-                    count++;
-                }
 
-                if (checkSuccess == false)
+                    if (checkSuccess == false)
+                    {
+                        result.Data = new { };
+                        result.DevMsg.Add(FailMessage.CodeError.DeletedFail);
+                        result.UserMsg.Add(FailMessage.MessageError.DeleteFail);
+                        result.Flag = false;
+                    }
+                    else
+                    {
+                        result.Data = count;
+                        result.DevMsg.Add(SuccessMessage.CodeSuccess.DeleteSuccess);
+                        result.UserMsg.Add(SuccessMessage.MessageSuccess.DeleteSuccess);
+                        result.Flag = true;
+                    }
+                    mySqlTransaction.Commit();
+                }
+                catch (Exception ex)
                 {
-                    result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.DeletedFail);
-                    result.UserMsg.Add(FailMessage.MessageError.DeleteFail);
+
+                    result.Data = ex.Message;
+                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                     result.Flag = false;
-                }
-                else
-                {
-                    result.Data = count;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.DeleteSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.DeleteSuccess);
-                    result.Flag = true;
-                }
-            }
-            catch (Exception ex)
-            {
 
-                result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
-                result.Flag = false;
+                    mySqlTransaction.Rollback();
+                }
             }
+
+             
             return result;
         }
         /// <summary>
@@ -93,68 +102,79 @@ namespace Repository
                 UserMsg = new List<string>(),
                 DevMsg = new List<string>()
             };
-            try
+            using (MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString))
             {
-                var stringIdList = updatedMultiple.ListId.ConvertAll<string>(g => g.ToString());
-                var updateQuery = "";
-                object parameters;
-
-                if (updatedMultiple.FieldUpdateName == "FullName")
+                mySqlConnection.Open();
+                using MySqlTransaction mySqlTransaction = mySqlConnection.BeginTransaction();
+                try
                 {
-                    NameCustomer name = HandleGetName(updatedMultiple.FieldUpdateValue);
+                    var stringIdList = updatedMultiple.ListId.ConvertAll<string>(g => g.ToString());
+                    var updateQuery = "";
+                    object parameters;
+                    DynamicParameters dynamicParameters = new();
 
-                    updateQuery = @"Update customer set FirstName = @FirstNameValue,LastMiddleName = @LastMiddleName 
-                     , ModifiedAt = @ModifiedAt where CustomerId in @ListId ;";
-                    parameters = new
+
+                    if (updatedMultiple.FieldUpdateName == "FullName")
                     {
-                        FirstNameValue = name.FirstName,
-                        LastMiddleName = name.LastMiddleName,
-                        ListId = stringIdList,
-                        ModifiedAt = DateTime.Now
-                    };
-                }
-                else
-                {
-                    updateQuery = $@"Update customer set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue 
-                    , ModifiedAt = @ModifiedAt where CustomerId in @ListId ;";
-                    var resultString = String.Join(", ", stringIdList);
-                    parameters = new
-                    {
-                        FieldUpdateValue = updatedMultiple.FieldUpdateValue,
-                        ListId = stringIdList,
-                        ModifiedAt = DateTime.Now
-                    };
-                }
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-                var res = mySqlConnection.Execute(updateQuery, parameters);
+                        NameCustomer name = HandleGetName(updatedMultiple.FieldUpdateValue);
 
-                if (res == 0)
+                        updateQuery = @"Update customer set FirstName = @FirstNameValue,LastMiddleName = @LastMiddleName , ModifiedAt = @ModifiedAt where CustomerId in @ListId ;";
+                        parameters = new
+                        {
+                            FirstNameValue = name.FirstName,
+                            LastMiddleName = name.LastMiddleName,
+                            ListId = stringIdList,
+                            ModifiedAt = DateTime.Now
+                        };
+                        dynamicParameters.AddDynamicParams(parameters);
+                    }
+                    else
+                    {
+                        updateQuery = $@"Update customer set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue " +
+                    ", ModifiedAt = @ModifiedAt where CustomerId in @ListId ;";
+                        var resultString = String.Join(", ", stringIdList);
+                        parameters = new
+                        {
+                            FieldUpdateValue = updatedMultiple.FieldUpdateValue,
+                            ListId = stringIdList,
+                            ModifiedAt = DateTime.Now
+                        };
+                        dynamicParameters.AddDynamicParams(parameters);
+                    }
+
+
+
+                    var res = mySqlConnection.Execute(updateQuery, dynamicParameters, transaction: mySqlTransaction);
+
+                    if (res == 0)
+                    {
+                        result.Data = new { };
+                        result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
+                        result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+                        result.Flag = false;
+                    }
+                    else
+                    {
+
+                        result.Data = res;
+                        result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
+                        result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
+                        result.Flag = true;
+                    }
+                    mySqlTransaction.Commit();
+                }
+                catch (Exception ex)
                 {
-                    result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
-                    result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+
+                    result.Data = ex.Message;
+                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                     result.Flag = false;
+
+                    mySqlTransaction.Rollback();
                 }
-                else
-                {
-
-                    result.Data = res;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
-                    result.Flag = true;
-                }
-
+                return result;
             }
-            catch (Exception ex)
-            {
-
-                result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
-                result.Flag = false;
-            }
-            return result;
-
         }
 
         public Result GetPaging(int? pageSize, int? pageIndex, string? keyword, FilterObject[]? listFilter)
@@ -164,85 +184,90 @@ namespace Repository
                 UserMsg = new List<string>(),
                 DevMsg = new List<string>()
             };
-            try
+            using (MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString))
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-
-                var pagingProc = "Proc_Customer_GetPaging";
-                var orConditions = new List<string>();
-                var whereConditions = new List<string>();
-
-                string whereClause = "";
-                string andClause = "";
-                string orClause = "";
-
-                if (listFilter is not null && listFilter.Length > 0)
+                mySqlConnection.Open();
+                try
                 {
-                    andClause = ConvertToSqlCommand(listFilter: listFilter);
-                    whereConditions.Add(andClause);
-                }
-                if (keyword != null)
-                {
-                    orConditions.Add($"FullName LIKE '%{keyword}%'");
 
-                }
-                if (orConditions.Count > 0)
-                {
-                    orClause = $"({string.Join(" OR ", orConditions)})";
-                    whereConditions.Add(orClause);
+                    var pagingProc = "Proc_Customer_GetPaging";
+                    var orConditions = new List<string>();
+                    var whereConditions = new List<string>();
 
-                }
-                if (whereConditions.Count > 0)
-                {
-                    whereClause = $"({string.Join(" AND ", whereConditions)})";
-                    
-                }
-                DynamicParameters dynamicParameters = new();
-                dynamicParameters.Add("@v_Offset", pageIndex);
-                dynamicParameters.Add("@v_Limit", pageSize);
-                dynamicParameters.Add("@v_Sort", default(Plane[]));
-                dynamicParameters.Add("@v_Where", whereClause);
+                    string whereClause = "";
+                    string andClause = "";
+                    string orClause = "";
+
+                    if (listFilter is not null && listFilter.Length > 0)
+                    {
+                        andClause = ConvertToSqlCommand(listFilter: listFilter);
+                        whereConditions.Add(andClause);
+                    }
+                    if (keyword != null)
+                    {
+                        orConditions.Add($"FullName LIKE '%{keyword}%'");
+
+                    }
+                    if (orConditions.Count > 0)
+                    {
+                        orClause = $"({string.Join(" OR ", orConditions)})";
+                        whereConditions.Add(orClause);
+
+                    }
+                    if (whereConditions.Count > 0)
+                    {
+                        whereClause = $"({string.Join(" AND ", whereConditions)})";
+
+                    }
+                    DynamicParameters dynamicParameters = new();
+                    dynamicParameters.Add("@v_Offset", pageIndex);
+                    dynamicParameters.Add("@v_Limit", pageSize);
+                    dynamicParameters.Add("@v_Sort", default(Plane[]));
+                    dynamicParameters.Add("@v_Where", whereClause);
 
 
-                var multipleResults = mySqlConnection.QueryMultiple(sql: pagingProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
+                    var multipleResults = mySqlConnection.QueryMultiple(sql: pagingProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
 
-                if (multipleResults == null)
-                {
-                    result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
-                    result.Flag = false;
-                }
-                else
-                {
-                    var customerTable = multipleResults.Read<Customer>();
-                    var totalCount = multipleResults.Read<long>().Single();
-
-                    if (totalCount == 0)
+                    if (multipleResults == null)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.NotFound);
-                        result.UserMsg.Add(FailMessage.MessageError.NotFound);
+                        result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                        result.UserMsg.Add(FailMessage.MessageError.NotValue);
                         result.Flag = false;
                     }
                     else
                     {
-                        result.Data = new { customers = customerTable, totalCount };
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
-                        result.Flag = true;
-                    }
+                        var customerTable = multipleResults.Read<Customer>();
+                        var totalCount = multipleResults.Read<long>().Single();
 
+                        if (totalCount == 0)
+                        {
+                            result.Data = new { };
+                            result.DevMsg.Add(FailMessage.CodeError.NotFound);
+                            result.UserMsg.Add(FailMessage.MessageError.NotFound);
+                            result.Flag = false;
+                        }
+                        else
+                        {
+                            result.Data = new { customers = customerTable, totalCount };
+                            result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                            result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                            result.Flag = true;
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    result.Data = ex.Message;
+                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.Flag = false;
                 }
             }
-            catch (Exception ex)
-            {
 
-                result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
-                result.Flag = false;
-            }
+            
             return result;
         }
 
@@ -259,67 +284,76 @@ namespace Repository
                 UserMsg = new List<string>(),
                 DevMsg = new List<string>()
             };
-            try
+            using (MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString))
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-                var command = "INSERT INTO customer ( CustomerId, PotentialId, LastMiddleName, " +
-                    "FirstName, CompanyPhoneNum, CustomerPhoneNum, CustomerEmail, " +
-                    "CompanyEmail, TaxCode, Zalo, OrganizationId, AddressId, Description, SharingUse, " +
-                    "Vocative, Layout, Owner, DepartmentId, PositionId, SourceId, CreatedAt, ModifiedAt)" +
-                    "values (@CustomerId, @PotentialId, @LastMiddleName, @FirstName, @CompanyPhoneNum," +
-                    " @CustomerPhoneNum, @CustomerEmail, @CompanyEmail, @TaxCode, @Zalo, " +
-                    "@OrganizationId, @AddressId, @Description, @SharingUse, @Vocative, @Layout, @Owner, " +
-                    "@DepartmentId, @PositionId, @SourceId, @CreatedAt, @ModifiedAt)";
-
-                var dynamicParams = new DynamicParameters();
-                dynamicParams.Add("@CustomerId", Guid.NewGuid());
-                dynamicParams.Add("@PotentialId", customer.PotentialId);
-                dynamicParams.Add("@LastMiddleName", customer.LastMiddleName);
-                dynamicParams.Add("@FirstName", customer.FirstName);
-                dynamicParams.Add("@CompanyPhoneNum", customer.CompanyPhoneNum);
-                dynamicParams.Add("@CustomerPhoneNum", customer.CustomerPhoneNum);
-                dynamicParams.Add("@CustomerEmail", customer.CustomerEmail);
-                dynamicParams.Add("@CompanyEmail", customer.CompanyEmail);
-                dynamicParams.Add("@TaxCode", customer.TaxCode);
-                dynamicParams.Add("@Zalo", customer.Zalo);
-                dynamicParams.Add("@OrganizationId", customer.OrganizationId);
-                dynamicParams.Add("@AddressId", customer.AddressId);
-                dynamicParams.Add("@Description", customer.Description);
-                dynamicParams.Add("@SharingUse", customer.SharingUse);
-                dynamicParams.Add("@Vocative", customer.Vocative);
-                dynamicParams.Add("@Owner", customer.Owner);
-                dynamicParams.Add("@DepartmentId", customer.DepartmentId);
-                dynamicParams.Add("@Layout", customer.Layout);
-                dynamicParams.Add("@PositionId", customer.PositionId);
-                dynamicParams.Add("@SourceId", customer.SourceId);
-                dynamicParams.Add("@CreatedAt", DateTime.Now);
-                dynamicParams.Add("@ModifiedAt", DateTime.Now);
-
-                var res = mySqlConnection.Execute(sql: command, param: dynamicParams);
-                if (res == 0)
+                mySqlConnection.Open();
+                using MySqlTransaction mySqlTransaction = mySqlConnection.BeginTransaction();
+                try
                 {
-                    result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.InsertFailed);
-                    result.UserMsg.Add(FailMessage.MessageError.InsertFail);
+                    var command = "INSERT INTO customer ( CustomerId, PotentialId, LastMiddleName, " +
+                        "FirstName, CompanyPhoneNum, CustomerPhoneNum, CustomerEmail, " +
+                        "CompanyEmail, TaxCode, Zalo, OrganizationId, AddressId, Description, SharingUse, " +
+                        "Vocative, Layout, Owner, DepartmentId, PositionId, SourceId, CreatedAt, ModifiedAt)" +
+                        "values (@CustomerId, @PotentialId, @LastMiddleName, @FirstName, @CompanyPhoneNum," +
+                        " @CustomerPhoneNum, @CustomerEmail, @CompanyEmail, @TaxCode, @Zalo, " +
+                        "@OrganizationId, @AddressId, @Description, @SharingUse, @Vocative, @Layout, @Owner, " +
+                        "@DepartmentId, @PositionId, @SourceId, @CreatedAt, @ModifiedAt)";
+
+                    var dynamicParams = new DynamicParameters();
+                    dynamicParams.Add("@CustomerId", Guid.NewGuid());
+                    dynamicParams.Add("@PotentialId", customer.PotentialId);
+                    dynamicParams.Add("@LastMiddleName", customer.LastMiddleName);
+                    dynamicParams.Add("@FirstName", customer.FirstName);
+                    dynamicParams.Add("@CompanyPhoneNum", customer.CompanyPhoneNum);
+                    dynamicParams.Add("@CustomerPhoneNum", customer.CustomerPhoneNum);
+                    dynamicParams.Add("@CustomerEmail", customer.CustomerEmail);
+                    dynamicParams.Add("@CompanyEmail", customer.CompanyEmail);
+                    dynamicParams.Add("@TaxCode", customer.TaxCode);
+                    dynamicParams.Add("@Zalo", customer.Zalo);
+                    dynamicParams.Add("@OrganizationId", customer.OrganizationId);
+                    dynamicParams.Add("@AddressId", customer.AddressId);
+                    dynamicParams.Add("@Description", customer.Description);
+                    dynamicParams.Add("@SharingUse", customer.SharingUse);
+                    dynamicParams.Add("@Vocative", customer.Vocative);
+                    dynamicParams.Add("@Owner", customer.Owner);
+                    dynamicParams.Add("@DepartmentId", customer.DepartmentId);
+                    dynamicParams.Add("@Layout", customer.Layout);
+                    dynamicParams.Add("@PositionId", customer.PositionId);
+                    dynamicParams.Add("@SourceId", customer.SourceId);
+                    dynamicParams.Add("@CreatedAt", DateTime.Now);
+                    dynamicParams.Add("@ModifiedAt", DateTime.Now);
+
+                    var res = mySqlConnection.Execute(sql: command, param: dynamicParams, transaction: mySqlTransaction);
+                    if (res == 0)
+                    {
+                        result.Data = new { };
+                        result.DevMsg.Add(FailMessage.CodeError.InsertFailed);
+                        result.UserMsg.Add(FailMessage.MessageError.InsertFail);
+                        result.Flag = false;
+
+                    }
+                    else
+                    {
+                        result.Data = res;
+                        result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
+                        result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
+                        result.Flag = true;
+                    }
+                    mySqlTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+
+                    result.Data = ex.Message;
+                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
                     result.Flag = false;
 
-                }
-                else
-                {
-                    result.Data = res;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
-                    result.Flag = true;
+                    mySqlTransaction.Rollback();
                 }
             }
-            catch (Exception ex)
-            {
 
-                result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
-                result.Flag = false;
-            }
+               
             return result;
         }
 
@@ -337,62 +371,44 @@ namespace Repository
                 UserMsg = new List<string>(),
                 DevMsg = new List<string>()
             };
-            try
+            using (MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString))
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-                var updateCommand = "UPDATE customer set LastMiddleName = @LastMiddleName, FirstName = @FirstName, CompanyPhoneNum = @CompanyPhoneNum," +
-                    "CustomerPhoneNum = @CustomerPhoneNum, OtherPhoneNum = @OtherPhoneNum, CustomerEmail = @CustomerEmail, CompanyEmail = @CompanyEmail, " +
-                    "TaxCode = @TaxCode, Zalo = @Zalo, DisableCall = @DisableCall, DisableMail = @DisableMail, Gender = @Gender, DateOfBirth = @DateOfBirth," +
-                    " Facebook = @Facebook, Vocative = @Vocative, DepartmentId =@DepartmentId, PositionId = @PositionId, SourceId = @SourceId," +
-                    " ModifiedAt = @ModifiedAt WHERE CustomerId = @CustomerId";
-
-                var parameters = new DynamicParameters();
-
-                parameters.Add("@CustomerId", customerId);
-                parameters.Add("@LastMiddleName", customer.LastMiddleName);
-                parameters.Add("@FirstName", customer.FirstName);
-                parameters.Add("@CompanyPhoneNum", customer.CompanyPhoneNum);
-                parameters.Add("@CustomerPhoneNum", customer.CustomerPhoneNum);
-                parameters.Add("@OtherPhoneNum", customer.OtherPhoneNum);
-                parameters.Add("@CustomerEmail", customer.CustomerEmail);
-                parameters.Add("@CompanyEmail", customer.CompanyEmail);
-                parameters.Add("@TaxCode", customer.TaxCode);
-                parameters.Add("@Zalo", customer.Zalo);
-                parameters.Add("@DisableCall", customer.DisableCall);
-                parameters.Add("@DisableMail", customer.DisableMail);
-                parameters.Add("@Gender", customer.Gender);
-                parameters.Add("@DateOfBirth", customer.DateOfBirth);
-                parameters.Add("@Facebook", customer.Facebook);
-                parameters.Add("@Vocative", customer.Vocative);
-                parameters.Add("@DepartmentId", customer.DepartmentId);
-                parameters.Add("@PositionId", customer.PositionId);
-                parameters.Add("@SourceId", customer.SourceId);
-                parameters.Add("@ModifiedAt", DateTime.Now);
-
-                int updateCustomerRes = mySqlConnection.Execute(sql: updateCommand, param: parameters);
-
-                if (updateCustomerRes == 0)
+                mySqlConnection.Open();
+                using MySqlTransaction mySqlTransaction = mySqlConnection.BeginTransaction();
+                try
                 {
-                    result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
-                    result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
-                    result.Flag = false;
-                }
-                else
-                {
-                    var updatePotOrgaProc = "Proc_Customer_UpdateOrgaPotential";
+                    var updateCommand = "UPDATE customer set LastMiddleName = @LastMiddleName, FirstName = @FirstName, CompanyPhoneNum = @CompanyPhoneNum," +
+                        "CustomerPhoneNum = @CustomerPhoneNum, OtherPhoneNum = @OtherPhoneNum, CustomerEmail = @CustomerEmail, CompanyEmail = @CompanyEmail, " +
+                        "TaxCode = @TaxCode, Zalo = @Zalo, DisableCall = @DisableCall, DisableMail = @DisableMail, Gender = @Gender, DateOfBirth = @DateOfBirth," +
+                        " Facebook = @Facebook, Vocative = @Vocative, DepartmentId =@DepartmentId, PositionId = @PositionId, SourceId = @SourceId," +
+                        " ModifiedAt = @ModifiedAt WHERE CustomerId = @CustomerId";
 
-                    DynamicParameters dynamicParameters = new();
-                    dynamicParameters.Add("@v_PotentialId", customer.PotentialId);
-                    dynamicParameters.Add("@v_PotentialName", customer.PotentialName);
-                    dynamicParameters.Add("@v_OrganizationId", customer.OrganizationId);
-                    dynamicParameters.Add("@v_OrganizatonName", customer.OrganizationName);
-                    dynamicParameters.Add("@v_CustomerId", customerId);
-                    dynamicParameters.Add("@v_ModifiedAt", DateTime.Now);
+                    var parameters = new DynamicParameters();
 
-                    int updateOrgaPotentialRes = mySqlConnection.QueryFirstOrDefault<int>(sql: updatePotOrgaProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
+                    parameters.Add("@CustomerId", customerId);
+                    parameters.Add("@LastMiddleName", customer.LastMiddleName);
+                    parameters.Add("@FirstName", customer.FirstName);
+                    parameters.Add("@CompanyPhoneNum", customer.CompanyPhoneNum);
+                    parameters.Add("@CustomerPhoneNum", customer.CustomerPhoneNum);
+                    parameters.Add("@OtherPhoneNum", customer.OtherPhoneNum);
+                    parameters.Add("@CustomerEmail", customer.CustomerEmail);
+                    parameters.Add("@CompanyEmail", customer.CompanyEmail);
+                    parameters.Add("@TaxCode", customer.TaxCode);
+                    parameters.Add("@Zalo", customer.Zalo);
+                    parameters.Add("@DisableCall", customer.DisableCall);
+                    parameters.Add("@DisableMail", customer.DisableMail);
+                    parameters.Add("@Gender", customer.Gender);
+                    parameters.Add("@DateOfBirth", customer.DateOfBirth);
+                    parameters.Add("@Facebook", customer.Facebook);
+                    parameters.Add("@Vocative", customer.Vocative);
+                    parameters.Add("@DepartmentId", customer.DepartmentId);
+                    parameters.Add("@PositionId", customer.PositionId);
+                    parameters.Add("@SourceId", customer.SourceId);
+                    parameters.Add("@ModifiedAt", DateTime.Now);
 
-                    if (updateOrgaPotentialRes == 0)
+                    int updateCustomerRes = mySqlConnection.Execute(sql: updateCommand, param: parameters, transaction: mySqlTransaction);
+
+                    if (updateCustomerRes == 0)
                     {
                         result.Data = new { };
                         result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
@@ -401,21 +417,48 @@ namespace Repository
                     }
                     else
                     {
-                        result.Data = updateOrgaPotentialRes;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
-                        result.Flag = true;
-                    }
-                }
+                        var updatePotOrgaProc = "Proc_Customer_UpdateOrgaPotential";
 
+                        DynamicParameters dynamicParameters = new();
+                        dynamicParameters.Add("@v_PotentialId", customer.PotentialId);
+                        dynamicParameters.Add("@v_PotentialName", customer.PotentialName);
+                        dynamicParameters.Add("@v_OrganizationId", customer.OrganizationId);
+                        dynamicParameters.Add("@v_OrganizatonName", customer.OrganizationName);
+                        dynamicParameters.Add("@v_CustomerId", customerId);
+                        dynamicParameters.Add("@v_ModifiedAt", DateTime.Now);
+
+                        int updateOrgaPotentialRes = mySqlConnection.QueryFirstOrDefault<int>(sql: updatePotOrgaProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure, transaction:mySqlTransaction);
+
+                        if (updateOrgaPotentialRes == 0)
+                        {
+                            result.Data = new { };
+                            result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
+                            result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+                            result.Flag = false;
+                        }
+                        else
+                        {
+                            result.Data = updateOrgaPotentialRes;
+                            result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
+                            result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
+                            result.Flag = true;
+                        }
+                        mySqlTransaction.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    result.Data = ex.Message;
+                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.Flag = false;
+
+                    mySqlTransaction.Rollback();
+                }
             }
-            catch (Exception ex)
-            {
-                result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
-                result.Flag = false;
-            }
+
+             
             return result;
         }
 
@@ -433,68 +476,74 @@ namespace Repository
                 UserMsg = new List<string>(),
                 DevMsg = new List<string>()
             };
-            try
+            using (MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString))
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
-
-                var pagingProc = "Proc_Customer_GetPaging";
-                List<string> idStrList = new();
-                string idStr;
-                foreach (Guid item in customerId)
+                mySqlConnection.Open();
+                try
                 {
-                    string guidStr = item.ToString();
-                    idStrList.Add($"'{guidStr}'");
-                }
 
-                idStr = $"({string.Join(", ", idStrList)})";
-                string whereClause = $" CustomerId IN {idStr}";
-               
-                DynamicParameters dynamicParameters = new();
-                dynamicParameters.Add("@v_Offset", 0);
-                dynamicParameters.Add("@v_Limit", customerId.Count);
-                dynamicParameters.Add("@v_Sort", default(Plane[]));
-                dynamicParameters.Add("@v_Where", whereClause);
+                    var pagingProc = "Proc_Customer_GetPaging";
+                    List<string> idStrList = new();
+                    string idStr;
+                    foreach (Guid item in customerId)
+                    {
+                        string guidStr = item.ToString();
+                        idStrList.Add($"'{guidStr}'");
+                    }
+
+                    idStr = $"({string.Join(", ", idStrList)})";
+                    string whereClause = $" CustomerId IN {idStr}";
+
+                    DynamicParameters dynamicParameters = new();
+                    dynamicParameters.Add("@v_Offset", 0);
+                    dynamicParameters.Add("@v_Limit", customerId.Count);
+                    dynamicParameters.Add("@v_Sort", default(Plane[]));
+                    dynamicParameters.Add("@v_Where", whereClause);
 
 
-                var multipleResults = mySqlConnection.QueryMultiple(sql: pagingProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
+                    var multipleResults = mySqlConnection.QueryMultiple(sql: pagingProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure);
 
-                if (multipleResults == null)
-                {
-                    result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
-                    result.Flag = false;
-                }
-                else
-                {
-                    List< CustomerTable> customerTable = (List<CustomerTable>)multipleResults.Read<CustomerTable>();
-                    var totalCount = multipleResults.Read<long>().Single();
-
-                    if (totalCount == 0)
+                    if (multipleResults == null)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.NotFound);
-                        result.UserMsg.Add(FailMessage.MessageError.NotFound);
+                        result.DevMsg.Add(FailMessage.CodeError.NotValue);
+                        result.UserMsg.Add(FailMessage.MessageError.NotValue);
                         result.Flag = false;
                     }
                     else
                     {
-                        result.Data = customerTable;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
-                        result.Flag = true;
+                        List<CustomerTable> customerTable = (List<CustomerTable>)multipleResults.Read<CustomerTable>();
+                        var totalCount = multipleResults.Read<long>().Single();
+
+                        if (totalCount == 0)
+                        {
+                            result.Data = new { };
+                            result.DevMsg.Add(FailMessage.CodeError.NotFound);
+                            result.UserMsg.Add(FailMessage.MessageError.NotFound);
+                            result.Flag = false;
+                        }
+                        else
+                        {
+                            result.Data = customerTable;
+                            result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
+                            result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                            result.Flag = true;
+                        }
+
                     }
+                }
+                catch (Exception ex)
+                {
+
+                    result.Data = ex.Message;
+                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
+                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.Flag = false;
 
                 }
             }
-            catch (Exception ex)
-            {
 
-                result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
-                result.Flag = false;
-            }
+              
             return result;
         }
 

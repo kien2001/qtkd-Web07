@@ -68,12 +68,15 @@ namespace Repository
         /// Created by LVKIEN 18/08/2022
         public Result GetAll()
         {
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
+            mySqlConnection.Open();
             try
             {
-                using MySqlConnection mySqlConnection = new(DatabaseContext.ConnectionString);
                 string query = "Select WardId, WardName from ward group by WardId";
                 
                 var wardArray = mySqlConnection.Query<Ward>(sql: query);
