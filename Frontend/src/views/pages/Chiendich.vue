@@ -4,12 +4,14 @@
   </h1>
 </template>
 <script>
+  import emitter from '@/js/emitter';
+
 export default {
   name: 'ChienDich',
   mounted() {
     this.$store.commit("setState", "fail")
     this.$store.commit("setMessage", "Chức năng đang thi công")
-    this.$store.commit("setIsShow", true)
+    emitter.emit("showToast");
   }
 }
 </script>

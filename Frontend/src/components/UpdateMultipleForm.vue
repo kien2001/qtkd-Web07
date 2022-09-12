@@ -17,31 +17,33 @@
           :fetchDataWhenClick="false"
           ref="listField"
         />
-        <InputForm
-          :isDisabled="isDisabled"
-          id="input"
-          ref="input"
-          v-if="typeUpdateData === 0"
-        />
-        <DropDown
-          @selected="getUpdatedOption"
-          :showInput="true"
-          placeholder="-Không chọn-"
-          :id="typeDropdown"
-          :fetchDataWhenClick="true"
-          :name="typeDropdown"
-          ref="dropdown"
-          v-else-if="typeUpdateData === 1"
-        />
-        <ComboBox
-          :options="
-            async () => {
-              return await this.getDataComboBox(this.prefixDomainName);
-            }
-          "
-          ref="domainNames"
-          v-else
-        />
+        <Transition name="slide-up" mode="out-in">
+          <InputForm
+            :isDisabled="isDisabled"
+            id="input"
+            ref="input"
+            v-if="typeUpdateData === 0"
+          />
+          <DropDown
+            @selected="getUpdatedOption"
+            :showInput="true"
+            placeholder="-Không chọn-"
+            :id="typeDropdown"
+            :fetchDataWhenClick="true"
+            :name="typeDropdown"
+            ref="dropdown"
+            v-else-if="typeUpdateData === 1"
+          />
+          <ComboBox
+            :options="
+              async () => {
+                return await this.getDataComboBox(this.prefixDomainName);
+              }
+            "
+            ref="domainNames"
+            v-else
+          />
+        </Transition>
       </div>
       <div class="box-footer">
         <Button
@@ -73,6 +75,21 @@
 </template>
 
 <style scoped>
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
 .btn-icon {
   cursor: pointer;
 }
@@ -165,6 +182,7 @@ import axios from "axios";
 import InputForm from "./InputForm.vue";
 import Button from "./Button.vue";
 import { fieldOptions, fieldDropdownOptions, rootApi } from "../js/config";
+import emitter from "@/js/emitter";
 import PopUp from "./PopUp.vue";
 export default {
   name: "UpdateMultipleForm",
@@ -363,22 +381,23 @@ export default {
           if (response.flag) {
             this.$store.commit("setState", "success");
             this.$store.commit("setMessage", "Thành công");
-            this.$store.commit("setIsShow", true);
+            emitter.emit("showToast");
+
             this.$store.commit("setIsUpdated", true);
           } else {
             this.$store.commit("setState", "fail");
             this.$store.commit("setMessage", response.userMsg[0]);
-            this.$store.commit("setIsShow", true);
+            emitter.emit("showToast");
           }
-        }else{
-             this.$store.commit("setState", "fail");
-            this.$store.commit("setMessage", "Bạn chưa nhập đủ thông tin");
-            this.$store.commit("setIsShow", true);
+        } else {
+          this.$store.commit("setState", "fail");
+          this.$store.commit("setMessage", "Bạn chưa nhập đủ thông tin");
+          emitter.emit("showToast");
         }
       } catch (error) {
         this.$store.commit("setState", "fail");
         this.$store.commit("setMessage", error);
-        this.$store.commit("setIsShow", true);
+        emitter.emit("showToast");
       }
     },
     /**

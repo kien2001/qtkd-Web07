@@ -43,6 +43,7 @@
   background-color: var(--color);
   border-style: solid;
   border-width: 1px;
+  transition: background-color .2s cubic-bezier(0.215, 0.610, 0.355, 1)
 }
 
 .button-icon {

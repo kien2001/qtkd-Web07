@@ -1,16 +1,14 @@
 <template>
   <div class="form-submit-container" ref="container">
-    <PopUp
-      :text="
-        !editForm
-          ? 'Bạn có chắc chắn muốn thêm tiềm năng này không?'
-          : 'Bạn có chắc chắn muốn sửa các tiềm năng này không?'
-      "
-      :colorBtn="!editForm ? '#4262F0' : '#31B491'"
-      :colorHoverBtn="!editForm ? '#2B4EEE' : '#2EA888'"
-      ref="showConfirm"
-      @handlePopUp="sendRequest"
-    />
+    <template v-if="getErrorField">
+      <ToastMessage
+        v-for="error in getErrorField"
+        :key="error"
+        :state="error.state"
+        :message="error.message"
+        ref="errorField"
+      />
+    </template>
     <div class="form-submit">
       <div class="form-header">
         <div class="header-title">
@@ -100,7 +98,6 @@
                   :isDisabled="true"
                   ref="fullName"
                 />
-                <!-- :handleFullName="handleFullName" -->
               </div>
             </div>
             <div class="context-item">
@@ -139,6 +136,7 @@
                   class="inputForm"
                   id="customerPhoneNum"
                   ref="customerPhoneNum"
+                  @keyup.prevent="handleValidateTel"
                 />
               </div>
             </div>
@@ -152,6 +150,7 @@
                   class="inputForm"
                   id="companyPhoneNum"
                   ref="companyPhoneNum"
+                  @keyup.prevent="handleValidateTel"
                 />
               </div>
             </div>
@@ -165,6 +164,7 @@
                   class="inputForm"
                   id="otherPhoneNum"
                   ref="otherPhoneNum"
+                  @keyup.prevent="handleValidateTel"
                 />
               </div>
             </div>
@@ -212,7 +212,12 @@
             <div class="context-item">
               <div class="context-label">Zalo</div>
               <div class="context-input">
-                <InputFormVue class="inputForm" id="zalo" ref="zalo" />
+                <InputFormVue
+                  class="inputForm"
+                  id="zalo"
+                  ref="zalo"
+                  @keyup.prevent="handleValidateTel"
+                />
               </div>
             </div>
             <div class="context-item">
@@ -277,9 +282,9 @@
               <div class="context-input">
                 <DatePicker
                   inputClassName="dateOfBirth"
-                  @getDate="handleGetBirthDate"
                   ref="dateOfBirth"
-                />
+                  />
+                  <!-- @getDate="handleGetBirthDate" -->
               </div>
             </div>
             <div class="context-item">
@@ -522,7 +527,6 @@
       </div>
     </div>
   </div>
-  <Loading v-if="isLoading" />
 </template>
 
 <style>
@@ -594,11 +598,11 @@
   padding: 20px 50px;
   border-radius: 0 0 4px 4px;
 }
-.form-main::-webkit-scrollbar-thumb:hover{
-    background-color: #99A1B2;
+.form-main::-webkit-scrollbar-thumb:hover {
+  background-color: #99a1b2;
 }
-.form-main::-webkit-scrollbar-thumb:active{
-    background-color: #7C869C;
+.form-main::-webkit-scrollbar-thumb:active {
+  background-color: #7c869c;
 }
 .form-main-header {
   font-size: 16px;
@@ -652,7 +656,7 @@
   font-weight: 400;
   color: #1f2229;
   resize: none;
-  transition: border-color .2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .text-area:not([disabled]):hover,
 .text-area:not([disabled]):focus,
@@ -706,11 +710,12 @@ import Organization from "../entities/Organization";
 import Address from "../entities/Address";
 import Potential from "../entities/Potential";
 import handleClickFilterItem from "../js/checkbox";
-import { handleTransferObject } from "../js/common";
-import validateEmail from "../js/validateEmail";
+import { handleTransferObject, lowerCaseFirstLetter } from "../js/common";
+import { validateEmail, validatePhoneNumber } from "../js/validateEmail";
 import InputFormVue from "./InputForm.vue";
 import DatePicker from "./DatePicker.vue";
 import PopUp from "./PopUp.vue";
+import emitter from "@/js/emitter";
 export default {
   name: "FormSubmit",
   data() {
@@ -732,52 +737,58 @@ export default {
       prefixDomainName: "Organizations/Domains",
       editForm: this.$store.state.editForm,
       customerEdit: this.$store.state.customerUpdated,
-      isLoading: false,
       isSaveAndAdd: false,
       timeOut: 0,
     };
   },
   async mounted() {
-    const checkboxItems = $(".context-input>.icon.icon-checkbox").toArray();
-    checkboxItems.forEach((item) => {
-      $(item).click(this.checkInput);
-      $(item).css("background-color", "#fff!important");
-    });
-    if (this.customerEdit.firstName) {
-      this.mountDataEditForm();
-    }
-    const requiredFields = $(".context-item[required] .input-text").toArray();
-    requiredFields.forEach((field) => {
-      $(field).blur(this.checkRequiredField);
-      $(field).focus(function (e) {
-        $(e.target).css("border-color", "#D3D7DE");
-        $(e.target).parent().next("span").remove();
+    try {
+      const checkboxItems = $(".context-input>.icon.icon-checkbox").toArray();
+      checkboxItems.forEach((item) => {
+        $(item).click(this.checkInput);
+        $(item).css("background-color", "#fff!important");
       });
-    });
-    // xử lý hiển thị cho checkbox(liên quan đến mặt hình ảnh)
-    $("#sharingUse").parent(".context-input").css("display", "block");
-    $("#disableMail").parent(".context-input").css("display", "block");
-    $("#disableCall").parent(".context-input").css("display", "block");
-    if (!this.editForm) {
-      const data = await axios
-        .get(`${rootApi}Potentials/MaxCode`)
-        .then((res) => res.data)
-        .catch((error) => console.log(error));
-      if (!data.flag) {
-        this.$store.commit("setState", "fail");
-        this.$store.commit("setMessage", data.userMsg[0]);
-        this.$store.commit("setIsShow", true);
-      } else {
-        this.$refs["potentialCode"].name = data.data;
+      if (this.customerEdit.firstName) {
+        this.mountDataEditForm();
       }
+      const requiredFields = $(".context-item[required] .input-text").toArray();
+      requiredFields.forEach((field) => {
+        $(field).blur(this.checkRequiredField);
+        $(field).focus(function (e) {
+          $(e.target).css("border-color", "#D3D7DE");
+          $(e.target).parent().next("span").remove();
+        });
+      });
+      // xử lý hiển thị cho checkbox(liên quan đến mặt hình ảnh)
+      $("#sharingUse").parent(".context-input").css("display", "block");
+      $("#disableMail").parent(".context-input").css("display", "block");
+      $("#disableCall").parent(".context-input").css("display", "block");
+      if (!this.editForm) {
+        const data = await axios
+          .get(`${rootApi}Potentials/MaxCode`)
+          .then((res) => res.data)
+          .catch((error) => console.log(error));
+        if (!data.flag) {
+          this.$store.commit("setState", "fail");
+          this.$store.commit("setMessage", data.userMsg[0]);
+          emitter.emit("showToast");
+        } else {
+          this.$refs["potentialCode"].name = data.data;
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
   computed: {
     handleFullName() {
       return `${this.lastMiddleName} ${this.firstName}`;
     },
+    getErrorField() {
+      return this.errorField;
+    },
   },
-  beforeUnmount(){
+  beforeUnmount() {
     $("#sharingUse").removeAttr("checked");
     $("#sharingUse").removeClass("icon-checkbox-checked");
     $("#sharingUse").addClass("icon-checkbox");
@@ -867,59 +878,89 @@ export default {
     },
     // xử lý hiển thị lỗi
     errorField(newValue) {
-      newValue.forEach((item) => {
-        const keyErr = Object.keys(item);
-        const fieldError = $(this.$refs.container).find(`#${keyErr}`);
-        if (item[keyErr] !== "") {
-          $(fieldError).parent().next("span").remove();
-          $(fieldError).css("border-color", "red");
-
-          $(fieldError)
-            .parent()
-            .after(`<span style="color:red"}}>${item[keyErr]}</span>`);
-        } else {
-          $(fieldError).parent().next("span").remove();
-          $(fieldError).css("border-color", "#D3D7DE");
-        }
-      });
+      let me = this;
+      let marginBottom = 0;
+      if (newValue?.length > 0) {
+        setTimeout(() => {
+          me.$refs.errorField.forEach((error) => {
+            $(error.$el).css("top", `calc(10% + ${marginBottom}px )`);
+            marginBottom += 50;
+            setTimeout(() => error.showAnimateToast(), marginBottom);
+            // error.showAnimateToast()
+          });
+        }, 100);
+      }
     },
   },
   components: { InputFormVue, DatePicker, PopUp },
   template: "FormSubmit",
   methods: {
+    handleValidateTel(e) {
+      try {
+        let check = false;
+        let me = this;
+        clearTimeout(this.timeOut);
+        this.timeOut = setTimeout(() => {
+          if (validatePhoneNumber(e.target.value)) {
+            check = true;
+          } else {
+            check = false;
+          }
+          if (!check) {
+            // me.errorField = [...me.errorField, { email: "Email không đúng định dạng" }];
+            if ($(e.target).css("border-color") !== "rgb(255, 0, 0)") {
+              $(e.target).css("border-color", "red");
+              $(e.target)
+                .parent()
+                .after(
+                  '<span style="color:red"}}>Số điện thoại không đúng định dạng</span>'
+                );
+            }
+          } else {
+            // me.errorField.forEach((item) => item.email === "");
+            $(e.target).css("border-color", "#D3D7DE");
+            $(e.target).parent().next("span").remove();
+          }
+        }, 1000);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     /**
      * Xử lý validate email: Sau 1s, nếu ko nhập đúng định dạng, hiển thị lỗi
      * @param {*} e
      * Created by LVKIEN 1/9/2022
      */
     async handleValidateEmail(e) {
-      let check = false;
-      let me = this;
-      clearTimeout(this.timeOut);
-      this.timeOut = setTimeout(() => {
-        if (validateEmail(e.target.value)) {
-          check = true;
-        } else {
-          check = false;
-        }
-        if (!check) {
-          me.errorField = [{ email: "Email không đúng định dạng" }];
-          console.log(me.errorField);
-          if ($(e.target).css("border-color") !== "rgb(255, 0, 0)") {
-            $(e.target).css("border-color", "red");
-            $(e.target)
-              .parent()
-              .after(
-                '<span style="color:red"}}>Email không đúng định dạng</span>'
-              );
+      try {
+        let check = false;
+        let me = this;
+        clearTimeout(this.timeOut);
+        this.timeOut = setTimeout(() => {
+          if (validateEmail(e.target.value)) {
+            check = true;
+          } else {
+            check = false;
           }
-        } else {
-          me.errorField.forEach((item) => item.email === "");
-          console.log(1);
-          $(e.target).css("border-color", "#D3D7DE");
-          $(e.target).parent().next("span").remove();
-        }
-      }, 1000);
+          if (!check) {
+            // me.errorField = [{ email: "Email không đúng định dạng" }];
+            if ($(e.target).css("border-color") !== "rgb(255, 0, 0)") {
+              $(e.target).css("border-color", "red");
+              $(e.target)
+                .parent()
+                .after(
+                  '<span style="color:red"}}>Email không đúng định dạng</span>'
+                );
+            }
+          } else {
+            // me.errorField.forEach((item) => item.email === "");
+            $(e.target).css("border-color", "#D3D7DE");
+            $(e.target).parent().next("span").remove();
+          }
+        }, 1000);
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     /**
@@ -927,127 +968,121 @@ export default {
      * Created by LVKIEN 1/9/2022
      */
     mountDataEditForm() {
-      if (this.editForm) {
-        this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative
-          ? this.customerEdit.vocativeName
-          : "Không chọn";
-        this.$refs.vocative.currentValue = {
-          id: this.customerEdit.vocative || 0,
-          name: this.customerEdit.vocative
+      try {
+        if (this.editForm) {
+          this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative
             ? this.customerEdit.vocativeName
-            : "Không chọn",
-        };
+            : "Không chọn";
+          this.$refs.vocative.selected = {
+            id: this.customerEdit.vocative || 0,
+            name: this.customerEdit.vocative
+              ? this.customerEdit.vocativeName
+              : "Không chọn",
+          };
 
-        this.$refs.departmentId.oldSearchFilter = this.customerEdit.departmentId
-          ? this.customerEdit.departmentName
-          : "Không chọn";
-        this.$refs.departmentId.currentValue = {
-          id: this.customerEdit.departmentId || 0,
-          name: this.customerEdit.departmentId
+          this.$refs.departmentId.oldSearchFilter = this.customerEdit
+            .departmentId
             ? this.customerEdit.departmentName
-            : "Không chọn",
-        };
+            : "Không chọn";
+          this.$refs.departmentId.selected = {
+            id: this.customerEdit.departmentId || 0,
+            name: this.customerEdit.departmentId
+              ? this.customerEdit.departmentName
+              : "Không chọn",
+          };
 
-        this.$refs.positionId.oldSearchFilter = this.customerEdit.positionId
-          ? this.customerEdit.positionName
-          : "Không chọn";
-        this.$refs.positionId.currentValue = {
-          id: this.customerEdit.positionId || 0,
-          name: this.customerEdit.positionId
+          this.$refs.positionId.oldSearchFilter = this.customerEdit.positionId
             ? this.customerEdit.positionName
-            : "Không chọn",
-        };
+            : "Không chọn";
+          this.$refs.positionId.selected = {
+            id: this.customerEdit.positionId || 0,
+            name: this.customerEdit.positionId
+              ? this.customerEdit.positionName
+              : "Không chọn",
+          };
 
-        this.$refs.sourceId.oldSearchFilter = this.customerEdit.sourceId
-          ? this.customerEdit.sourceName
-          : "Không chọn";
-        this.$refs.sourceId.currentValue = {
-          id: this.customerEdit.sourceId || 0,
-          name: this.customerEdit.sourceId
+          this.$refs.sourceId.oldSearchFilter = this.customerEdit.sourceId
             ? this.customerEdit.sourceName
-            : "Không chọn",
-        };
+            : "Không chọn";
+          this.$refs.sourceId.selected = {
+            id: this.customerEdit.sourceId || 0,
+            name: this.customerEdit.sourceId
+              ? this.customerEdit.sourceName
+              : "Không chọn",
+          };
 
-        this.$refs.gender.oldSearchFilter = this.customerEdit.gender
-          ? this.customerEdit.genderName
-          : "Không chọn";
-        this.$refs.gender.currentValue = {
-          id: this.customerEdit.gender || 0,
-          name: this.customerEdit.gender
+          this.$refs.gender.oldSearchFilter = this.customerEdit.gender
             ? this.customerEdit.genderName
-            : "Không chọn",
-        };
-        $(this.$refs.container)
-          .find("#lastMiddleName")
-          .val(this.customerEdit.lastMiddleName);
-        $(this.$refs.container)
-          .find("#firstName")
-          .val(this.customerEdit.firstName);
-        // xử lý khi có họ và đệm hay ko
-        if (!this.customerEdit.lastMiddleName) {
-          this.firstName = this.customerEdit.firstName?.trim();
+            : "Không chọn";
+          this.$refs.gender.selected = {
+            id: this.customerEdit.gender || 0,
+            name: this.customerEdit.gender
+              ? this.customerEdit.genderName
+              : "Không chọn",
+          };
           $(this.$refs.container)
-            .find("#fullName")
-            .val(this.customerEdit.firstName?.trim());
-        } else {
-          this.firstName = this.customerEdit.firstName?.trim();
-          this.lastMiddleName = this.customerEdit.lastMiddleName?.trim();
+            .find("#lastMiddleName")
+            .val(this.customerEdit.lastMiddleName);
           $(this.$refs.container)
-            .find("#fullName")
-            .val(
-              this.customerEdit.lastMiddleName
-                ?.trim()
-                .concat(" " + this.customerEdit.firstName?.trim())
-            );
-        }
-        $(this.$refs.container)
-          .find("#customerPhoneNum")
-          .val(this.customerEdit.customerPhoneNum);
-        $(this.$refs.container)
-          .find("#companyPhoneNum")
-          .val(this.customerEdit.companyPhoneNum);
-        $(this.$refs.container)
-          .find("#otherPhoneNum")
-          .val(this.customerEdit.otherPhoneNum);
-        $(this.$refs.container).find("#zalo").val(this.customerEdit.zalo);
-        $(this.$refs.container)
-          .find("#organizationName")
-          .val(this.customerEdit.organizationName);
-        $(this.$refs.container)
-          .find("#customerEmail")
-          .val(this.customerEdit.customerEmail);
-        $(this.$refs.container)
-          .find("#companyEmail")
-          .val(this.customerEdit.companyEmail);
-        $(this.$refs.container).find("#taxCode").val(this.customerEdit.taxCode);
-        this.customerEdit.disableCall &&
-          $(this.$refs.container).find("#disableCall").trigger("click");
-        this.customerEdit.disableMail &&
-          $(this.$refs.container).find("#disableMail").trigger("click");
-        if (this.customerEdit.potentialName) {
-          const potentialArray = this.customerEdit.potentialName
-            .split("\n ")
-            .map((item) => {
-              if (item !== "") {
-                return item.trim();
-              }
-            })
-            .filter((element) => {
-              return element !== undefined;
-            });
-          this.$refs.potentialNames.value =
-            this.formatDataComboBox(potentialArray);
-        }
-        $(this.$refs.container)
-          .find("#facebook")
-          .val(this.customerEdit.facebook);
+            .find("#firstName")
+            .val(this.customerEdit.firstName);
+          $(this.$refs.container)
+              .find("#fullName")
+              .val(this.customerEdit.fullName);
+          
+          $(this.$refs.container)
+            .find("#customerPhoneNum")
+            .val(this.customerEdit.customerPhoneNum);
+          $(this.$refs.container)
+            .find("#companyPhoneNum")
+            .val(this.customerEdit.companyPhoneNum);
+          $(this.$refs.container)
+            .find("#otherPhoneNum")
+            .val(this.customerEdit.otherPhoneNum);
+          $(this.$refs.container).find("#zalo").val(this.customerEdit.zalo);
+          $(this.$refs.container)
+            .find("#organizationName")
+            .val(this.customerEdit.organizationName);
+          $(this.$refs.container)
+            .find("#customerEmail")
+            .val(this.customerEdit.customerEmail);
+          $(this.$refs.container)
+            .find("#companyEmail")
+            .val(this.customerEdit.companyEmail);
+          $(this.$refs.container)
+            .find("#taxCode")
+            .val(this.customerEdit.taxCode);
+          this.customerEdit.disableCall &&
+            $(this.$refs.container).find("#disableCall").trigger("click");
+          this.customerEdit.disableMail &&
+            $(this.$refs.container).find("#disableMail").trigger("click");
+          if (this.customerEdit.potentialName) {
+            const potentialArray = this.customerEdit.potentialName
+              .split("\n ")
+              .map((item) => {
+                if (item !== "") {
+                  return item.trim();
+                }
+              })
+              .filter((element) => {
+                return element !== undefined;
+              });
+            this.$refs.potentialNames.value =
+              this.formatDataComboBox(potentialArray);
+          }
+          $(this.$refs.container)
+            .find("#facebook")
+            .val(this.customerEdit.facebook);
 
-        // format dateOfBirth
-        if (this.customerEdit?.dateOfBirth) {
-          this.$refs.dateOfBirth.setDate(
-            this.formatDateTime(this.customerEdit.dateOfBirth)
-          );
+          // format dateOfBirth
+          if (this.customerEdit?.dateOfBirth) {
+            this.$refs.dateOfBirth.setDate(
+              this.formatDateTime(this.customerEdit.dateOfBirth)
+            );
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
     },
 
@@ -1066,13 +1101,21 @@ export default {
     getSelectedWard(selected) {
       this.wardName = selected;
     },
-    // xử lý dữ liệu theo format của combobox
+    /**
+     * TODO: xử lý dữ liệu theo format của combobox
+     * @param {*} data
+     * !Created by LVKIEN 10/09/2022
+     */
     formatDataComboBox(data) {
       return data.map((item) => {
         return { value: item, label: item };
       });
     },
-    // lấy về dữ liệu cho Combobox
+    /**
+     * TODO: lấy về dữ liệu cho Combobox
+     * @param {*} prefix
+     * !Created by LVKIEN 10/09/2022
+     */
     async getDataComboBox(prefix) {
       let result = null;
       try {
@@ -1087,18 +1130,26 @@ export default {
         }
       } catch (error) {
         console.log(error);
-
         result = null;
       }
       return result;
     },
-    // lay du lieu datepicker
+    /**
+     * TODO: lay du lieu datepicker
+     * @param {*} date
+     * ! Created by LVKIEN 10/09/2022
+     */
     handleGetCreatedAccountDate(date) {
       this.createdAccountAt = date;
     },
-    // lay du lieu datepicker
+    /**
+     * TODO: lay du lieu datepicker
+     * @param {*} date
+     * ! Created by LVKIEN 10/09/2022
+     */
     handleGetBirthDate(date) {
       this.dateOfBirth = date;
+      console.log(date);
     },
     // xử lý checkbox
     checkInput(e) {
@@ -1113,7 +1164,10 @@ export default {
     setFirstName(value) {
       this.firstName = value;
     },
-    // Xử lý hiển thị tỉnh thành phố chỉ khi chọn quốc gia
+    /**
+     * TODO: Xử lý hiển thị tỉnh thành phố chỉ khi chọn quốc gia
+     * ! Creatd by LVKIEN 10/09/2022
+     */
     handleShowCities() {
       this.handleGetAddress(
         "countryId",
@@ -1122,7 +1176,10 @@ export default {
         "Bạn chưa chọn quốc gia"
       );
     },
-    // Xử lý hiển thị quận/huyện chỉ khi chọn tỉnh thành phố
+    /**
+     * TODO: Xử lý hiển thị quận/huyện chỉ khi chọn tỉnh thành phố
+     * ! Created by LVKIEN 10/09/2022
+     */
     handleShowDistricts() {
       this.handleGetAddress(
         "cityId",
@@ -1131,7 +1188,10 @@ export default {
         "Bạn chưa chọn tỉnh/thành phố"
       );
     },
-    // Xử lý hiển thị xã/ phường chỉ khi chọn quận/huyện
+    /**
+     * TODO: Xử lý hiển thị xã/ phường chỉ khi chọn quận/huyện
+     * ! Created by LVKIEN 10/09/2022
+     */
     handleShowWards() {
       this.handleGetAddress(
         "districtId",
@@ -1140,7 +1200,11 @@ export default {
         "Bạn chưa chọn quận/huyện"
       );
     },
-    // xử lý format dữ liệu của tên tiềm năng, ngành nghề, lĩnh vực khi lưu vào database
+    /**
+     * TODO: xử lý format dữ liệu của tên tiềm năng, ngành nghề, lĩnh vực khi lưu vào database
+     * @param {*} data
+     * ! Created by LVKIEN 10/09/2022
+     */
     handleDataWhenSave(data) {
       let result = "";
       if (data?.length > 0) {
@@ -1176,12 +1240,13 @@ export default {
           this.$refs.cityId.showLoading = false;
           this.$refs.districtId.showLoading = false;
           this.$refs.wardId.showLoading = false;
+          
           if (areaResponse.flag) {
             areaResponse = areaResponse.data;
           } else {
             this.$store.commit("setState", "fail");
             this.$store.commit("setMessage", areaResponse.userMsg[0]);
-            this.$store.commit("setIsShow", true);
+            emitter.emit("showToast");
 
             this.$refs.cityId.showNoValue = true;
             this.$refs.districtId.showNoValue = true;
@@ -1199,29 +1264,40 @@ export default {
           this.$refs[areaName].selected = {};
           this.$store.commit("setState", "fail");
           this.$store.commit("setMessage", actionFail);
-          this.$store.commit("setIsShow", true);
+          emitter.emit("showToast");
         }
       } catch (error) {
-        this.$store.commit("setState", "fail");
-        this.$store.commit("setMessage", error);
-        this.$store.commit("setIsShow", true);
+        console.log(error);
       }
     },
+    /**
+     * TODO: Xử lý hiển thị lỗi cho required field
+     * @param {*} e
+     * ! Created by LVKIEN 10/09/2022
+     */
     checkRequiredField(e) {
-      if (!$(e.target).val().trim()) {
-        $(e.target).css("border-color", "red");
-        $(e.target)
-          .parent()
-          .after(
-            '<span style="color:red"}}>Tên không được phép để trống</span>'
-          );
-      } else {
-        $(e.target).css("border-color", "#D3D7DE");
-        $(e.target).parent().next("span").remove();
+      try {
+        if (!$(e.target).val().trim()) {
+          $(e.target).css("border-color", "red");
+          $(e.target)
+            .parent()
+            .after(
+              '<span style="color:red"}}>Tên không được phép để trống</span>'
+            );
+        } else {
+          $(e.target).css("border-color", "#D3D7DE");
+          $(e.target).parent().next("span").remove();
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
 
-    // format kiểu datetime từ backend thành format của frontend
+    /**
+     * TODO: format kiểu datetime từ backend thành format của frontend
+     * @param {*} dateString
+     * Created by LVKIEN 10/09/2022
+     */
     formatDateTime(dateString) {
       const rawResult = dateString.slice(0, 10);
       const dateStringArray = rawResult.split("-");
@@ -1235,63 +1311,86 @@ export default {
       }
       return null;
     },
+    /**
+     * TODO: đóng form
+     * ! Created by LVKIEN 10/09/2022
+     */
     closeForm() {
       if (this.$route.name === "TiemNang") {
         this.$store.commit("setFormState", false);
       }
     },
-    // ánh xạ dữ liệu vào đúng thuộc tính object
+    /**
+     * TODO: ánh xạ dữ liệu vào đúng thuộc tính object
+     * @param {*} object
+     * ! Created by LVKIEN 10/09/2022
+     */
     handleMappingData(object) {
-      const inputArr = $(".inputForm").toArray();
-      const inputValueArr = inputArr.map((input) => {
-        return { [$(input).attr("id")]: $(input).val() };
-      });
-      const keysObject = Object.keys(object);
-      keysObject.forEach((key) => {
-        const lowerCaseKey = this.lowerCaseFirstLetter(key);
-        inputValueArr.forEach((input) => {
-          if (input[lowerCaseKey]) {
-            object[key] = input[lowerCaseKey];
-          }
+      try {
+        const inputArr = $(".inputForm").toArray();
+        const inputValueArr = inputArr.map((input) => {
+          return { [$(input).attr("id")]: $(input).val() };
         });
-      });
-      if (!this.editForm) {
-        const dropdownValueArr = dropdownField.map((dropdown) => {
-          if (this.$refs[dropdown]) {
-            return { [dropdown]: this.$refs[dropdown].selected.id || null };
-          }
-        });
+        const keysObject = Object.keys(object);
         keysObject.forEach((key) => {
-          const lowerCaseKey = this.lowerCaseFirstLetter(key);
-          dropdownValueArr.forEach((dropdown) => {
-            if (dropdown[lowerCaseKey]) {
-              object[key] = dropdown[lowerCaseKey];
+          const lowerCaseKey = lowerCaseFirstLetter(key);
+          inputValueArr.forEach((input) => {
+            if (input[lowerCaseKey]) {
+              object[key] = input[lowerCaseKey];
             }
           });
         });
+        if (!this.editForm) {
+          const dropdownValueArr = dropdownField.map((dropdown) => {
+            if (this.$refs[dropdown]) {
+              return { [dropdown]: this.$refs[dropdown].selected.id || null };
+            }
+          });
+          keysObject.forEach((key) => {
+            const lowerCaseKey = lowerCaseFirstLetter(key);
+            dropdownValueArr.forEach((dropdown) => {
+              if (dropdown[lowerCaseKey]) {
+                object[key] = dropdown[lowerCaseKey];
+              }
+            });
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
-    // lấy dữ liệu form và gọi API
-    // 15/08/2022 LVKien
-    saveForm() {
+    /**
+     * TODO: lấy dữ liệu form và gọi API
+     * ! Created by LVKIEN 10/09/2022
+     */
+    async saveForm() {
       this.isSaveAndAdd = false;
-      this.$refs.showConfirm.isShow = true;
-    },
-    async sendRequest() {
       this.errorField = [];
       if (this.isSaveAndAdd) {
+        //click vào button Lưu và thêm
         await this.sendRequestSaveAndAdd();
       } else {
+        //click vào button Lưu
         await this.sendRequestAddOrUpdate();
       }
     },
+    /**
+     * TODO: click vào button Lưu
+     * ! Created by LVKIEN 10/09/2022
+     */
     async sendRequestAddOrUpdate() {
+      // Xử lý ở form thêm
       if (!this.editForm) {
         await this.saveInsertForm();
+        // Xử lý ở form sửa
       } else {
         await this.saveEditForm();
       }
     },
+    /**
+     * TODO: Xử lý lưu ở form thêm
+     * ! Created by LVKIEN 10/09/2022
+     */
     async saveInsertForm() {
       try {
         const potentialNames = this.handleDataWhenSave(
@@ -1333,36 +1432,39 @@ export default {
 
         console.log(customer, potential, address, organization);
         if (!customer.FirstName || customer.FirstName.trim() === "") {
-          this.errorField = [
-            ...this.errorField,
-            { firstName: "Tên không được phép để trống" },
-          ];
           this.$store.commit("setState", "fail");
           this.$store.commit("setMessage", "Tên không được phép để trống");
-          this.$store.commit("setIsShow", true);
+          emitter.emit("showToast");
         } else {
           const customerInsert = { customer, potential, address, organization };
-          this.isLoading = true;
           const resCustomer = await axios
             .post(`${rootApi}Customers`, customerInsert)
             .then((res) => res.data)
             .catch((error) => error.response.data);
-          this.isLoading = false;
           if (resCustomer.flag) {
             this.$store.commit("setState", "success");
             this.$store.commit("setMessage", "Thành công");
-            this.$store.commit("setIsShow", true);
+            emitter.emit("showToast");
             this.$store.commit("setIsInserted", true);
+            this.errorField = [];
             this.closeForm();
           } else {
             const potentialErrrorCode = resCustomer.devMsg.find(
               (item) => item === StatusCode.ErrorCode.DuplicatePotentialCode
             );
+            this.errorField = resCustomer.userMsg.map((msg) => {
+              return { state: "fail", message: msg };
+            });
             if (potentialErrrorCode) {
-              this.errorField = [
-                ...this.errorField,
-                StatusCode.MessageError.DuplicatePotentialCode,
-              ];
+              $("#potentialCode").css("border-color", "red");
+              $("#potentialCode")
+                .parent()
+                .after(
+                  `<span style="color:red"}}>${StatusCode.MessageError.DuplicatePotentialCode}</span>`
+                );
+            } else {
+              $("#potentialCode").css("border-color", "#D3D7DE");
+              $("#potentialCode").parent().next("span").remove();
             }
           }
         }
@@ -1372,10 +1474,11 @@ export default {
     },
     /**
      * TODO: Xử lý khi lưu form sửa
-     * Created by LVKIEN 5/9/2022
+     * !Created by LVKIEN 5/9/2022
      */
     async saveEditForm() {
       try {
+        this.errorField=[]
         const potentialNames = this.handleDataWhenSave(
           this.$refs.potentialNames.value
         );
@@ -1387,7 +1490,7 @@ export default {
           ];
           this.$store.commit("setState", "fail");
           this.$store.commit("setMessage", "Tên không được phép để trống");
-          this.$store.commit("setIsShow", true);
+          emitter.emit("showToast");
         } else {
           this.handleMappingData(customerUpdate);
           this.getValueDropdown("Vocative", customerUpdate);
@@ -1406,13 +1509,13 @@ export default {
           customerUpdate.CustomerId =
             this.customerEdit.customerId ||
             this.$store.state.customerUpdated.CustomerId;
-          customerUpdate.DateOfBirth = this.formatDate(this.dateOfBirth);
+          customerUpdate.DateOfBirth = this.formatDate(this.$refs.dateOfBirth.date);
+          console.log(this.formatDate(this.$refs.dateOfBirth.date));
           customerUpdate.OrganizationId = this.customerEdit.organizationId;
           customerUpdate.PotentialId = this.customerEdit.potentialId;
           customerUpdate.ModifiedAt = this.customerEdit.modifiedAt;
           this.formatData(customerUpdate);
           console.log(customerUpdate);
-          this.isLoading = true;
           const resCustomer = await axios
             .put(
               `${rootApi}Customers/${customerUpdate.CustomerId}`,
@@ -1420,11 +1523,10 @@ export default {
             )
             .then((res) => res.data)
             .catch((error) => error.response.data);
-          this.isLoading = false;
           if (resCustomer.flag) {
             this.$store.commit("setState", "success");
             this.$store.commit("setMessage", "Thành công");
-            this.$store.commit("setIsShow", true);
+            emitter.emit("showToast");
 
             this.$store.commit("setCustomerUpdated", customerUpdate);
             this.$store.commit("setIsUpdated", true);
@@ -1432,15 +1534,20 @@ export default {
               this.closeForm();
             }
           } else {
-            this.$store.commit("setState", "fail");
-            this.$store.commit("setMessage", resCustomer.userMsg[0]);
-            this.$store.commit("setIsShow", true);
+            this.errorField = resCustomer.userMsg.map((msg) => {
+              return { state: "fail", message: msg };
+            });
+
           }
         }
       } catch (error) {
         console.log(error);
       }
     },
+    /**
+     * TODO: click vào button Lưu và thêm
+     * ! Created by LVKIEN 10/09/2022
+     */
     async sendRequestSaveAndAdd() {
       await this.sendRequestAddOrUpdate();
       if (!this.editForm) {
@@ -1449,10 +1556,18 @@ export default {
       this.customerEdit = this.$store.state.customerUpdated;
       console.log(this.customerEdit);
     },
+    /**
+     * TODO: click vào button Lưu và thêm
+     * ! Created by LVKIEN 10/09/2022
+     */
     async saveAndAddForm() {
       this.isSaveAndAdd = true;
-      this.$refs.showConfirm.isShow = true;
+      await this.sendRequestSaveAndAdd();
     },
+    /**
+     * TODO: Mở form
+     * ! Created by LVKIEN 10/09/2022
+     */
     openForm() {
       if (this.$route.name === "TiemNang") {
         this.$store.commit("setFormState", true);
@@ -1465,21 +1580,28 @@ export default {
      * created by LVKIEN 28/08/2022
      */
     getValueDropdown(capitalizeValue, object) {
-      const toLowerCaseValue = this.lowerCaseFirstLetter(capitalizeValue);
-      console.log(toLowerCaseValue);
-      // nếu prop selected không có, tức là người dùng không sửa gì, lấy gtri current
-      if (Object.keys(this.$refs[toLowerCaseValue].selected).length === 0) {
-        object[capitalizeValue] = this.$refs[toLowerCaseValue].currentValue.id;
-      } else {
-        // nếu id !== 0, tức là người dùng ko click vào ô "Không chọn"
-        if (this.$refs[toLowerCaseValue].selected.id !== 0) {
+      try {
+        const toLowerCaseValue = lowerCaseFirstLetter(capitalizeValue);
+        // nếu prop selected không có, tức là người dùng không sửa gì, lấy gtri current
+        if (Object.keys(this.$refs[toLowerCaseValue].selected).length === 0) {
           object[capitalizeValue] = this.$refs[toLowerCaseValue].selected.id;
-          // nếu id === 0, tức là người dùng click vào ô "Không chọn"
         } else {
-          object[capitalizeValue] = null;
+          // nếu id !== 0, tức là người dùng ko click vào ô "Không chọn"
+          if (this.$refs[toLowerCaseValue].selected.id !== 0) {
+            object[capitalizeValue] = this.$refs[toLowerCaseValue].selected.id;
+            // nếu id === 0, tức là người dùng click vào ô "Không chọn"
+          } else {
+            object[capitalizeValue] = null;
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
     },
+    /**
+     * TODO: Kiểm tra xem có lỗi nào không
+     * ! Created by LVKIEN 10/09/2022
+     */
     checkEmptyError() {
       let result = true;
       for (const key in this.errorField) {
@@ -1490,12 +1612,6 @@ export default {
         }
       }
       return result;
-    },
-    capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    lowerCaseFirstLetter(string) {
-      return string.charAt(0).toLowerCase() + string.slice(1);
     },
     // check xem liệu object có trống hay ko
     checkEmptyObject(data) {

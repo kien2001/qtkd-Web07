@@ -133,457 +133,538 @@
         </div>
       </div>
     </div>
+    <Transition name="fade">
+      <FormSubmit v-if="showForm"></FormSubmit>
+    </Transition>
+    <UpdateMultipleForm v-if="getEditMultipleForm" />
   </div>
-  <FormSubmit v-if="showForm"></FormSubmit>
-  <UpdateMultipleForm v-if="getEditMultipleForm" />
 </template>
 <script>
 import $ from "jquery";
 import axios from "axios";
-import { rootApi } from "@/js/config";
+import { rootApi, numPerPage } from "@/js/config";
 import handleClickFilterItem from "@/js/checkbox";
 import emitter from "@/js/emitter";
+import ToastMessage from "@/components/ToastMessage.vue";
 export default {
-  name: "TiemNang",
-  computed: {
+    name: "TiemNang",
+    computed: {
+      getListToast(){
+        return this.listToast
+      },
+        /**
+         * Đi đến cuối của pageSize
+         * Created by LVKIEN 30/08/2022
+         */
+        getLastPage() {
+            if (this.pageCurrent + this.numberPerPage >
+                Math.ceil(this.totalCount / this.numberPerPage)) {
+                return Math.ceil(this.totalCount / this.numberPerPage);
+            }
+            return this.pageCurrent + this.numberPerPage - 1;
+        },
+        /**
+         * Mở form edit khi click vào ô sửa ở từng dòng
+         * Created by LVKIEN 30/08/2022
+         */
+        showForm() {
+            return this.$store.state.isShowForm;
+        },
+        /**
+         * lấy trạng thái của isDeleted
+         * Created by LVKIEN 30/08/2022
+         */
+        getIsDeleted() {
+            return this.$store.state.isDeleted;
+        },
+        /**
+         * lấy trạng thái của isInserted
+         * Created by LVKIEN 30/08/2022
+         */
+        getIsInserted() {
+            return this.$store.state.isInserted;
+        },
+        /**
+         * lấy trạng thái của isUpdated
+         * Created by LVKIEN 30/08/2022
+         */
+        getIsUpdated() {
+            return this.$store.state.isUpdated;
+        },
+        /**
+         * lấy trạng thái của editMultipleRow
+         * Created by LVKIEN 30/08/2022
+         */
+        getEditMultipleForm() {
+            return this.$store.state.editMultipleRow;
+        },
+        /**
+         * lấy giá trị của từ khoá search
+         * Created by LVKIEN 30/08/2022
+         */
+        getKeyWordSearch() {
+            return this.$store.state.conditionSearch;
+        },
+        /**
+         * lấy giá trị của list filter
+         * Created by LVKIEN 30/08/2022
+         */
+        getListFilter() {
+            return this.$store.state.listFilter;
+        },
+    },
+    data() {
+        return {
+            customerList: [],
+            totalCount: 0,
+            pageCurrent: 1,
+            numberPerPage: 10,
+            listChecked: [],
+            isLoading: true,
+            // hiển thị khi không có dữ liệu
+            showNoValue: false,
+        };
+    },
     /**
-     * Đi đến cuối của pageSize
+     * Lấy dữ liệu của phân trang
      * Created by LVKIEN 30/08/2022
      */
-    getLastPage() {
-      if (
-        this.pageCurrent + this.numberPerPage >
-        Math.ceil(this.totalCount / this.numberPerPage)
-      ) {
-        return Math.ceil(this.totalCount / this.numberPerPage);
-      }
-      return this.pageCurrent + this.numberPerPage - 1;
+    async beforeMount() {
+        await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
     },
     /**
-     * Mở form edit khi click vào ô sửa ở từng dòng
+     * TODO: Đăng ký sự kiện global
+     * !Created by LVKIEN 10/09/2022
+     */
+    created() {
+        emitter.on("deselectAll", this.removeCheckAll);
+    },
+    /**
+     * Thêm sự kiện cho checkbox
      * Created by LVKIEN 30/08/2022
      */
-    showForm() {
-      return this.$store.state.isShowForm;
-    },
-    /**
-     * lấy trạng thái của isDeleted
-     * Created by LVKIEN 30/08/2022
-     */
-    getIsDeleted() {
-      return this.$store.state.isDeleted;
-    },
-    /**
-     * lấy trạng thái của isInserted
-     * Created by LVKIEN 30/08/2022
-     */
-    getIsInserted() {
-      return this.$store.state.isInserted;
-    },
-    /**
-     * lấy trạng thái của isUpdated
-     * Created by LVKIEN 30/08/2022
-     */
-    getIsUpdated() {
-      return this.$store.state.isUpdated;
-    },
-    /**
-     * lấy trạng thái của editMultipleRow
-     * Created by LVKIEN 30/08/2022
-     */
-    getEditMultipleForm() {
-      return this.$store.state.editMultipleRow;
-    },
-    /**
-     * lấy giá trị của từ khoá search
-     * Created by LVKIEN 30/08/2022
-     */
-    getKeyWordSearch() {
-      return this.$store.state.conditionSearch;
-    },
-    /**
-     * lấy giá trị của list filter
-     * Created by LVKIEN 30/08/2022
-     */
-    getListFilter() {
-      return this.$store.state.listFilter;
-    },
-  },
-  data() {
-    return {
-      customerList: [],
-      totalCount: 0,
-      numPerPage: [
-        { id: 10, name: "10 Bản ghi trên trang" },
-        { id: 20, name: "20 Bản ghi trên trang" },
-        { id: 50, name: "50 Bản ghi trên trang" },
-        { id: 100, name: "100 Bản ghi trên trang" },
-      ],
-      pageCurrent: 1,
-      numberPerPage: 10,
-      listChecked: [],
-      isLoading: true,
-      // hiển thị khi không có dữ liệu
-      showNoValue: false,
-    };
-  },
-  /**
-   * Lấy dữ liệu của phân trang
-   * Created by LVKIEN 30/08/2022
-   */
-  async beforeMount() {
-    await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
-  },
-  created() {
-    emitter.on("deselectAll", this.removeCheckAll);
-  },
-  /**
-   * Thêm sự kiện cho checkbox
-   * Created by LVKIEN 30/08/2022
-   */
-  updated() {
-    const checkboxItems = $(".td.icon.icon-checkbox").toArray();
-    checkboxItems.forEach((item) => {
-      $(item).unbind();
-      $(item).click(this.checkInput);
-    });
-  },
-  mounted() {
-    this.$refs["limit-num"].selected = {
-      id: 10,
-      name: "10 Bản ghi trên trang",
-    };
-    $(this.$refs["limit-num"]?.$el).find(".dropdown-header").css("color", "#1F2229");
-  },
-  watch: {
-    /**
-     * Khi list filter thay đổi, gọi API
-     * @param {*} newValue
-     *  Created by LVKIEN 30/08/2022
-     */
-    async getListFilter(newValue) {
-      this.pageCurrent = 1;
-      await this.getDataPaging(this.getKeyWordSearch, newValue);
-    },
-    /**
-     * Khi keyword thay đổi, gọi API
-     * @param {*} newValue
-     *  Created by LVKIEN 30/08/2022
-     */
-    async getKeyWordSearch(newValue) {
-      this.pageCurrent = 1;
-      await this.getDataPaging(newValue, this.getListFilter);
-    },
-    /**
-     * xử lý khi delete thành công
-     * @param {*} newValue
-     *  Created by LVKIEN 30/08/2022
-     */
-    async getIsDeleted(newValue) {
-      if (newValue) {
-        // reset lại biến isDeleted
-        this.$store.commit("setIsDeleted", false);
-        // bỏ hết các ô checked
-        const checkAllBtn = this.$refs["check-all"];
-        $(checkAllBtn).removeAttr("all-checked");
-        $(checkAllBtn).removeClass("icon-all-checked");
-        $(checkAllBtn).addClass("icon-checkbox");
-        const checkboxItems = $(this.$refs.table).find("[checked]").toArray();
+    updated() {
+        const checkboxItems = $(".td.icon.icon-checkbox").toArray();
         checkboxItems.forEach((item) => {
-          $(item).removeAttr("checked");
-          $(item).children(".td.icon").removeClass("icon-checkbox-checked");
-          $(item).children(".td.icon").addClass("icon-checkbox");
-          $(item).css("background-color", "#fff");
+            $(item).unbind();
+            $(item).click(this.checkInput);
         });
-        // reset mảng listchecked
-        this.listChecked = [];
-        // gọi lại api để lấy dữ liệu customer mới nhất
-        this.pageCurrent = 1;
-        await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
-      }
     },
-    /**
-     * xử lý khi insert thành công
-     * @param {*} newValue
-     * Created by LVKIEN 30/08/2022
-     */
-    async getIsUpdated(newValue) {
-      if (newValue) {
-        // reset lại biến isUpdated
-        this.$store.commit("setIsUpdated", false);
-        // gọi lại api để lấy dữ liệu customer mới nhất
-        await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
-      }
+    mounted() {
+        this.$refs["limit-num"].selected = {
+            id: 10,
+            name: "10 Bản ghi trên trang",
+        };
+        $(this.$refs["limit-num"]?.$el)
+            .find(".dropdown-header")
+            .css("color", "#1F2229");
     },
-    // xử lý khi insert thành công
-    async getIsInserted(newValue) {
-      if (newValue) {
-        // reset lại biến isInserted
-        this.$store.commit("setIsInserted", false);
-        // gọi lại api để lấy dữ liệu customer mới nhất
-        await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
-      }
+    watch: {
+        /**
+         * Khi list filter thay đổi, gọi API
+         * @param {*} newValue
+         *  Created by LVKIEN 30/08/2022
+         */
+        async getListFilter(newValue) {
+            this.pageCurrent = 1;
+            // this.listToast = [...this.listToast, {message: "failt", state: "fail"}]
+            await this.getDataPaging(this.getKeyWordSearch, newValue);
+        },
+        /**
+         * Khi keyword thay đổi, gọi API
+         * @param {*} newValue
+         *  Created by LVKIEN 30/08/2022
+         */
+        async getKeyWordSearch(newValue) {
+            this.pageCurrent = 1;
+            await this.getDataPaging(newValue, this.getListFilter);
+        },
+        /**
+         * xử lý khi delete thành công
+         * @param {*} newValue
+         *  Created by LVKIEN 30/08/2022
+         */
+        async getIsDeleted(newValue) {
+            if (newValue) {
+                // reset lại biến isDeleted
+                this.$store.commit("setIsDeleted", false);
+                // bỏ hết các ô checked
+                const checkAllBtn = this.$refs["check-all"];
+                $(checkAllBtn).removeAttr("all-checked");
+                $(checkAllBtn).removeClass("icon-all-checked");
+                $(checkAllBtn).addClass("icon-checkbox");
+                const checkboxItems = $(this.$refs.table).find("[checked]").toArray();
+                checkboxItems.forEach((item) => {
+                    $(item).removeAttr("checked");
+                    $(item).children(".td.icon").removeClass("icon-checkbox-checked");
+                    $(item).children(".td.icon").addClass("icon-checkbox");
+                    $(item).css("background-color", "#fff");
+                });
+                // reset mảng listchecked
+                this.listChecked = [];
+                // gọi lại api để lấy dữ liệu customer mới nhất
+                this.pageCurrent = 1;
+                await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
+            }
+        },
+        /**
+         * xử lý khi insert thành công
+         * @param {*} newValue
+         * Created by LVKIEN 30/08/2022
+         */
+        async getIsUpdated(newValue) {
+            if (newValue) {
+                // reset lại biến isUpdated
+                this.$store.commit("setIsUpdated", false);
+                // gọi lại api để lấy dữ liệu customer mới nhất
+                await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
+            }
+        },
+        /**
+         * TODO: xử lý khi insert thành công
+         * @param {*} newValue
+         * !Created by LVKIEN 10/09/2022
+         */
+        async getIsInserted(newValue) {
+            if (newValue) {
+                // reset lại biến isInserted
+                this.$store.commit("setIsInserted", false);
+                // gọi lại api để lấy dữ liệu customer mới nhất
+                await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
+            }
+        },
+        /**
+         * TODO: thay đổi giá trị trong store khi checkList thay đổi
+         * @param {*} newValue
+         * !Created by LVKIEN 10/9/2022
+         */
+        listChecked(newValue) {
+            let checkedResult = [];
+            newValue.forEach((id) => {
+                const temp = this.customerList.filter((customer) => {
+                    return customer.customerId === id;
+                });
+                checkedResult.push(temp[0]);
+            });
+            this.$store.commit("setListCheckedCustomer", checkedResult);
+            this.$store.commit("setListIdChecked", this.listChecked);
+        },
+        /**
+         * TODO: khi page size thay đổi, gọi lại api
+         * !Created by LVKIEN 10/9/2022
+         */
+        async numberPerPage() {
+            await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
+        },
+        /**
+         * TODO:khi page current thay đổi, gọi lại api
+         * !Created by LVKIEN 10/9/2022
+         */
+        async pageCurrent() {
+            await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
+        },
     },
-    // thay đổi giá trị trong store khi checkList thay đổi
-    listChecked(newValue) {
-      let checkedResult = [];
-      newValue.forEach((id) => {
-        const temp = this.customerList.filter((customer) => {
-          return customer.customerId === id;
-        });
-        checkedResult.push(temp[0]);
-      });
-      this.$store.commit("setListCheckedCustomer", checkedResult);
-      this.$store.commit("setListIdChecked", this.listChecked);
-    },
-    // khi page size thay đổi, gọi lại api
-    async numberPerPage() {
-      await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
-    },
-    // khi page current thay đổi, gọi lại api
-    async pageCurrent() {
-      await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
-    },
-  },
-  methods: {
-    /**
-     * Gọi API phân trang
-     * @param {*} keySearch
-     * created by LVKIEN 29/08/2022
-     */
-    async getDataPaging(keySearch, listFilter) {
-      try {
-        this.isLoading = true;
-        const offSet = (this.pageCurrent - 1) * this.numberPerPage;
-        const responsePaging = await axios({
-          method: "put",
-          baseURL: `${rootApi}Customers`,
-          params: {
-            pageSize: this.numberPerPage,
-            pageIndex: offSet,
-            keyword: keySearch.trim(),
-          },
-          data: listFilter,
-        })
-          .then((res) => res.data)
-          .catch((error) => error.response.data);
-        this.isLoading = false;
-        if (!responsePaging.flag) {
-          this.showNoValue = true;
-          this.customerList = [];
-          this.totalCount = 0;
+    methods: {
+        /**
+         * Gọi API phân trang
+         * @param {*} keySearch
+         * created by LVKIEN 29/08/2022
+         */
+        async getDataPaging(keySearch, listFilter) {
+            try {
+                this.isLoading = true;
+                const offSet = (this.pageCurrent - 1) * this.numberPerPage;
+                const responsePaging = await axios({
+                    method: "put",
+                    baseURL: `${rootApi}Customers`,
+                    params: {
+                        pageSize: this.numberPerPage,
+                        pageIndex: offSet,
+                        keyword: keySearch.trim(),
+                    },
+                    data: listFilter,
+                })
+                    .then((res) => res.data)
+                    .catch((error) => error.response.data);
+                this.isLoading = false;
+                if (!responsePaging.flag) {
+                    this.showNoValue = true;
+                    this.customerList = [];
+                    this.totalCount = 0;
+                    this.$store.commit("setState", "fail");
+                    this.$store.commit("setMessage", responsePaging.userMsg[0]);
+                    emitter.emit("showToast");
 
-          this.$store.commit("setState", "fail");
-          this.$store.commit("setMessage", responsePaging.userMsg[0]);
-          this.$store.commit("setIsShow", true);
-        } else {
-          this.showNoValue = false;
-          const { totalCount, customers } = responsePaging.data;
-          this.customerList = [...customers];
-          this.totalCount = totalCount;
-        }
-      } catch (error) {
-        this.$store.commit("setState", "fail");
-        this.$store.commit("setMessage", error);
-        this.$store.commit("setIsShow", true);
-      }
+                }
+                else {
+                    this.showNoValue = false;
+                    const { totalCount, customers } = responsePaging.data;
+                    this.customerList = [...customers];
+                    this.totalCount = totalCount;
+                    this.$store.commit("setState", "success");
+                    this.$store.commit("setMessage", "Thành công");
+                    emitter.emit("showToast");
+                }
+            }
+            catch (error) {
+                this.$store.commit("setState", "fail");
+                this.$store.commit("setMessage", error);
+                emitter.on("showToast");
+            }
+        },
+        /**
+         * TODO: Mở form edit
+         * @param {*} e
+         * !created by LVKIEN 28/08/2022
+         */
+        openEditForm(e) {
+            if (this.listChecked.length === 0) {
+                this.$store.commit("setFormState", true);
+                this.$store.commit("setEditForm", true);
+                const customerEditId = $(e.target).parent(".tr").attr("key-name");
+                const customerEdit = this.customerList.find((customer) => customer.customerId === customerEditId);
+                this.$store.commit("setCustomerUpdated", customerEdit);
+            }
+        },
+        /**
+         * TODO: Hiện button edit khi hover vào 1 dòng
+         * @param {*} e
+         * !Created by LVKIEN 10/9/2022
+         */
+        showEditWhenHover(e) {
+            if ($(e.target).parent(".tr").attr("class") ===
+                $(this.$refs.table).find(".tbody .tr").attr("class")) {
+                // nếu ko có ô nào đc check mới hiện nút edit
+                if (this.listChecked.length === 0) {
+                    $(e.target)
+                        .parent(".tr")
+                        .find(".td:first-child")
+                        .addClass("icon-edit");
+                }
+                else {
+                    $(this.$refs.table)
+                        .find(".tbody .td:first-child")
+                        .removeClass("icon-edit");
+                }
+            }
+            else if ($(e.target).attr("class") ===
+                $(this.$refs.table).find(".tbody .tr").attr("class")) {
+                // nếu ko có ô nào đc check mới hiện nút edit
+                if (this.listChecked.length === 0) {
+                    $(e.target).find(".td:first-child").addClass("icon-edit");
+                }
+                else {
+                    $(this.$refs.table)
+                        .find(".tbody .td:first-child")
+                        .removeClass("icon-edit");
+                }
+            }
+        },
+        /**
+         * TODO: Xử lý khi có 1 bản ghi được check, không hiện button edit nữa
+         * !Created by LVKIEN 10/9/2022
+         */
+        removeEditWhenHover() {
+            // nếu ko có ô nào đc check mới hiện nút edit
+            if (this.listChecked.length === 0) {
+                $(this.$refs.table)
+                    .find(".tbody .td:first-child")
+                    .removeClass("icon-edit");
+            }
+        },
+        /**
+         * TODO: Bỏ check all của table
+         * !Created by LVKIEN 10/9/2022
+         */
+        removeCheckAll() {
+            const checkAllBtn = this.$refs["check-all"];
+            // khi bỏ check all
+            if ($(checkAllBtn).attr("all-checked") === "") {
+                $(checkAllBtn).removeAttr("all-checked");
+                $(checkAllBtn).removeClass("icon-all-checked");
+                $(checkAllBtn).addClass("icon-checkbox");
+                const checkboxItems = $(this.$refs.table).find("[checked]").toArray();
+                checkboxItems.forEach((item) => {
+                    $(item).removeAttr("checked");
+                    $(item).children(".td.icon").removeClass("icon-checkbox-checked");
+                    $(item).children(".td.icon").addClass("icon-checkbox");
+                    $(item).css("background-color", "#fff");
+                });
+                const listChecked = $(this.$refs.table).find("[checked]").toArray();
+                if (listChecked.length <= 0) {
+                    this.listChecked = [];
+                }
+            }
+        },
+        /**
+         * TODO: xử lý check all row
+         * !Created by LVKIEN 6/9/2022
+         */
+        checkAll() {
+            const checkAllBtn = this.$refs["check-all"];
+            // khi bỏ check all
+            if ($(checkAllBtn).attr("all-checked") === "") {
+                $(checkAllBtn).removeAttr("all-checked");
+                $(checkAllBtn).removeClass("icon-all-checked");
+                $(checkAllBtn).addClass("icon-checkbox");
+                const checkboxItems = $(this.$refs.table).find("[checked]").toArray();
+                checkboxItems.forEach((item) => {
+                    $(item).removeAttr("checked");
+                    $(item).children(".td.icon").removeClass("icon-checkbox-checked");
+                    $(item).children(".td.icon").addClass("icon-checkbox");
+                    $(item).css("background-color", "#fff");
+                });
+                const listChecked = $(this.$refs.table).find("[checked]").toArray();
+                if (listChecked.length <= 0) {
+                    this.listChecked = [];
+                }
+            }
+            // khi check all
+            else {
+                $(checkAllBtn).attr("all-checked", "");
+                $(checkAllBtn).removeClass("icon-checkbox");
+                $(checkAllBtn).addClass("icon-all-checked");
+                const checkboxItems = $(this.$refs.table).find(".tbody .tr").toArray();
+                checkboxItems.forEach((item) => {
+                    $(item).attr("checked", "");
+                    $(item).children(".td.icon").removeClass("icon-checkbox");
+                    $(item).children(".td.icon").addClass("icon-checkbox-checked");
+                    $(item).css("background-color", "#FAD1D1");
+                });
+                const listChecked = $(this.$refs.table).find("[checked]").toArray();
+                const resultCheck = listChecked.map((item) => $(item).attr("key-name"));
+                this.listChecked = [...resultCheck];
+            }
+        },
+        /**
+         * TODO: show value dropdown
+         * !Created by LVKIEN 10/09/2022
+         */
+        showLimitNum() {
+            this.$refs["limit-num"].setOptions(numPerPage);
+        },
+        /**
+         * TODO: xử lý check cho từng row
+         * @param {*} e
+         * !Created by LVKIEN 10/09/2022
+         */
+        checkInput(e) {
+            console.log(e.target);
+            e.preventDefault();
+            const checkedItem = $(e.target).parent(".tr");
+            const checkAllBtn = this.$refs["check-all"];
+            handleClickFilterItem(checkedItem);
+            // remove all edit icon
+            $(this.$refs.table)
+                .find(".tbody .td:first-child")
+                .removeClass("icon-edit");
+            const listChecked = $(this.$refs.table).find("[checked]").toArray();
+            const resultCheck = listChecked.map((item) => $(item).attr("key-name"));
+            this.listChecked = [...resultCheck];
+            // khi có ít nhất 1 row đc check, enable checkall
+            if (listChecked.length > 0) {
+                $(checkAllBtn).attr("all-checked", "");
+                $(checkAllBtn).removeClass("icon-checkbox");
+                $(checkAllBtn).addClass("icon-all-checked");
+                // khi ko có row nào đc check, disable checkall
+            }
+            else {
+                $(checkAllBtn).removeAttr("all-checked");
+                $(checkAllBtn).removeClass("icon-all-checked");
+                $(checkAllBtn).addClass("icon-checkbox");
+            }
+        },
+        /**
+         * TODO: Xử lý hiển thị cho bảng table
+         * @param {*} e
+         * !Created by LVKIEN 10/09/2022
+         */
+        handleHorizontalScrollBar(e) {
+            const translateXHead = $(e.target).scrollLeft();
+            if (translateXHead > 0) {
+                $(".table-header").css("transform", `translateX(-${translateXHead}px)`);
+            }
+            else if (translateXHead < 40) {
+                $(".table-header").css("transform", "translateX(0)");
+            }
+        },
+        /**
+         * TODO: Lấy giá trị của page size
+         * @param {*} value
+         * !Created by LVKIEN 10/09/2022
+         */
+        getNumPerPage(value) {
+            if (!isNaN(value.id)) {
+                this.numberPerPage = value.id;
+                this.pageCurrent = 1;
+            }
+        },
+        /**
+         * TODO: Xử lý khi click vào button trở về đầu trang
+         * !Created by LVKIEN 10/09/2022
+         */
+        returnFirstPage() {
+            if (this.pageCurrent <= this.numberPerPage) {
+                this.pageCurrent = 1;
+            }
+            else {
+                this.pageCurrent = this.pageCurrent - this.numberPerPage;
+            }
+        },
+        /**
+         * TODO: Xử lý khi click vào button trở về trang trước
+         * !Created by LVKIEN 10/09/2022
+         */
+        returnPrevPage() {
+            if (this.pageCurrent > 1) {
+                this.pageCurrent = this.pageCurrent - 1;
+            }
+            else {
+                this.pageCurrent = 1;
+            }
+        },
+        /**
+         * TODO: Xử lý khi click vào button sang trang kế tiếp
+         * !Created by LVKIEN 10/09/2022
+         */
+        toNextPage() {
+            if (this.pageCurrent < Math.ceil(this.totalCount / this.numberPerPage)) {
+                this.pageCurrent = this.pageCurrent + 1;
+            }
+            else {
+                this.pageCurrent = Math.ceil(this.totalCount / this.numberPerPage);
+            }
+        },
+        /**
+         * TODO: Xử lý khi click vào button chuyển về trang cuối
+         * !Created by LVKIEN 10/09/2022
+         */
+        toLastPage() {
+            if (Math.ceil(this.totalCount / this.numberPerPage) - this.pageCurrent <
+                this.numberPerPage) {
+                this.pageCurrent = Math.ceil(this.totalCount / this.numberPerPage);
+            }
+            else {
+                this.pageCurrent = this.pageCurrent + this.numberPerPage;
+            }
+        },
     },
-    /**
-     * Mở form edit
-     * @param {*} e
-     * created by LVKIEN 28/08/2022
-     */
-    openEditForm(e) {
-      if (this.listChecked.length === 0) {
-        this.$store.commit("setFormState", true);
-        this.$store.commit("setEditForm", true);
-        const customerEditId = $(e.target).parent(".tr").attr("key-name");
-        const customerEdit = this.customerList.find(
-          (customer) => customer.customerId === customerEditId
-        );
-        this.$store.commit("setCustomerUpdated", customerEdit);
-      }
-    },
-    showEditWhenHover(e) {
-      if (
-        $(e.target).parent(".tr").attr("class") ===
-        $(this.$refs.table).find(".tbody .tr").attr("class")
-      ) {
-        // nếu ko có ô nào đc check mới hiện nút edit
-        if (this.listChecked.length === 0) {
-          $(e.target)
-            .parent(".tr")
-            .find(".td:first-child")
-            .addClass("icon-edit");
-        } else {
-          $(this.$refs.table)
-            .find(".tbody .td:first-child")
-            .removeClass("icon-edit");
-        }
-      } else if (
-        $(e.target).attr("class") ===
-        $(this.$refs.table).find(".tbody .tr").attr("class")
-      ) {
-        // nếu ko có ô nào đc check mới hiện nút edit
-        if (this.listChecked.length === 0) {
-          $(e.target).find(".td:first-child").addClass("icon-edit");
-        } else {
-          $(this.$refs.table)
-            .find(".tbody .td:first-child")
-            .removeClass("icon-edit");
-        }
-      }
-    },
-    removeEditWhenHover() {
-      // nếu ko có ô nào đc check mới hiện nút edit
-      if (this.listChecked.length === 0) {
-        $(this.$refs.table)
-          .find(".tbody .td:first-child")
-          .removeClass("icon-edit");
-      }
-    },
-    removeCheckAll() {
-      const checkAllBtn = this.$refs["check-all"];
-      // khi bỏ check all
-      if ($(checkAllBtn).attr("all-checked") === "") {
-        $(checkAllBtn).removeAttr("all-checked");
-        $(checkAllBtn).removeClass("icon-all-checked");
-        $(checkAllBtn).addClass("icon-checkbox");
-        const checkboxItems = $(this.$refs.table).find("[checked]").toArray();
-        checkboxItems.forEach((item) => {
-          $(item).removeAttr("checked");
-          $(item).children(".td.icon").removeClass("icon-checkbox-checked");
-          $(item).children(".td.icon").addClass("icon-checkbox");
-          $(item).css("background-color", "#fff");
-        });
-        const listChecked = $(this.$refs.table).find("[checked]").toArray();
-        if (listChecked.length <= 0) {
-          this.listChecked = [];
-        }
-      }
-    },
-    /**
-     * TODO: xử lý check all row
-     * Created by LVKIEN 6/9/2022
-     */
-    checkAll() {
-      const checkAllBtn = this.$refs["check-all"];
-      // khi bỏ check all
-      if ($(checkAllBtn).attr("all-checked") === "") {
-        $(checkAllBtn).removeAttr("all-checked");
-        $(checkAllBtn).removeClass("icon-all-checked");
-        $(checkAllBtn).addClass("icon-checkbox");
-        const checkboxItems = $(this.$refs.table).find("[checked]").toArray();
-        checkboxItems.forEach((item) => {
-          $(item).removeAttr("checked");
-          $(item).children(".td.icon").removeClass("icon-checkbox-checked");
-          $(item).children(".td.icon").addClass("icon-checkbox");
-          $(item).css("background-color", "#fff");
-        });
-        const listChecked = $(this.$refs.table).find("[checked]").toArray();
-        if (listChecked.length <= 0) {
-          this.listChecked = [];
-        }
-      }
-      // khi check all
-      else {
-        $(checkAllBtn).attr("all-checked", "");
-        $(checkAllBtn).removeClass("icon-checkbox");
-        $(checkAllBtn).addClass("icon-all-checked");
-        const checkboxItems = $(this.$refs.table).find(".tbody .tr").toArray();
-        checkboxItems.forEach((item) => {
-          $(item).attr("checked", "");
-          $(item).children(".td.icon").removeClass("icon-checkbox");
-          $(item).children(".td.icon").addClass("icon-checkbox-checked");
-          $(item).css("background-color", "#FAD1D1");
-        });
-        const listChecked = $(this.$refs.table).find("[checked]").toArray();
-        const resultCheck = listChecked.map((item) => $(item).attr("key-name"));
-        this.listChecked = [...resultCheck];
-      }
-    },
-    // show value dropdown
-    showLimitNum() {
-      console.log(this.numPerPage);
-      this.$refs["limit-num"].setOptions(this.numPerPage);
-    },
-    // xử lý check cho từng row
-    checkInput(e) {
-      console.log(e.target);
-      e.preventDefault();
-      const checkedItem = $(e.target).parent(".tr");
-      const checkAllBtn = this.$refs["check-all"];
-      handleClickFilterItem(checkedItem);
-      // remove all edit icon
-      $(this.$refs.table)
-        .find(".tbody .td:first-child")
-        .removeClass("icon-edit");
-      const listChecked = $(this.$refs.table).find("[checked]").toArray();
-      const resultCheck = listChecked.map((item) => $(item).attr("key-name"));
-      this.listChecked = [...resultCheck];
-      // khi có ít nhất 1 row đc check, enable checkall
-      if (listChecked.length > 0) {
-        $(checkAllBtn).attr("all-checked", "");
-        $(checkAllBtn).removeClass("icon-checkbox");
-        $(checkAllBtn).addClass("icon-all-checked");
-        // khi ko có row nào đc check, disable checkall
-      } else {
-        $(checkAllBtn).removeAttr("all-checked");
-        $(checkAllBtn).removeClass("icon-all-checked");
-        $(checkAllBtn).addClass("icon-checkbox");
-      }
-    },
-    handleHorizontalScrollBar(e) {
-      const translateXHead = $(e.target).scrollLeft();
-      if (translateXHead > 0) {
-        $(".table-header").css("transform", `translateX(-${translateXHead}px)`);
-      } else if (translateXHead < 40) {
-        $(".table-header").css("transform", "translateX(0)");
-      }
-    },
-    getNumPerPage(value) {
-      if (!isNaN(value.id)) {
-        this.numberPerPage = value.id;
-        this.pageCurrent = 1;
-      }
-    },
-    returnFirstPage() {
-      if (this.pageCurrent <= this.numberPerPage) {
-        this.pageCurrent = 1;
-      } else {
-        this.pageCurrent = this.pageCurrent - this.numberPerPage;
-      }
-    },
-    returnPrevPage() {
-      if (this.pageCurrent > 1) {
-        this.pageCurrent = this.pageCurrent - 1;
-      } else {
-        this.pageCurrent = 1;
-      }
-    },
-    toNextPage() {
-      if (this.pageCurrent < Math.ceil(this.totalCount / this.numberPerPage)) {
-        this.pageCurrent = this.pageCurrent + 1;
-      } else {
-        this.pageCurrent = Math.ceil(this.totalCount / this.numberPerPage);
-      }
-    },
-    toLastPage() {
-      if (
-        Math.ceil(this.totalCount / this.numberPerPage) - this.pageCurrent <
-        this.numberPerPage
-      ) {
-        this.pageCurrent = Math.ceil(this.totalCount / this.numberPerPage);
-      } else {
-        this.pageCurrent = this.pageCurrent + this.numberPerPage;
-      }
-    },
-  },
+    components: { ToastMessage }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .page-table {
   height: 100%;
   width: 100%;

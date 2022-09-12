@@ -14,7 +14,6 @@ export default createStore({
     customerUpdated: {},
     state: "",
     message: "",
-    isShow: false,
     listFilter: []
   },
   getters: {
@@ -29,15 +28,6 @@ export default createStore({
     },
     setMessage(state, payload) {
       this.state.message = payload
-    },
-    setIsShow(state, payload) {
-      let me = this.state
-      this.state.isShow = payload
-      if (me.isShow) {
-        setTimeout(() => {
-          me.isShow = false
-        }, 3000)
-      }
     },
     setCustomerUpdated(state, payload) {
       this.state.customerUpdated = payload

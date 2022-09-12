@@ -37,7 +37,7 @@
   line-height: 16px;
   font-weight: 400;
   color: #1f2229;
-  transition: border-color .2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all .2s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .input-text::placeholder {
   font-weight: 400;
@@ -89,7 +89,6 @@ export default {
   },
   methods: {
     clearInput() {
-      console.log(1);
       this.name = "";
     },
   },

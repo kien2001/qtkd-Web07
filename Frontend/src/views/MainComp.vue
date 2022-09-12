@@ -7,7 +7,6 @@
     <ToastMessage
       :message="getMessage"
       :state="getState"
-      :isShow="getIsShow"
       ref="toast"
     />
   </div>
@@ -42,6 +41,7 @@ import SideBarLeft from "@/views/SideBarLeft.vue";
 import FunctionTool from "@/views/FunctionTool.vue";
 import MainContent from "@/views/MainContent.vue";
 import SideBarRight from "@/views/SideBarRight.vue";
+import emitter from "@/js/emitter";
 export default {
   name: "MainComp",
   components: { SideBarLeft, SideBarRight, FunctionTool, MainContent },
@@ -52,9 +52,9 @@ export default {
     getState() {
       return this.$store.state.state;
     },
-    getIsShow() {
-      return this.$store.state.isShow;
-    },
   },
+  mounted(){
+    emitter.on("showToast", this.$refs.toast.showAnimateToast);
+  }
 };
 </script>

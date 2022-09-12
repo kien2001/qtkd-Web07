@@ -1,51 +1,56 @@
 <template>
   <div class="function" ref="function">
-    <div class="function-filter" v-if="isItemChecked">
-      <div class="filter-option">
-        Tất cả tiềm năng
-        <div class="btn-icon small arrow-down"></div>
+    <Transition name="fade" mode="out-in">
+      <div class="function-filter" v-if="isItemChecked">
+        <div class="filter-option">
+          Tất cả tiềm năng
+          <div class="btn-icon small arrow-down"></div>
+        </div>
+        <div class="edit-btn btn-hover">Sửa</div>
+        <div
+          class="btn-icon small btn-hover reload"
+          @click="handleReload"
+        ></div>
       </div>
-      <div class="edit-btn btn-hover">Sửa</div>
-      <div class="btn-icon small btn-hover reload" @click="handleReload"></div>
-    </div>
-    <div class="function-filter" v-else>
-      <div class="selected-item">
-        Đã chọn <span> {{ getListIdChecked.length }}</span>
-      </div>
-      <div class="edit-btn btn-hover" @click="handleDeselect">Bỏ chọn</div>
-      <Button
-        name="Cập nhật thông tin"
-        color="#fff"
-        colorHover="#D0D8FB"
-        :hasIcon="true"
-        :urlMainBtn="iconEdit"
-        @clickBtn="editMultipleRow"
-        border="#fff"
-        borderHover="#D3D7DE"
-      />
-      <div class="option-detail">
-        <div class="btn-icon more-option" @click="showOptions"></div>
-        <div class="more-option-container" v-show="showOptionList">
-          <Button
-            name="Xuất khẩu"
-            color="#fff"
-            colorHover="#E2E4E9"
-            :hasIcon="true"
-            :urlMainBtn="iconExport"
-            @clickBtn="exportExcel"
-          />
-          <Button
-            name="Xoá"
-            color="#fff"
-            colorHover="#E2E4E9"
-            :hasIcon="true"
-            :urlMainBtn="iconDelete"
-            colorText="#EC4141"
-            @clickBtn="deleteRow"
-          />
+      <div class="function-filter" v-else>
+        <div class="selected-item">
+          Đã chọn <span> {{ getListIdChecked.length }}</span>
+        </div>
+        <div class="edit-btn btn-hover" @click="handleDeselect">Bỏ chọn</div>
+        <Button
+          name="Cập nhật thông tin"
+          color="#fff"
+          colorHover="#D0D8FB"
+          :hasIcon="true"
+          :urlMainBtn="iconEdit"
+          @clickBtn="editMultipleRow"
+          border="#fff"
+          borderHover="#D3D7DE"
+        />
+        <div class="option-detail">
+          <div class="btn-icon more-option" @click="showOptions"></div>
+          <div class="more-option-container" v-show="showOptionList">
+            <Button
+              name="Xuất khẩu"
+              color="#fff"
+              colorHover="#E2E4E9"
+              :hasIcon="true"
+              :urlMainBtn="iconExport"
+              @clickBtn="exportExcel"
+            />
+            <Button
+              name="Xoá"
+              color="#fff"
+              colorHover="#E2E4E9"
+              :hasIcon="true"
+              :urlMainBtn="iconDelete"
+              colorText="#EC4141"
+              @clickBtn="deleteRow"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
     <div class="function-manipulation">
       <div class="">
         <Button
@@ -175,18 +180,18 @@ export default {
         if (resDeleteRows.flag) {
           this.$store.commit("setState", "success");
           this.$store.commit("setMessage", "Thành công");
-          this.$store.commit("setIsShow", true);
+      emitter.emit("showToast");
           this.$store.commit("resetListIdChecked");
           this.$store.commit("setIsDeleted", true);
         } else {
           this.$store.commit("setState", "fail");
           this.$store.commit("setMessage", resDeleteRows.userMsg[0]);
-          this.$store.commit("setIsShow", true);
+      emitter.emit("showToast");
         }
       } catch (error) {
         this.$store.commit("setState", "fail");
         this.$store.commit("setMessage", error);
-        this.$store.commit("setIsShow", true);
+    emitter.emit("showToast");
       }
     },
     /**
@@ -207,7 +212,7 @@ export default {
             (item) => item.customerId
           );
           await axios({
-            url: "http://localhost:5057/api/v1/Customers/CustomerExcel",
+            url: `${rootApi}Customers/CustomerExcel`,
             data: listCustomer,
             method: "POST",
             responseType: "blob",
@@ -222,7 +227,7 @@ export default {
               link.remove();
               this.$store.commit("setState", "success");
               this.$store.commit("setMessage", "Thành công");
-              this.$store.commit("setIsShow", true);
+          emitter.emit("showToast");
             })
             .catch((e) => {
               this.$store.commit("setState", "fail");
@@ -230,13 +235,11 @@ export default {
                 "setMessage",
                 StatusCode.MessageError.ExportExcelError
               );
-              this.$store.commit("setIsShow", true);
+          emitter.emit("showToast");
             });
         }
       } catch (error) {
-        this.$store.commit("setState", "fail");
-        this.$store.commit("setMessage", error.message);
-        this.$store.commit("setIsShow", true);
+        console.log(error);
       }
     },
     /**
@@ -268,7 +271,17 @@ export default {
 };
 </script>
 <style scoped>
-/* =======Header-footer ========== */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .function {
   background-color: #e2e4e9;
   display: flex;

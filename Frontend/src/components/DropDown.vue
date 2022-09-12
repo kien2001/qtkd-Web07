@@ -10,46 +10,50 @@
       {{ this.oldSearchFilter || placeholder || "-Không chọn-" }}
       <span class="icon-dropdown"></span>
     </div>
-    <div class="dropdown-container" v-show="optionsShown">
-      <!-- Dropdown Input -->
-      <input
-        class="dropdown-input"
-        :id="id"
-        v-model="searchFilter"
-        placeholder="Tìm kiếm"
-        ref="input"
-        v-show="showInput"
-      />
 
-      <!-- Dropdown Menu -->
-      <div class="dropdown-content">
-        <div
-          v-if="showNoValue"
-          :style="{ textAlign: 'center', backgroundColor: '#fff' }"
-        >
-          Không có dữ liệu
+      <div class="dropdown-container" v-show="optionsShown">
+        <!-- Dropdown Input -->
+        <input
+          class="dropdown-input"
+          :id="id"
+          v-model="searchFilter"
+          placeholder="Tìm kiếm"
+          ref="input"
+          v-show="showInput"
+        />
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-content">
+          <div
+            v-if="showNoValue"
+            :style="{ textAlign: 'center', backgroundColor: '#fff' }"
+          >
+            Không có dữ liệu
+          </div>
+          <div
+            class="dropdown-item"
+            @mousedown.self="selectOption(option)"
+            v-for="(option, index) in filteredOptions"
+            :key="index"
+            :value="option.id"
+            ref="filteredOptions"
+          >
+            {{ option.name }}
+          </div>
+          <Loading v-if="showLoading" />
         </div>
-        <div
-          class="dropdown-item"
-          @mousedown.self="selectOption(option)"
-          v-for="(option, index) in filteredOptions"
-          :key="index"
-          :value="option.id"
-          ref="filteredOptions"
-        >
-          {{ option.name }}
-        </div>
-        <Loading v-if="showLoading" />
       </div>
-    </div>
   </div>
 </template>
 
 <script>
 import $ from "jquery";
 import axios from "axios";
+import { handleTransferObject } from "../js/common";
 import { rootApi } from "@/js/config";
 import Loading from "./Loading.vue";
+import emitter from "@/js/emitter";
+
 export default {
   name: "DropDown",
   template: "DropDown",
@@ -87,10 +91,13 @@ export default {
       options: [],
       getSuccess: false,
       oldSearchFilter: "",
-      currentValue: {},
     };
   },
   computed: {
+    /**
+     * TODO: Search dựa trên input
+     * !Created by LVKIEN 10/09/2022
+     */
     filteredOptions() {
       const filtered = [];
       const regOption = new RegExp(this.searchFilter, "ig");
@@ -103,8 +110,12 @@ export default {
     },
   },
   methods: {
+    /**
+     * TODO: Xử lý khi chọn 1 option
+     * @param {*} option
+     * ! Created by LVKIEN 10/09/2022
+     */
     selectOption(option) {
-      $(this.$refs["dropdown-header"]).css("color", "#1F2229");
       this.optionsShown = false;
       this.selected = option;
       this.searchFilter = option.name;
@@ -125,9 +136,19 @@ export default {
         );
       }
     },
+    /**
+     * TODO: Set options list cho dropdown
+     * @param {*} values
+     * !Created by LVKIEN 10/09/2022
+     */
     setOptions(values) {
       this.options = values;
     },
+    /**
+     * TODO: Xử lý hiển thị ra danh sách option
+     * @param {*} e
+     * !Created by LVKIEN 10/09/2022
+     */
     async showOptions(e) {
       e.stopPropagation();
       const dropdownContainer = $(".dropdown-container").toArray();
@@ -161,11 +182,11 @@ export default {
               if (!data.flag) {
                 this.$store.commit("setState", "fail");
                 this.$store.commit("setMessage", data.userMsg[0]);
-                this.$store.commit("setIsShow", true);
+            emitter.emit("showToast");
                 this.showNoValue = true;
               } else {
                 this.getSuccess = true;
-                result = this.handleTransferObject(data.data);
+                result = handleTransferObject(data.data);
                 this.options = result;
               }
             }
@@ -182,11 +203,11 @@ export default {
               if (!data.flag) {
                 this.$store.commit("setState", "fail");
                 this.$store.commit("setMessage", data.userMsg[0]);
-                this.$store.commit("setIsShow", true);
+            emitter.emit("showToast");
                 this.showNoValue = true;
               } else {
                 this.success = true;
-                result = this.handleTransferObject(data.data);
+                result = handleTransferObject(data.data);
                 console.log(result);
                 this.options = result;
                 sessionStorage.setItem(this.name, JSON.stringify(result));
@@ -198,19 +219,10 @@ export default {
         }
       }
     },
-    handleTransferObject(objectArr) {
-      const objectKeys = Object.keys(objectArr[0]);
-      let initResult = [{ id: 0, name: "-Không chọn-" }];
-      const result = objectArr.map((item) => {
-        const resultObject = {
-          id: item[objectKeys[0]],
-          name: item[objectKeys[1]],
-        };
-        return resultObject;
-      });
-      initResult = [...initResult, ...result];
-      return initResult;
-    },
+    /**
+     * TODO: Xử lý tắt dropdown
+     * !Created by LVKIEN 10/09/2022
+     */
     exit() {
       if (this.selected.id === undefined) {
         this.selected = {};
@@ -243,12 +255,18 @@ export default {
         this.oldSearchFilter = newVal;
       }
     },
+    selected(newValue) {
+      if (Object.keys(newValue).length > 0) {
+        $(this.$refs["dropdown-header"]).css("color", "#1F2229");
+      }
+    },
   },
   components: { Loading },
 };
 </script>
 
 <style scoped>
+
 .dropdown {
   --width-dropdown: 100%;
 }

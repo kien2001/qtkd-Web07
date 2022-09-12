@@ -6,14 +6,6 @@
         select$.resolveOptions()
       }
     }" ref="multiselect">
-    <!-- <template v-slot:caret="{}" v-if="this.$attrs.isTag">
-      <div class="multiselect-clear" v-show="!this.$attrs.isTag">
-      </div>
-    </template>
-    <template v-slot:clear="{}" v-if="this.$attrs.isTag">
-      <div class="multiselect-caret" v-show="!this.$attrs.isTag">
-      </div>
-    </template> -->
     <template v-slot:spinner="{}">
       <div class="spinner-custom multiselect-dropdown">
         <img class="spinner-icon" src="../assets/img/loadding-icon.svg">
@@ -110,5 +102,7 @@ export default {
     align-items: flex-start!important;
     padding-left: 14px!important;
 }
-
+.multiselect-tag{
+  height:22px;
+}
 </style>

@@ -15,6 +15,8 @@
 </template>
 <script>
 import { ref } from "vue";
+import emitter from "@/js/emitter";
+
 export default {
   name: "DatePicker",
   /**
@@ -41,8 +43,8 @@ export default {
   watch: {
     /**
      * TODO: Check xem liệu giá trị người dùng nhập vào có lớn hơn hiện tại hay ko
-     * @param {*} newValue 
-     * @param {*} oldValue 
+     * @param {*} newValue
+     * @param {*} oldValue
      * !Created by LVKIEN 10/9/2022
      */
     date(newValue, oldValue) {
@@ -52,19 +54,21 @@ export default {
       if (chosenDate.getTime() > currentDate.getTime()) {
         this.$store.commit("setState", "fail");
         this.$store.commit("setMessage", "Ngày được chọn không hợp lệ");
-        this.$store.commit("setIsShow", true);
-        this.setDate(oldValue);
+        emitter.emit("showToast");
+        if (oldValue.toString().length > 10) {
+          const day = oldValue.getDate();
+          const month = oldValue.getMonth() + 1;
+          const year = oldValue.getFullYear();
+          this.setDate(`${day}.${month}.${year}`);
+        } else {
+          this.setDate(oldValue);
+        }
       }
     },
   },
   updated() {
     this.$emit("getDate", this.date);
   },
-  // methods: {
-  //   setDate(value) {
-  //     this.date = value;
-  //   },
-  // },
 };
 </script>
 <style>
