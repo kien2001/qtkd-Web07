@@ -1,3 +1,4 @@
+import axiosInstance from "@/js/axios";
 /**
     * TODO: Xử lý chuyển 1 object thành dữ liệu đầu vào cho dropdown : {id:, name:}
     * @param {*} objectArr 
@@ -31,8 +32,8 @@ export const lowerCaseFirstLetter = (string) => {
 export const getDataComboBox = async (prefix) => {
     let result = null;
     try {
-        const response = await axios
-            .get(`${rootApi}${prefix}`)
+        const response = await axiosInstance
+            .get(prefix)
             .then((res) => res.data)
             .catch((error) => error.response.data);
         if (response.flag) {

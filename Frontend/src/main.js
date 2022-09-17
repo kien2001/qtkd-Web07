@@ -1,30 +1,32 @@
 import { createApp } from 'vue'
-// import mitt from 'mitt';
-import FormSubmit from './components/FormSubmit'
-import UpdateMultipleForm from './components/UpdateMultipleForm'
-import DropDown from './components/DropDown'
-import ComboBox from './components/ComboBox'
-import Button from './components/Button'
-import Tooltip from './components/Tooltip'
-import Loading from './components/Loading'
-import PopUp from './components/PopUp'
-import ToastMessage from './components/ToastMessage'
+import TheFormSubmit from './components/TheFormSubmit'
+import TheInputForm from "./components/TheInputForm.vue";
+import TheUpdateMultipleForm from './components/TheUpdateMultipleForm'
+import TheDropDown from './components/TheDropDown'
+import TheComboBox from './components/TheComboBox'
+import TheButton from './components/TheButton'
+import TheTooltip from './components/TheTooltip'
+import TheLoading from './components/TheLoading'
+import ThePopUp from './components/ThePopUp'
+import TheToastMessage from './components/TheToastMessage'
+import TheDatepicker from "./components/TheDatepicker.vue";
+import clickOutside from './directives/clickOutside';
 import App from './App.vue'
 import store from './store'
 import router from './router/index'
-import Datepicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
 const app = createApp(App)
-app.component('FormSubmit', FormSubmit)
-app.component('UpdateMultipleForm', UpdateMultipleForm)
-app.component('DropDown', DropDown)
-app.component('Button', Button)
-app.component('Tooltip', Tooltip)
-app.component('Datepicker', Datepicker)
-app.component('ComboBox', ComboBox)
-app.component('Loading', Loading)
-app.component('PopUp', PopUp)
-app.component('ToastMessage', ToastMessage)
+app.component('TheFormSubmit', TheFormSubmit)
+app.component('TheUpdateMultipleForm', TheUpdateMultipleForm)
+app.component('TheDropDown', TheDropDown)
+app.component('TheButton', TheButton)
+app.component('TheTooltip', TheTooltip)
+app.component('TheDatepicker', TheDatepicker)
+app.component('TheComboBox', TheComboBox)
+app.component('TheLoading', TheLoading)
+app.component('ThePopUp', ThePopUp)
+app.component('TheToastMessage', TheToastMessage)
+app.component('TheInputForm', TheInputForm)
+app.directive("click-outside", clickOutside)
 app
   .use(router)
   .use(store)

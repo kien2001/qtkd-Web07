@@ -55,7 +55,7 @@
 .table-content::-webkit-scrollbar-thumb:active{
     background-color: #7C869C;
 }
-.table-button {
+/* .table-button {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -66,12 +66,12 @@
     height: 32px;
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .table-button-left-text {
     font-family: Latin Bold;
-}
+} */
 
 .td,
 .th {
