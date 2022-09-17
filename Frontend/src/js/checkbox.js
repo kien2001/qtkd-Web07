@@ -13,6 +13,7 @@ const handleClickFilterItem = (checkedItem) => {
       $(checkedItem).addClass('icon-checkbox')
       $(checkedItem).removeAttr('checked')
     }
+    $(checkedItem).removeAttr("current-active")
     listCheckedInput = $('div[checked]').toArray()
     return
   }
@@ -24,6 +25,9 @@ const handleClickFilterItem = (checkedItem) => {
 // This method is called when the user clicks on a filter option checkbox checked item in the list.
 const handleCheckInput = (element, listCheckedInput) => {
   $(element).attr('checked', '')
+  $("[current-active]").removeAttr("current-active")
+  $(element).attr("current-active", "")
+
   listCheckedInput = $('div[checked]').toArray()
   listCheckedInput?.forEach(item => {
     if ($(item).children('.icon').length > 0) {

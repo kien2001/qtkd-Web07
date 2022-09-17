@@ -4,8 +4,8 @@
 </template>
 
 <script >
-import HeaderComp from '@/views/HeaderComp.vue'
-import MainComp from './views/MainComp.vue'
+import HeaderComp from '@/views/TheHeaderComp.vue'
+import MainComp from './views/TheMainComp.vue'
 
 export default {
   components: { HeaderComp, MainComp },
