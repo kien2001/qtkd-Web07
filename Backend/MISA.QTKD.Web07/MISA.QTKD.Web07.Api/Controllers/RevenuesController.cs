@@ -27,11 +27,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get()
         {
             Result revenueResult = _revenueRepository.Get();
-            if (!revenueResult.Flag)
-            {
-                return BadRequest(revenueResult);
-            }
-            return Ok(revenueResult);
+            return StatusCode(revenueResult.StatusCode, revenueResult);
+
         }
     }
 }

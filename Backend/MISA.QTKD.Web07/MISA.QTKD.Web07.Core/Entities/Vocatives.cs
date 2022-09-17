@@ -8,6 +8,8 @@ namespace Entities
 {
     public class Vocatives
     {
+        #region Vocative
+
         public int Vocative { get; set; } // xưng hô(0- ông, 1- bà, 2- anh, 3-chị, 4- cô, 5- chú, 6- bác, 7- em)
 
         public string VocativeName
@@ -30,6 +32,8 @@ namespace Entities
             }
             set { }
         }
+
+        #endregion
 
         public Vocatives(int vocative, string vocativeName)
         {

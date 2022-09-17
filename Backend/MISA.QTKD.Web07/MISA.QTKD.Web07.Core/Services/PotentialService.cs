@@ -9,8 +9,7 @@ using Exceptions;
 using Infrastructure;
 using MISA.QTKD.Web07.Core.Entities;
 using MISA.QTKD.Web07.Core.Interfaces.Services;
-using static Constants.FailMessage;
-
+using Resources.Vi;
 namespace Services
 {
     public class PotentialService : IPotentialService
@@ -45,8 +44,8 @@ namespace Services
                     if (checkDuplicateCode == true)
                     {
                         //result = new Result(data: null,
-                        //       devMsg: FailMessage.CodeError.DuplicatePotentialCode,
-                        //       userMsg: FailMessage.MessageError.DuplicatePotentialCode,
+                        //       devMsg:  CodeError.DuplicatePotentialCode,
+                        //       userMsg:  MessageError.DuplicatePotentialCode,
                         //       flag: false
                         //       );
                     }
@@ -59,8 +58,8 @@ namespace Services
             catch (Exception ex)
             {
                 //result = new Result(data: ex.Message,
-                //               devMsg: result.DevMsg.Append(FailMessage.CodeError.ProcessError).ToArray(),
-                //               userMsg: result.UserMsg.Append(FailMessage.MessageError.ProcessError).ToArray(),
+                //               devMsg: result.DevMsg.Append( CodeError.ProcessError).ToArray(),
+                //               userMsg: result.UserMsg.Append( MessageError.ProcessError).ToArray(),
                 //               flag: false
                 //               );
             }

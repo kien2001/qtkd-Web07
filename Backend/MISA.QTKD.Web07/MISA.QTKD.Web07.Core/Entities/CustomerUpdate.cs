@@ -12,6 +12,7 @@ namespace Entities
     /// Created by LVKIEN 25/08/2022
     public class CustomerUpdate
     {
+        #region CustomerUpdate
 
         public Guid? PotentialId { get; set; } // Id tiềm năng
 
@@ -59,6 +60,8 @@ namespace Entities
         public int? SourceId { get; set; } // Id nguồn gốc
 
         public DateTime? ModifiedAt { get; set; } // Ngày sửa đổi gần nhất
+
+        #endregion
 
         public CustomerUpdate( Guid? potentialId, string? potentialName, string? lastMiddleName, string firstName, string? companyPhoneNum, string? customerPhoneNum, string? otherPhoneNum, string? customerEmail, string? companyEmail, string? taxCode, string? zalo, int? organizationId, string? organizationName, bool? disableCall, bool? disableMail, int? gender, DateTime? dateOfBirth, string? facebook, int? vocative, int? departmentId, int? positionId, int? sourceId, DateTime? modifiedAt)
         {

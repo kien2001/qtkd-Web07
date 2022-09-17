@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "j8lz4UZCNvgT3ZlSqxF+HrN3eqz/9esgD1N3/Wa69FHqW3ZD4iUmphvRUvIRY6Gu/hltBoa3i8fcezcT+cnTow==",
+  "dgSpecHash": "j7/ELUv01iKsHzThRfUtFQB/MKtOBa2D65cSDvrJV/3dAXiwBZgLYR0u/DUjoCLFWhdJtzJ45kzPs70lPyNV0A==",
   "success": true,
   "projectFilePath": "E:\\Microsoft Visual Studio\\2022\\AMIS_BanHang\\qtkd-Web07\\Backend\\MISA.QTKD.Web07\\MISA.QTKD.Web07.Infrastructure\\MISA.QTKD.Web07.Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -11,6 +11,10 @@
     "C:\\Users\\kienl\\.nuget\\packages\\epplus.interfaces\\6.0.0\\epplus.interfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\kienl\\.nuget\\packages\\epplus.system.drawing\\6.0.0\\epplus.system.drawing.6.0.0.nupkg.sha512",
     "C:\\Users\\kienl\\.nuget\\packages\\excelnumberformat\\1.1.0\\excelnumberformat.1.1.0.nupkg.sha512",
+    "C:\\Users\\kienl\\.nuget\\packages\\google.apis\\1.57.0\\google.apis.1.57.0.nupkg.sha512",
+    "C:\\Users\\kienl\\.nuget\\packages\\google.apis.auth\\1.57.0\\google.apis.auth.1.57.0.nupkg.sha512",
+    "C:\\Users\\kienl\\.nuget\\packages\\google.apis.core\\1.57.0\\google.apis.core.1.57.0.nupkg.sha512",
+    "C:\\Users\\kienl\\.nuget\\packages\\google.apis.drive.v3\\1.57.0.2789\\google.apis.drive.v3.1.57.0.2789.nupkg.sha512",
     "C:\\Users\\kienl\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.8\\microsoft.aspnetcore.jsonpatch.6.0.8.nupkg.sha512",
     "C:\\Users\\kienl\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\6.0.8\\microsoft.aspnetcore.mvc.newtonsoftjson.6.0.8.nupkg.sha512",
     "C:\\Users\\kienl\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,9 +11,7 @@ using Entities;
 using Enums;
 using Exceptions;
 using Infrastructure;
-using MISA.QTKD.Web07.Core.Entities;
-using MISA.QTKD.Web07.Core.Interfaces.Services;
-
+using Resources.Vi;
 namespace Services
 {
     public class CustomerService : ICustomerService
@@ -40,16 +39,21 @@ namespace Services
         public Result InsertService(CustomerInsert customerInsert)
         {
             bool check = true;
-            Result result = new();
-            result.UserMsg = new List<string>();
-            result.DevMsg = new List<string>();
+            Result result = new()
+            {
+                UserMsg = new List<string>(),
+                DevMsg = new List<string>()
+            };
+            DateTime today = DateTime.Today;
             //1.2 Thông tin tên không được trống
             if (string.IsNullOrEmpty(customerInsert.Customer.FirstName.Trim()))
             {
                 check = false;
                 result.Data = new { };
-                result.DevMsg.Add(FailMessage.CodeError.EmptyFirstName);
-                result.UserMsg.Add(FailMessage.MessageError.EmptyFirstName);
+                result.DevMsg.Add(CodeError.EmptyFirstName);
+                result.UserMsg.Add(MessageError.EmptyFirstName);
+                result.StatusCode = StatusCode.Status400BadRequest;
+
                 result.Flag = false;
             }
             if ((customerInsert.Customer.CompanyEmail != null && !IsValidEmail(email: customerInsert.Customer.CompanyEmail)) || (customerInsert.Customer.CustomerEmail != null && !IsValidEmail(email: customerInsert.Customer.CustomerEmail)))
@@ -58,8 +62,10 @@ namespace Services
 
 
                 result.Data = new { };
-                result.DevMsg.Add(FailMessage.CodeError.NotValidEmail);
-                result.UserMsg.Add(FailMessage.MessageError.NotValidEmail);
+                result.DevMsg.Add( CodeError.NotValidEmail);
+                result.UserMsg.Add( MessageError.NotValidEmail);
+                result.StatusCode = StatusCode.Status400BadRequest;
+
                 result.Flag = false;
             }
             if ((customerInsert.Customer.CustomerPhoneNum != null && !IsValidPhoneNumber(customerInsert.Customer.CustomerPhoneNum)) || (customerInsert.Customer.Zalo != null && !IsValidPhoneNumber(customerInsert.Customer.Zalo)) || (customerInsert.Customer.CompanyPhoneNum != null && !IsValidPhoneNumber(customerInsert.Customer.CompanyPhoneNum)))
@@ -68,8 +74,10 @@ namespace Services
 
 
                 result.Data = new { };
-                result.DevMsg.Add(FailMessage.CodeError.NotValidPhone);
-                result.UserMsg.Add(FailMessage.MessageError.NotValidPhone);
+                result.DevMsg.Add( CodeError.NotValidPhone);
+                result.UserMsg.Add( MessageError.NotValidPhone);
+                result.StatusCode = StatusCode.Status400BadRequest;
+
                 result.Flag = false;
             }
             if (customerInsert.Potential != null && _potentialRepository.CheckDuplicateCode(customerInsert.Potential.PotentialCode))
@@ -77,8 +85,22 @@ namespace Services
                 check = false;
 
                 result.Data = new { };
-                result.DevMsg.Add(FailMessage.CodeError.DuplicatePotentialCode);
-                result.UserMsg.Add(FailMessage.MessageError.DuplicatePotentialCode);
+                result.DevMsg.Add( CodeError.DuplicatePotentialCode);
+                result.UserMsg.Add( MessageError.DuplicatePotentialCode);
+                result.StatusCode = StatusCode.Status400BadRequest;
+
+                result.Flag = false;
+            }
+            // Nếu ngày đã nhập lớn hơn hiện tại, trả về lỗi
+            if (customerInsert.Organization.CreatedAccountAt != null && DateTime.Compare(today, (DateTime)customerInsert.Organization.CreatedAccountAt) < 0)
+            {
+                check = false;
+
+                result.Data = new { };
+                result.DevMsg.Add( CodeError.NotValidDateError);
+                result.UserMsg.Add( MessageError.NotValidDateError);
+                result.StatusCode = StatusCode.Status400BadRequest;
+
                 result.Flag = false;
             }
             if (check)
@@ -89,6 +111,7 @@ namespace Services
                     result.Data = new { };
                     result.DevMsg.Add(resultAddress.DevMsg.FirstOrDefault());
                     result.UserMsg.Add(resultAddress.UserMsg.FirstOrDefault());
+
                     result.Flag = false;
                 }
                 else
@@ -155,8 +178,8 @@ namespace Services
             {
                 check = false;
                 result.Data = new { };
-                result.DevMsg.Add(FailMessage.CodeError.EmptyFirstName);
-                result.UserMsg.Add(FailMessage.MessageError.EmptyFirstName);
+                result.DevMsg.Add( CodeError.EmptyFirstName);
+                result.UserMsg.Add( MessageError.EmptyFirstName);
                 result.Flag = false;
             }
             if ((customer.CompanyEmail != null && !IsValidEmail(email: customer.CompanyEmail))
@@ -165,8 +188,8 @@ namespace Services
             {
                 check = false;
                 result.Data = new { };
-                result.DevMsg.Add(FailMessage.CodeError.NotValidEmail);
-                result.UserMsg.Add(FailMessage.MessageError.NotValidEmail);
+                result.DevMsg.Add( CodeError.NotValidEmail);
+                result.UserMsg.Add( MessageError.NotValidEmail);
                 result.Flag = false;
             }
             if ((customer.CustomerPhoneNum != null && !IsValidPhoneNumber(customer.CustomerPhoneNum)) || (customer.OtherPhoneNum != null && !IsValidPhoneNumber(customer.OtherPhoneNum)) || (customer.CompanyPhoneNum != null && !IsValidPhoneNumber(customer.CompanyPhoneNum)))
@@ -175,8 +198,8 @@ namespace Services
 
 
                 result.Data = new { };
-                result.DevMsg.Add(FailMessage.CodeError.NotValidPhone);
-                result.UserMsg.Add(FailMessage.MessageError.NotValidPhone);
+                result.DevMsg.Add( CodeError.NotValidPhone);
+                result.UserMsg.Add( MessageError.NotValidPhone);
                 result.Flag = false;
             }
             if (check)
@@ -302,16 +325,17 @@ namespace Services
 
                     customerResult.Flag = true;
                     customerResult.DevMsg.Clear();
-                    customerResult.DevMsg.Add(SuccessMessage.CodeSuccess.ExportSuccess);
+                    customerResult.DevMsg.Add( CodeSuccess.ExportSuccess);
                     customerResult.UserMsg.Clear();
-                    customerResult.UserMsg.Add(SuccessMessage.MessageSuccess.ExportSuccess);
+                    customerResult.UserMsg.Add( MessageSuccess.ExportSuccess);
                     customerResult.Data = content;
                 }
             }
             catch (Exception e)
             {
-                customerResult.DevMsg.Add(FailMessage.CodeError.ExportExcelError);
-                customerResult.UserMsg.Add(e.Message);
+                customerResult.DevMsg.Add( CodeError.ExportExcelError);
+                customerResult.UserMsg.Add( MessageError.ExportExcelError);
+                customerResult.StatusCode = StatusCode.Status500InternalServerError;
 
             }
             return customerResult;

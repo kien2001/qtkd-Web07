@@ -11,7 +11,7 @@ using Infrastructure;
 using Microsoft.Extensions.Configuration;
 using MISA.QTKD.Web07.Core.Entities;
 using MySqlConnector;
-
+using Resources.Vi;
 namespace Repository
 {
     public class OrganizationRepository : IOrganizationRepository
@@ -39,24 +39,30 @@ namespace Repository
                 if (!organizationArray.Any())
                 {
                     result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                    result.DevMsg.Add( CodeError.NotValue);
+                    result.UserMsg.Add( MessageError.NotValue);
+                    result.StatusCode = StatusCode.Status404NotFound;
+
                     result.Flag = false;
 
                 }
                 else
                 {
                     result.Data = organizationArray;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                    result.DevMsg.Add( CodeSuccess.GetSuccess);
+                    result.UserMsg.Add( MessageSuccess.GetSuccess);
+                    result.StatusCode = StatusCode.Status200OK;
+
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                result.DevMsg.Add( CodeError.ProcessError);
+                result.UserMsg.Add( MessageError.ProcessError);
+                result.StatusCode = StatusCode.Status500InternalServerError;
+
                 result.Flag = false;
             }
             return result;
@@ -86,8 +92,10 @@ namespace Repository
                 if (!careerArray.Any())
                 {
                     result.Data = new();
-                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                    result.DevMsg.Add( CodeError.NotValue);
+                    result.UserMsg.Add( MessageError.NotValue);
+                    result.StatusCode = StatusCode.Status404NotFound;
+
                     result.Flag = false;
                 }
                 else
@@ -95,16 +103,20 @@ namespace Repository
 
                     IEnumerable<string> resultArray = CommonFunc.CommonFunc.FormatData(careerArray);
                     result.Data = resultArray;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                    result.DevMsg.Add( CodeSuccess.GetSuccess);
+                    result.UserMsg.Add( MessageSuccess.GetSuccess);
+                    result.StatusCode = StatusCode.Status200OK;
+
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                result.DevMsg.Add( CodeError.ProcessError);
+                result.UserMsg.Add( MessageError.ProcessError);
+                result.StatusCode = StatusCode.Status500InternalServerError;
+
                 result.Flag = false;
             }
             return result;
@@ -133,8 +145,10 @@ namespace Repository
                 if (!domainArray.Any())
                 {
                     result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                    result.DevMsg.Add( CodeError.NotValue);
+                    result.UserMsg.Add( MessageError.NotValue);
+                    result.StatusCode = StatusCode.Status404NotFound;
+
                     result.Flag = false;
                 }
                 else
@@ -142,16 +156,20 @@ namespace Repository
                     IEnumerable<string> resultArray = CommonFunc.CommonFunc.FormatData(domainArray);
 
                     result.Data = resultArray;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                    result.DevMsg.Add( CodeSuccess.GetSuccess);
+                    result.UserMsg.Add( MessageSuccess.GetSuccess);
+                    result.StatusCode = StatusCode.Status200OK;
+
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                result.DevMsg.Add( CodeError.ProcessError);
+                result.UserMsg.Add( MessageError.ProcessError);
+                result.StatusCode = StatusCode.Status500InternalServerError;
+
                 result.Flag = false;
             }
             return result;
@@ -200,15 +218,19 @@ namespace Repository
                     if (res == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                        result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                        result.DevMsg.Add( CodeError.NotValue);
+                        result.UserMsg.Add( MessageError.NotValue);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
                     }
                     else
                     {
                         result.Data = res;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
+                        result.DevMsg.Add( CodeSuccess.InsertSuccess);
+                        result.UserMsg.Add( MessageSuccess.InsertSuccess);
+                        result.StatusCode = StatusCode.Status201Created;
+
                         result.Flag = true;
 
                     }
@@ -219,8 +241,10 @@ namespace Repository
                 catch (Exception ex)
                 {
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                     mySqlTransaction.Rollback();
@@ -266,16 +290,20 @@ namespace Repository
                     if (res == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
-                        result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+                        result.DevMsg.Add( CodeError.UpdateFailed);
+                        result.UserMsg.Add( MessageError.UpdateFail);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
                     }
                     else
                     {
 
                         result.Data = res;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
+                        result.DevMsg.Add( CodeSuccess.UpdateSuccess);
+                        result.UserMsg.Add( MessageSuccess.UpdateSuccess);
+                        result.StatusCode = StatusCode.Status200OK;
+
                         result.Flag = true;
                     }
                     mySqlTransaction.Commit();
@@ -284,8 +312,10 @@ namespace Repository
                 {
 
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                     mySqlTransaction.Rollback();

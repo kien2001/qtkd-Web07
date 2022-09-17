@@ -1,4 +1,5 @@
-﻿using Constants;
+﻿using Resources.Vi;
+using Constants;
 using Dapper;
 using Entities;
 using Exceptions;
@@ -34,23 +35,26 @@ namespace Repository
                     if (!addressArray.Any())
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                        result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                        result.DevMsg.Add(CodeError.NotValue);
+                        result.UserMsg.Add(MessageError.NotValue);
+                        result.StatusCode = StatusCode.Status404NotFound;
                         result.Flag = false;
                     }
                     else
                     {
                         result.Data = addressArray;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                        result.DevMsg.Add(CodeSuccess.GetSuccess);
+                        result.UserMsg.Add(MessageSuccess.GetSuccess);
+                        result.StatusCode = StatusCode.Status200OK;
                         result.Flag = true;
                     }
                 }
                 catch (Exception ex)
                 {
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add(CodeError.ProcessError);
+                    result.UserMsg.Add(MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
                     result.Flag = false;
                 }
             }
@@ -98,15 +102,17 @@ namespace Repository
                     if (res == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.InsertFailed);
-                        result.UserMsg.Add(FailMessage.MessageError.InsertFail);
+                        result.DevMsg.Add(CodeError.InsertFailed);
+                        result.UserMsg.Add(MessageError.InsertFail);
+                        result.StatusCode = StatusCode.Status400BadRequest;
                         result.Flag = false;
                     }
                     else
                     {
                         result.Data = res;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
+                        result.DevMsg.Add(CodeSuccess.InsertSuccess);
+                        result.UserMsg.Add(MessageSuccess.InsertSuccess);
+                        result.StatusCode = StatusCode.Status201Created;
                         result.Flag = true;
                     }
                     mySqlTransaction.Commit();
@@ -114,8 +120,10 @@ namespace Repository
                 catch (Exception ex)
                 {
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add(CodeError.ProcessError);
+                    result.UserMsg.Add(MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
                     mySqlTransaction.Rollback();
                 }
@@ -143,8 +151,6 @@ namespace Repository
                 try
                 {
                     var stringIdList = updatedMultiple.ListId.ConvertAll<string>(g => g.ToString());
-                    //  var updateQuery = $@"Update address set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue
-                    //, ModifiedAt = @ModifiedAt where AddressId in @ListId ;";
                     var resultString = String.Join(", ", stringIdList);
 
                     var updateQuery = $@"Update address set {updatedMultiple.FieldUpdateName} = @FieldUpdateValue" +
@@ -154,28 +160,24 @@ namespace Repository
                     dynamicParameters.Add("@ModifiedAt", DateTime.Now);
                     dynamicParameters.Add("@ListId", stringIdList);
 
-                    //var parameters = new
-                    //{
-                    //    FieldUpdateValue = updatedMultiple.FieldUpdateValue,
-                    //    ListId = stringIdList,
-                    //    ModifiedAt = DateTime.Now
-                    //};
-
                     var res = mySqlConnection.Execute(updateQuery, dynamicParameters, transaction: mySqlTransaction);
 
                     if (res == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
-                        result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+                        result.DevMsg.Add(CodeError.UpdateFailed);
+                        result.UserMsg.Add(MessageError.UpdateFail);
+                        result.StatusCode = StatusCode.Status400BadRequest;
                         result.Flag = false;
                     }
                     else
                     {
 
                         result.Data = res;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
+                        result.DevMsg.Add(CodeSuccess.UpdateSuccess);
+                        result.UserMsg.Add(MessageSuccess.UpdateSuccess);
+                        result.StatusCode = StatusCode.Status200OK;
+
                         result.Flag = true;
                     }
                     mySqlTransaction.Commit();
@@ -184,8 +186,10 @@ namespace Repository
                 {
 
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add(CodeError.ProcessError);
+                    result.UserMsg.Add(MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                     mySqlTransaction.Rollback();

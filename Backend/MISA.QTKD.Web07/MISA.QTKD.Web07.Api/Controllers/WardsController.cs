@@ -28,11 +28,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get([FromQuery] int districtId)
         {
             Result wardResult = _wardRepository.Get(districtId);
-            if (!wardResult.Flag)
-            {
-                return BadRequest(wardResult);
-            }
-            return Ok(wardResult);
+            return StatusCode(wardResult.StatusCode, wardResult);
+
         }
 
         /// <summary>
@@ -44,11 +41,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult GetAll()
         {
             Result wardResult = _wardRepository.GetAll();
-            if (!wardResult.Flag)
-            {
-                return BadRequest(wardResult);
-            }
-            return Ok(wardResult);
+            return StatusCode(wardResult.StatusCode, wardResult);
+
         }
     }
 }

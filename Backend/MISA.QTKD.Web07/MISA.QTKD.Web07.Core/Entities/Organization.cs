@@ -12,6 +12,8 @@ namespace Entities
     /// Created by LVKIEN 17/05/2022
     public class Organization
     {
+        #region Organization
+
         public int? OrganizationId { get; set; }// Id tổ chức
         public string? OrganizationName { get; set; } // Tên tổ chức
 
@@ -29,6 +31,8 @@ namespace Entities
         public string? Career { get; set; }// tên nghề nghiệp
 
         public int? RevenueId { get; set; }// Id tiềm năng
+
+        #endregion
 
         public Organization(int? organizationId, string? organizationName, string? bankAccount, string? bankName, DateTime? createdAccountAt, int? typeId, string? domain, string? career, int? revenueId)
         {

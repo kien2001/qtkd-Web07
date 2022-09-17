@@ -12,8 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class Revenue
     {
+        #region Revenue
+
         public int RevenueId { get; set; } // Id Doanh số (thuộc Organizaiton)
         public string? RevenueName { get; set; } // Tên Doanh số (thuộc Organizaiton)
+
+        #endregion
 
         public Revenue(int revenueId, string revenueName)
         {

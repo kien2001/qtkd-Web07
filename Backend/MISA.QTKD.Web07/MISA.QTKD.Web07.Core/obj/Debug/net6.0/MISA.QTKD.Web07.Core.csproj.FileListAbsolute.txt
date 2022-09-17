@@ -34,3 +34,8 @@ E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\refint\MISA.QTKD.Web07.Core.dll
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\MISA.QTKD.Web07.Core.pdb
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\ref\MISA.QTKD.Web07.Core.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\MISA.QTKD.Web07.Core.Resources.Vi.FailMessage.CodeError.resources
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\MISA.QTKD.Web07.Core.Resources.Vi.FailMessage.MessageError.resources
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\MISA.QTKD.Web07.Core.Resources.Vi.SuccessMessage.CodeSuccess.resources
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\MISA.QTKD.Web07.Core.Resources.Vi.SuccessMessage.MessageSuccess.resources
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Core\obj\Debug\net6.0\MISA.QTKD.Web07.Core.csproj.GenerateResource.cache

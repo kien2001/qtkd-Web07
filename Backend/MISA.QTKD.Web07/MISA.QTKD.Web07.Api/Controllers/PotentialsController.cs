@@ -30,11 +30,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get()
         {
             Result potentialResult = _potentialRepository.Get();
-            if (!potentialResult.Flag)
-            {
-                return BadRequest(potentialResult);
-            }
-            return Ok(potentialResult);
+            return StatusCode(potentialResult.StatusCode, potentialResult);
+
         }
         /// <summary>
         /// Api thêm 1 tiềm năng vào bảng potential
@@ -46,11 +43,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Post(Potential potential)
         {
             Result potentialResult = _potentialService.InsertService(potential);
-            if (!potentialResult.Flag)
-            {
-                return BadRequest(potentialResult);
-            }
-            return Ok(potentialResult);
+            return StatusCode(potentialResult.StatusCode, potentialResult);
+
         }
 
         /// <summary>
@@ -62,11 +56,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult GetMaxCode()
         {
             Result potentialResult = _potentialRepository.GetMaxCode();
-            if (!potentialResult.Flag)
-            {
-                return BadRequest(potentialResult);
-            }
-            return Ok(potentialResult);
+            return StatusCode(potentialResult.StatusCode, potentialResult);
+
         }
         /// <summary>
         /// Lấy các tên tiềm năng
@@ -77,11 +68,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult GetPotentialName()
         {
             Result potentialResult = _potentialRepository.GetPotentialName();
-            if (!potentialResult.Flag)
-            {
-                return BadRequest(potentialResult);
-            }
-            return Ok(potentialResult);
+            return StatusCode(potentialResult.StatusCode, potentialResult);
+
         }
 
     }

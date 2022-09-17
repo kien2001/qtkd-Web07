@@ -24,12 +24,9 @@ namespace MISA.QTKD.Web07.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            Result typeResult = _genderRepository.Get();
-            if (!typeResult.Flag)
-            {
-                return BadRequest(typeResult);
-            }
-            return Ok(typeResult);
+            Result genderResult = _genderRepository.Get();
+            return StatusCode(genderResult.StatusCode, genderResult);
+
         }
     }
 }

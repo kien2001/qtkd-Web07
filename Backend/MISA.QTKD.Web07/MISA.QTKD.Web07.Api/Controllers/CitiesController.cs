@@ -29,11 +29,9 @@ namespace Controllers
         public IActionResult Get([FromQuery] int countryId)
         {
             Result cityResult = _cityRepository.Get(countryId);
-            if (!cityResult.Flag)
-            {
-                return BadRequest(cityResult);
-            }
-            return Ok(cityResult);
+            return StatusCode(cityResult.StatusCode, cityResult);
+
+
         }
 
         /// <summary>
@@ -45,11 +43,9 @@ namespace Controllers
         public IActionResult GetAll()
         {
             Result cityResult = _cityRepository.GetAll();
-            if (!cityResult.Flag)
-            {
-                return BadRequest(cityResult);
-            }
-            return Ok(cityResult);
+            return StatusCode(cityResult.StatusCode, cityResult);
+
+
         }
     }
 }

@@ -27,11 +27,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get()
         {
             Result organizationResult = _organizationRepository.Get();
-            if (!organizationResult.Flag)
-            {
-                return BadRequest(organizationResult);
-            }
-            return Ok(organizationResult);
+            return StatusCode(organizationResult.StatusCode, organizationResult);
+
         }
         /// <summary>
         /// Api lấy dữ liệu ngành nghề của bảng organization
@@ -42,11 +39,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult GetCareer()
         {
             Result organizationResult = _organizationRepository.GetCareer();
-            if (!organizationResult.Flag)
-            {
-                return BadRequest(organizationResult);
-            }
-            return Ok(organizationResult);
+            return StatusCode(organizationResult.StatusCode, organizationResult);
+
         }
 
         /// <summary>
@@ -58,11 +52,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult GetDomain()
         {
             Result organizationResult = _organizationRepository.GetDomain();
-            if (!organizationResult.Flag)
-            {
-                return BadRequest(organizationResult);
-            }
-            return Ok(organizationResult);
+            return StatusCode(organizationResult.StatusCode, organizationResult);
+
         }
 
         /// <summary>
@@ -75,11 +66,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Post(Organization organization)
         {
             Result organizationResult = _organizationRepository.Insert(organization);
-            if (!organizationResult.Flag)
-            {
-                return BadRequest(organizationResult);
-            }
-            return Ok(organizationResult);
+            return StatusCode(organizationResult.StatusCode, organizationResult);
+
         }
 
 
@@ -92,12 +80,9 @@ namespace MISA.QTKD.Web07.Api.Controllers
         [HttpPost("MultipleRows")]
         public IActionResult UpdateMultiple(UpdatedMultiple<int> updatedMultiple)
         {
-            Result addressResult = _organizationRepository.UpdateMultiple(updatedMultiple);
-            if (addressResult.Flag == false)
-            {
-                return BadRequest(addressResult);
-            }
-            return Ok(addressResult);
+            Result organizationResult = _organizationRepository.UpdateMultiple(updatedMultiple);
+            return StatusCode(organizationResult.StatusCode, organizationResult);
+
         }
     }
 }

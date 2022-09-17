@@ -12,9 +12,13 @@ namespace Entities
     /// Created by LVKIEN 17/05/2022
     public class Potential
     {
+        #region Potential
+
         public Guid? PotentialId { get; set; } // id Tiềm năng
         public string? PotentialName { get; set; }// tên tiềm năng
         public string? PotentialCode { get; set; }// Mã tiềm năng
+
+        #endregion
 
 
         public Potential(Guid? potentialId, string? potentialName, string? potentialCode)

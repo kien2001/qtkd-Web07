@@ -125,3 +125,8 @@ E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
 E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\Google.Apis.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\Google.Apis.Auth.PlatformServices.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\Google.Apis.Auth.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\Google.Apis.Core.dll
+E:\Microsoft Visual Studio\2022\AMIS_BanHang\qtkd-Web07\Backend\MISA.QTKD.Web07\MISA.QTKD.Web07.Api\bin\Debug\net6.0\Google.Apis.Drive.v3.dll

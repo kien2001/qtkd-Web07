@@ -27,11 +27,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get()
         {
             Result positionResult = _positionRepository.Get();
-            if (!positionResult.Flag)
-            {
-                return BadRequest(positionResult);
-            }
-            return Ok(positionResult);
+            return StatusCode(positionResult.StatusCode, positionResult);
+
         }
     }
 }
