@@ -1,31 +1,31 @@
 import { createApp } from 'vue'
-import TheFormSubmit from './components/TheFormSubmit'
-import TheInputForm from "./components/TheInputForm.vue";
-import TheUpdateMultipleForm from './components/TheUpdateMultipleForm'
-import TheDropDown from './components/TheDropDown'
-import TheComboBox from './components/TheComboBox'
-import TheButton from './components/TheButton'
-import TheTooltip from './components/TheTooltip'
-import TheLoading from './components/TheLoading'
-import ThePopUp from './components/ThePopUp'
-import TheToastMessage from './components/TheToastMessage'
-import TheDatepicker from "./components/TheDatepicker.vue";
+import BaseFormSubmit from './base/BaseFormSubmit'
+import BaseInputForm from "./base/BaseInputForm.vue";
+import BaseUpdateMultipleForm from './base/BaseUpdateMultipleForm'
+import BaseDropDown from './base/BaseDropDown'
+import BaseComboBox from './base/BaseComboBox'
+import BaseButton from './base/BaseButton'
+import BaseTooltip from './base/BaseTooltip'
+import BaseLoading from './base/BaseLoading'
+import BasePopUp from './base/BasePopUp'
+import BaseToastMessage from './base/BaseToastMessage'
+import BaseDatepicker from "./base/BaseDatepicker.vue";
 import clickOutside from './directives/clickOutside';
 import App from './App.vue'
 import store from './store'
 import router from './router/index'
 const app = createApp(App)
-app.component('TheFormSubmit', TheFormSubmit)
-app.component('TheUpdateMultipleForm', TheUpdateMultipleForm)
-app.component('TheDropDown', TheDropDown)
-app.component('TheButton', TheButton)
-app.component('TheTooltip', TheTooltip)
-app.component('TheDatepicker', TheDatepicker)
-app.component('TheComboBox', TheComboBox)
-app.component('TheLoading', TheLoading)
-app.component('ThePopUp', ThePopUp)
-app.component('TheToastMessage', TheToastMessage)
-app.component('TheInputForm', TheInputForm)
+app.component('BaseFormSubmit', BaseFormSubmit)
+app.component('BaseUpdateMultipleForm', BaseUpdateMultipleForm)
+app.component('BaseDropDown', BaseDropDown)
+app.component('BaseButton', BaseButton)
+app.component('BaseTooltip', BaseTooltip)
+app.component('BaseDatepicker', BaseDatepicker)
+app.component('BaseComboBox', BaseComboBox)
+app.component('BaseLoading', BaseLoading)
+app.component('BasePopUp', BasePopUp)
+app.component('BaseToastMessage', BaseToastMessage)
+app.component('BaseInputForm', BaseInputForm)
 app.directive("click-outside", clickOutside)
 app
   .use(router)

@@ -1,10 +1,9 @@
 <template>
-  <div class="dropdown" v-click-outside="exit" ref="dropdown" :name="name" tabindex="0">
-    <!-- @focus="showOptions"
-     -->
+  <div class="dropdown" v-click-outside="exit" ref="dropdown" :name="name" @keydown.tab="exit">
     <div
+      @focus="showOptions" tabindex="0"
       class="dropdown-header"
-      @click.stop.prevent="showOptions"
+      @mousedown.stop.prevent="showOptions"
       ref="dropdown-header"
       >
       {{ this.oldSearchFilter || placeholder }}
@@ -21,6 +20,7 @@
     >
       <!-- Dropdown Input -->
       <input
+      tabindex="-1"
         class="dropdown-input"
         :id="id"
         v-model="searchFilter"
@@ -47,7 +47,7 @@
         >
           {{ option.name }}
         </div>
-        <TheLoading v-if="showLoading" />
+        <BaseLoading v-if="showLoading" />
       </div>
     </div>
   </div>
@@ -60,8 +60,8 @@ import emitter from "@/js/emitter";
 import axiosInstance from "@/js/axios";
 
 export default {
-  name: "TheDropDown",
-  template: "TheDropDown",
+  name: "BaseDropDown",
+  template: "BaseDropDown",
   props: {
     id: {
       type: String,
@@ -114,6 +114,12 @@ export default {
       return filtered;
     },
   },
+  // mounted(){
+  //   $(window).click(this.exit)
+  // },
+  // beforeUnmount(){
+  //   $(window).unbind("click")
+  // },
   methods: {
     /**
      * TODO: Xử lý khi chọn 1 option
@@ -226,6 +232,8 @@ export default {
      * !Created by LVKIEN 10/09/2022
      */
     exit() {
+      // if( $(this.$refs["dropdown"]).find(e.target).length > 0) return;
+      // console.log($(this.$refs["dropdown"]).find(e.target));
       if (this.selected.id === undefined) {
         this.selected = {};
         this.searchFilter = "";
@@ -300,7 +308,7 @@ export default {
 .dropdown .dropdown-header .icon-dropdown {
   position: absolute;
   top: 50%;
-  right: 12px;
+  right: 10px;
   background: url("../assets/img/icon_collection.svg") no-repeat -52px -38px;
   width: 9px;
   height: 5px;

@@ -38,7 +38,7 @@
 </template>
 <script>
 import $ from 'jquery'
-import { handleToggleSideBar } from '../js/toggleSideBar'
+import { handleToggleSideBar } from '@/js/toggleSideBar'
 export default {
   name: 'SideBarRight',
   // data() {
@@ -75,13 +75,13 @@ export default {
     padding: 10px 10px 0 10px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 .menu-item{
     cursor: pointer;
 }
 .main-header {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     line-height: 16px;
 }
@@ -111,8 +111,7 @@ export default {
     top: 50%;
     left: -12px;
     border-radius: 8px 0 0 8px;
-    box-shadow: 2px 2px 7px rgba(31, 34, 41, 0.16);
-    box-shadow: 2px 2px 7px rgba(31, 34, 41, 0.16);
+    box-shadow: -2px 2px 7px rgb(31 34 41 / 16%);
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -126,7 +125,7 @@ export default {
     height: 100%;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url("../assets/img/toggle-right.svg");
+    background-image: url("@/assets/img/toggle-right.svg");
 }
 
 .btn-toggle[toggle] {

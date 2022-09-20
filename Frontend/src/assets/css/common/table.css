@@ -1,6 +1,4 @@
-/* .tbody {
-   width: fit-content;
-} */
+
 .table-container {
     grid-row: 1/2;
     overflow: hidden;
@@ -55,23 +53,6 @@
 .table-content::-webkit-scrollbar-thumb:active{
     background-color: #7C869C;
 }
-/* .table-button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-}
-
-.table-button-right {
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.table-button-left-text {
-    font-family: Latin Bold;
-} */
 
 .td,
 .th {

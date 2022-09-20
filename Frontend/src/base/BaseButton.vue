@@ -1,6 +1,6 @@
 <template>
   <div class="button-container" :style="styleContainer">
-    <div tabindex="0" class="button" :class="classObject" :style="styleObject" @click="handleClick">
+    <div  class="button" :class="classObject" :style="styleObject" @click="handleClick">
       {{  name  }}
     </div>
     <div class="btn-combo-addition" v-if="isComboBtn" :style="styleObjectSecond"></div>
@@ -10,6 +10,8 @@
 <style scoped>
 
 .button-container {
+  border-radius: 5px;
+  background-color: none;
   display: flex;
   align-items: center;
   gap: 1px;
@@ -74,8 +76,8 @@
 </style>
 <script>
 export default {
-  name: 'TheButton',
-  template: 'TheButton',
+  name: 'BaseButton',
+  template: 'BaseButton',
   props: {
     name: {
       type: String,

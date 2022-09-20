@@ -6,7 +6,7 @@
           Tất cả tiềm năng
           <div class="btn-icon small arrow-down"></div>
         </div>
-        <div class="edit-btn btn-hover">Sửa</div>
+        <div class="button-text">Sửa</div>
         <div
           class="btn-icon small btn-hover reload"
           @click="handleReload"
@@ -16,8 +16,8 @@
         <div class="selected-item">
           Đã chọn <span> {{ getListIdChecked.length }}</span>
         </div>
-        <div class="edit-btn btn-hover" @click="handleDeselect">Bỏ chọn</div>
-        <TheButton
+        <div class="button-text" @click="handleDeselect" :style="{margin: '0 6px'}">Bỏ chọn</div>
+        <BaseButton
           name="Cập nhật thông tin"
           color="#fff"
           colorHover="#D0D8FB"
@@ -30,7 +30,7 @@
         <div class="option-detail">
           <div class="btn-icon more-option" @click="showOptions"></div>
           <div class="more-option-container" v-show="showOptionList">
-            <TheButton
+            <BaseButton
               name="Xuất khẩu"
               color="#fff"
               colorHover="#E2E4E9"
@@ -38,7 +38,7 @@
               :urlMainBtn="iconExport"
               @clickBtn="exportExcel"
             />
-            <TheButton
+            <BaseButton
               name="Xoá"
               color="#fff"
               colorHover="#E2E4E9"
@@ -53,7 +53,7 @@
     </Transition>
     <div class="function-manipulation">
       <div class="">
-        <TheButton
+        <BaseButton
           name="Thêm"
           color="#4262F0"
           colorHover="#2B4EEE"
@@ -71,7 +71,7 @@
         <div class="item-sub btn-addition icon-arrow-down"></div>
       </div>
     </div>
-    <ThePopUp
+    <BasePopUp
       text="Bạn có chắc chắn muốn xoá tiềm năng này không?"
       colorBtn="#EC4141"
       colorHoverBtn="#EA2E2E"
@@ -83,14 +83,13 @@
 <script>
 import $ from "jquery";
 import axiosInstance from "@/js/axios";
-import iconEdit from "../assets/img/edit.svg";
-import iconAdd from "../assets/img/add.svg";
-import iconExport from "../assets/img/export.svg";
-import iconDelete from "../assets/img/delete.svg";
-import iconArrowDownWhite from "../assets/img/arrow-down-white.svg";
-// import PopUp from "@/components/PopUp.vue";
+import iconEdit from "../../assets/img/edit.svg";
+import iconAdd from "../../assets/img/add.svg";
+import iconExport from "../../assets/img/export.svg";
+import iconDelete from "../../assets/img/delete.svg";
+import iconArrowDownWhite from "../../assets/img/arrow-down-white.svg";
 import emitter from "@/js/emitter";
-import StatusCode from "@/js/StatusCode";
+import StatusCode from "@/config/StatusCode";
 export default {
   name: "FunctionTool",
   data() {
@@ -297,6 +296,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .btn-icon.small.arrow-down {
@@ -322,7 +322,7 @@ export default {
   position: absolute;
   z-index: 100;
   width: 120px;
-  transform: translate(36%, 100%);
+  transform: translateY(100%);
 }
 
 .more-option-container > div {
@@ -333,7 +333,7 @@ export default {
   color: #4262f0;
   cursor: pointer;
   font-weight: 500;
-  padding: 5px 7px;
+  padding: 5px 0;
   border-radius: 5px;
 }
 
@@ -381,10 +381,10 @@ export default {
   padding: 8px;
 }
 .icon-3dot3line {
-  background-image: url("../assets/img/3dot3line.svg");
+  background-image: url("../../assets/img/3dot3line.svg");
 }
 .icon-arrow-down {
-  background-image: url("../assets/img/arrow-down.svg");
+  background-image: url("../../assets/img/arrow-down.svg");
 }
 
 .more-option:active,

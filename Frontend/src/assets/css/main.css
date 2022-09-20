@@ -1,6 +1,7 @@
 @import url(./common/icon.css);
 @import url(./common/table.css);
 @import url(./common/paging.css);
+@import url(./common/button-text.css);
 
 @font-face {
     font-family: Roboto V20;

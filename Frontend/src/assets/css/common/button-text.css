@@ -1,0 +1,28 @@
+.button-text {
+    position: relative;
+    color: #0F2FBD;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0;
+    cursor: pointer;
+    padding: 3px 0;
+}
+
+.button-text::before {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    height: 1.5px;
+    width: 100%;
+    transform: scaleX(0);
+    background-color: #5a76f2;
+    transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-text:hover {
+    color: #133BEC;
+}
+.button-text:hover::before {
+    transform: scaleX(1);
+}

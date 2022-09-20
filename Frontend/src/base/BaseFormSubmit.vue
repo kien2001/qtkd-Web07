@@ -1,7 +1,7 @@
 <template>
   <div class="form-submit-container" ref="container">
     <template v-if="getErrorField">
-      <TheToastMessage
+      <BaseToastMessage
         v-for="error in getErrorField"
         :key="error"
         :state="error.state"
@@ -14,12 +14,15 @@
         <div class="header-title">
           <div class="header-title-context">
             {{ editForm ? "Sửa tiềm năng" : "Thêm Tiềm năng"
-            }}<span>- Mẫu tiêu chuẩn</span>
+            }}<span> - Mẫu tiêu chuẩn</span>
           </div>
-          <div class="edit-btn">Sửa bố cục</div>
+          <div class="button-text" :style="{ alignSelf: 'end' }">
+            Sửa bố cục
+          </div>
         </div>
         <div class="header-btn">
-          <TheButton
+          <BaseButton
+            class="close-form"
             @keyup.enter="closeForm"
             name="Huỷ bỏ"
             color="#fff"
@@ -27,8 +30,9 @@
             colorHover="#D0D8FB"
             border="#fff"
             borderHover="#D3D7DE"
+            tabindex="0"
           />
-          <TheButton
+          <BaseButton
             @keyup.enter="saveAndAddForm"
             name="Lưu và thêm"
             color="#fff"
@@ -36,14 +40,18 @@
             border="#fff"
             borderHover="#D3D7DE"
             @clickBtn="saveAndAddForm"
+            tabindex="0"
+
           />
-          <TheButton
+          <BaseButton
             @keyup.enter="saveForm"
             name="Lưu"
             color="#4262F0"
             colorHover="#2B4EEE"
             @clickBtn="saveForm"
             colorText="#FFFFFF"
+            tabindex="0"
+
           />
         </div>
       </div>
@@ -58,7 +66,7 @@
             <div class="context-item">
               <div class="context-label">Xưng hô</div>
               <div class="context-input">
-                <TheDropDown
+                <BaseDropDown
                   id="vocative"
                   :showInput="true"
                   placeholder="-Không chọn-"
@@ -71,11 +79,10 @@
             <div class="context-item">
               <div class="context-label">Họ và đệm</div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="lastMiddleName"
                   @changeName="setLastMiddleName"
-                  maxlength="50"
                   ref="lastMiddleName"
                 />
               </div>
@@ -83,19 +90,18 @@
             <div class="context-item" required>
               <div class="context-label">Tên</div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="firstName"
                   @changeName="setFirstName"
                   ref="firstName"
-                  maxlength="50"
                 />
               </div>
             </div>
             <div class="context-item">
               <div class="context-label">Họ và tên</div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="fullName"
                   :isDisabled="true"
@@ -106,7 +112,7 @@
             <div class="context-item">
               <div class="context-label">Phòng ban</div>
               <div class="context-input">
-                <TheDropDown
+                <BaseDropDown
                   :fetchDataWhenClick="false"
                   id="departmentName"
                   :showInput="true"
@@ -119,7 +125,7 @@
             <div class="context-item">
               <div class="context-label">Chức danh</div>
               <div class="context-input">
-                <TheDropDown
+                <BaseDropDown
                   :fetchDataWhenClick="false"
                   id="positionName"
                   :showInput="true"
@@ -132,10 +138,10 @@
             <div class="context-item">
               <div class="context-label">
                 ĐT di động
-                <TheTooltip tooltipText="Điện thoại di động" />
+                <BaseTooltip tooltipText="Điện thoại di động" />
               </div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="customerPhoneNum"
                   ref="customerPhoneNum"
@@ -146,10 +152,10 @@
             <div class="context-item">
               <div class="context-label">
                 ĐT cơ quan
-                <TheTooltip tooltipText="Điện thoại cơ quan" />
+                <BaseTooltip tooltipText="Điện thoại cơ quan" />
               </div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="companyPhoneNum"
                   ref="companyPhoneNum"
@@ -160,10 +166,10 @@
             <div class="context-item" v-if="editForm">
               <div class="context-label">
                 ĐT khác
-                <TheTooltip tooltipText="Điện thoại khác" />
+                <BaseTooltip tooltipText="Điện thoại khác" />
               </div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="otherPhoneNum"
                   :isTel="true"
@@ -174,7 +180,7 @@
             <div class="context-item">
               <div class="context-label">Nguồn gốc</div>
               <div class="context-input">
-                <TheDropDown
+                <BaseDropDown
                   id="sourceName"
                   :showInput="true"
                   placeholder="-Không chọn-"
@@ -187,7 +193,7 @@
             <div class="context-item">
               <div class="context-label">Loại tiềm năng</div>
               <div class="context-input">
-                <TheComboBox
+                <BaseComboBox
                   :options="
                     async () => {
                       return await this.getDataComboBox(
@@ -215,7 +221,7 @@
             <div class="context-item">
               <div class="context-label">Zalo</div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="zalo"
                   :isTel="true"
@@ -227,7 +233,7 @@
             <div class="context-item">
               <div class="context-label">Tổ chức</div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="organizationName"
                   ref="organizationName"
@@ -237,7 +243,7 @@
             <div class="context-item">
               <div class="context-label">Email cá nhân</div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="customerEmail"
                   :isEmail="true"
@@ -248,7 +254,7 @@
             <div class="context-item">
               <div class="context-label">Email cơ quan</div>
               <div class="context-input">
-                <TheInputForm
+                <BaseInputForm
                   class="inputForm"
                   id="companyEmail"
                   :isEmail="true"
@@ -260,7 +266,7 @@
             <div class="context-item">
               <div class="context-label">Mã số thuế</div>
               <div class="context-input">
-                <TheInputForm class="inputForm" id="taxCode" ref="taxCode" />
+                <BaseInputForm class="inputForm" id="taxCode" ref="taxCode" />
               </div>
             </div>
           </div>
@@ -271,7 +277,7 @@
             <div class="context-item">
               <div class="context-label">Giới tính</div>
               <div class="context-input">
-                <TheDropDown
+                <BaseDropDown
                   id="genderName"
                   :showInput="true"
                   placeholder="-Không chọn-"
@@ -284,7 +290,7 @@
             <div class="context-item">
               <div class="context-label">Ngày sinh</div>
               <div class="context-input">
-                <TheDatepicker
+                <BaseDatepicker
                   inputClassName="dateOfBirth"
                   ref="dateOfBirth"
                   @getDate="handleGetBirthDate"
@@ -294,7 +300,7 @@
             <div class="context-item">
               <div class="context-label">Facebook</div>
               <div class="context-input">
-                <TheInputForm class="inputForm" id="facebook" ref="facebook" />
+                <BaseInputForm class="inputForm" id="facebook" ref="facebook" />
               </div>
             </div>
           </div>
@@ -306,7 +312,7 @@
               <div class="context-item">
                 <div class="context-label">Tài khoản ngân hàng</div>
                 <div class="context-input">
-                  <TheInputForm
+                  <BaseInputForm
                     class="inputForm"
                     id="bankAccount"
                     ref="bankAccount"
@@ -316,7 +322,7 @@
               <div class="context-item">
                 <div class="context-label">Mở tại ngân hàng</div>
                 <div class="context-input">
-                  <TheInputForm
+                  <BaseInputForm
                     class="inputForm"
                     id="bankName"
                     ref="bankName"
@@ -326,7 +332,7 @@
               <div class="context-item">
                 <div class="context-label">Ngày thành lập</div>
                 <div class="context-input">
-                  <TheDatepicker
+                  <BaseDatepicker
                     inputClassName="createdAccountAt"
                     @getDate="handleGetCreatedAccountDate"
                     ref="createdAccountAt"
@@ -336,7 +342,7 @@
               <div class="context-item">
                 <div class="context-label">Loại hình</div>
                 <div class="context-input">
-                  <TheDropDown
+                  <BaseDropDown
                     id="typeName"
                     :showInput="true"
                     placeholder="-Không chọn-"
@@ -349,7 +355,7 @@
               <div class="context-item">
                 <div class="context-label">Lĩnh vực</div>
                 <div class="context-input">
-                  <TheComboBox
+                  <BaseComboBox
                     :options="
                       async () => {
                         return await this.getDataComboBox(
@@ -364,7 +370,7 @@
               <div class="context-item">
                 <div class="context-label">Ngành nghề</div>
                 <div class="context-input">
-                  <TheComboBox
+                  <BaseComboBox
                     :options="
                       async () => {
                         return await this.getDataComboBox(
@@ -379,7 +385,7 @@
               <div class="context-item">
                 <div class="context-label">Doanh thu</div>
                 <div class="context-input">
-                  <TheDropDown
+                  <BaseDropDown
                     id="revenueName"
                     :showInput="true"
                     placeholder="-Không chọn-"
@@ -397,7 +403,7 @@
               <div class="context-item">
                 <div class="context-label">Quốc gia</div>
                 <div class="context-input">
-                  <TheDropDown
+                  <BaseDropDown
                     id="country"
                     @selected="getSelectedCountry"
                     :showInput="true"
@@ -411,10 +417,11 @@
               <div class="context-item">
                 <div class="context-label">Tỉnh/Thành phố</div>
                 <div class="context-input">
-                  <TheDropDown
+                  <BaseDropDown
                     id="city"
                     @selected="getSelectedCity"
                     @click="handleShowCities"
+                    @focus="handleShowCities"
                     :showInput="true"
                     :fetchDataWhenClick="false"
                     placeholder="-Không chọn-"
@@ -426,10 +433,11 @@
               <div class="context-item">
                 <div class="context-label">Quận/Huyện</div>
                 <div class="context-input">
-                  <TheDropDown
+                  <BaseDropDown
                     id="district"
                     @selected="getSelectedDistrict"
                     @click="handleShowDistricts"
+                    @focus="handleShowDistricts"
                     :showInput="true"
                     :fetchDataWhenClick="false"
                     placeholder="-Không chọn-"
@@ -441,10 +449,11 @@
               <div class="context-item">
                 <div class="context-label">Phường/Xã</div>
                 <div class="context-input">
-                  <TheDropDown
+                  <BaseDropDown
                     id="ward"
                     @selected="getSelectedWard"
                     @click="handleShowWards"
+                    @focus="handleShowWards"
                     :showInput="true"
                     :fetchDataWhenClick="false"
                     placeholder="-Không chọn-"
@@ -456,7 +465,7 @@
               <div class="context-item">
                 <div class="context-label">Số nhà, Đường phố</div>
                 <div class="context-input">
-                  <TheInputForm
+                  <BaseInputForm
                     class="inputForm"
                     id="homeNumber"
                     ref="homeNumber"
@@ -466,7 +475,7 @@
               <div class="context-item">
                 <div class="context-label">Mã vùng</div>
                 <div class="context-input">
-                  <TheInputForm
+                  <BaseInputForm
                     class="inputForm"
                     id="postalCode"
                     ref="postalCode"
@@ -512,17 +521,18 @@
               <div class="context-item">
                 <div class="context-label">Dùng chung</div>
                 <div class="context-input">
-                  <div class="icon icon-checkbox" id="sharingUse"></div>
+                  <div @keydown.enter="checkInput" tabindex="0" class="icon icon-checkbox" id="sharingUse"></div>
                 </div>
               </div>
               <div class="context-item"></div>
               <div class="context-item">
                 <div class="context-label">Mã tiềm năng</div>
                 <div class="context-input">
-                  <TheInputForm
+                  <BaseInputForm
                     class="inputForm"
                     id="potentialCode"
                     ref="potentialCode"
+                    @keydown.tab.prevent="focusFirst"
                   />
                 </div>
               </div>
@@ -708,7 +718,8 @@
 import $ from "jquery";
 import axiosInstance from "@/js/axios";
 import { dropdownField } from "@/js/config";
-import StatusCode from "../js/StatusCode";
+import StatusCode from "@/config/StatusCode";
+import setMaxLengthInput from "../config/maxLength";
 import Customer from "../entities/Customer";
 import CustomerUpdate from "../entities/CustomerUpdate";
 import Organization from "../entities/Organization";
@@ -718,7 +729,7 @@ import handleClickFilterItem from "../js/checkbox";
 import { handleTransferObject, lowerCaseFirstLetter } from "../js/common";
 import emitter from "@/js/emitter";
 export default {
-  name: "TheFormSubmit",
+  name: "BaseFormSubmit",
   data() {
     return {
       message: "",
@@ -742,8 +753,12 @@ export default {
       timeOut: 0,
     };
   },
+  updated() {
+    setMaxLengthInput(this.$refs.container);
+  },
   async mounted() {
     try {
+      setMaxLengthInput(this.$refs.container);
       const checkboxItems = $(".context-input>.icon.icon-checkbox").toArray();
       checkboxItems.forEach((item) => {
         $(item).click(this.checkInput);
@@ -777,9 +792,6 @@ export default {
     }
   },
   computed: {
-    handleFullName() {
-      return `${this.lastMiddleName} ${this.firstName}`;
-    },
     getErrorField() {
       return this.errorField;
     },
@@ -815,7 +827,6 @@ export default {
         this.cityName.name,
         this.countryName.name,
       ];
-      console.log(addressArr);
       this.addressName = addressArr.join(" ").trim();
     },
     cityName() {
@@ -835,7 +846,6 @@ export default {
         this.cityName.name,
         this.countryName.name,
       ];
-      console.log(addressArr);
       this.addressName = addressArr.join(" ").trim();
     },
     districtName() {
@@ -851,7 +861,6 @@ export default {
         this.cityName.name,
         this.countryName.name,
       ];
-      console.log(addressArr);
       this.addressName = addressArr.join(" ").trim();
     },
     wardName() {
@@ -863,14 +872,13 @@ export default {
         this.cityName.name,
         this.countryName.name,
       ];
-      console.log(addressArr);
       this.addressName = addressArr.join(" ").trim();
     },
     firstName() {
-      $("#fullName").val(`${this.lastMiddleName} ${this.firstName}`);
+      $("#fullName").val(`${this.lastMiddleName || ''} ${this.firstName}`);
     },
     lastMiddleName() {
-      $("#fullName").val(`${this.lastMiddleName} ${this.firstName}`);
+      $("#fullName").val(`${this.lastMiddleName || ''} ${this.firstName}`);
     },
     // xử lý hiển thị lỗi
     errorField(newValue) {
@@ -889,8 +897,12 @@ export default {
       }
     },
   },
-  template: "TheFormSubmit",
+  template: "BaseFormSubmit",
   methods: {
+    focusFirst(e){
+      document.getElementsByClassName("close-form")[0].focus()
+      console.log(document.getElementsByClassName("close-form")[0]);
+    },
     /**
      * Gán dữ liệu vào form khi đc mount trong form sửa
      * Created by LVKIEN 1/9/2022
@@ -898,6 +910,16 @@ export default {
     mountDataEditForm() {
       try {
         if (this.editForm) {
+          // gán giá trị v-model cho các input
+          const listIdInput = $(this.$refs.container)
+            .find(".input-text")
+            .toArray()
+            .map((input) => {
+              return $(input).attr("id");
+            });
+          listIdInput.forEach((id) => {
+            this.$refs[id].name = this.customerEdit[id];
+          });
           this.$refs.vocative.oldSearchFilter = this.customerEdit.vocative
             ? this.customerEdit.vocativeName
             : "Không chọn";
@@ -951,12 +973,13 @@ export default {
           $(this.$refs.container)
             .find("#lastMiddleName")
             .val(this.customerEdit.lastMiddleName);
+          console.log();
           $(this.$refs.container)
             .find("#firstName")
             .val(this.customerEdit.firstName);
           $(this.$refs.container)
             .find("#fullName")
-            .val(this.customerEdit.fullName);
+            .val(`${this.customerEdit.lastMiddleName || ''} ${this.customerEdit.firstName || ''}`.trim());
 
           $(this.$refs.container)
             .find("#customerPhoneNum")
@@ -1077,7 +1100,6 @@ export default {
      */
     handleGetBirthDate(date) {
       this.dateOfBirth = date;
-      console.log(date);
     },
     // xử lý checkbox
     checkInput(e) {
@@ -1101,7 +1123,7 @@ export default {
         "countryId",
         "cityId",
         "Cities",
-        "Bạn chưa chọn quốc gia"
+        StatusCode.MessageError.NotChooseCountryError
       );
     },
     /**
@@ -1113,7 +1135,7 @@ export default {
         "cityId",
         "districtId",
         "Districts",
-        "Bạn chưa chọn tỉnh/thành phố"
+        StatusCode.MessageError.NotChooseCityError
       );
     },
     /**
@@ -1125,7 +1147,7 @@ export default {
         "districtId",
         "wardId",
         "Wards",
-        "Bạn chưa chọn quận/huyện"
+        StatusCode.MessageError.NotChooseDistrictError
       );
     },
     /**
@@ -1363,7 +1385,10 @@ export default {
         console.log(customer, potential, address, organization);
         if (!customer.FirstName || customer.FirstName.trim() === "") {
           this.$store.commit("setState", "fail");
-          this.$store.commit("setMessage", "Tên không được phép để trống");
+          this.$store.commit(
+            "setMessage",
+            StatusCode.MessageError.EmptyFirstName
+          );
           emitter.emit("showToast");
         } else {
           const customerInsert = { customer, potential, address, organization };
@@ -1386,14 +1411,19 @@ export default {
               return { state: "fail", message: msg };
             });
             if (potentialErrrorCode) {
-              $("#potentialCode").css("border-color", "red");
+              $("#potentialCode").addClass("error");
               $("#potentialCode")
                 .parent()
                 .after(
-                  `<span>${StatusCode.MessageError.DuplicatePotentialCode}</span>`
+                  `<span>${StatusCode.MessageError.DuplicatePotentialCode} <span class='button-text' id='duplicate-potential'>Xem ngay</span></span> `
                 );
+              $(".context-input")
+                .find("#duplicate-potential")
+                .click((e) => {
+                  this.handleGetCustomer();
+                });
             } else {
-              $("#potentialCode").css("border-color", "#D3D7DE");
+              $("#potentialCode").removeClass("error");
               $("#potentialCode").parent().next("span").remove();
             }
           }
@@ -1414,12 +1444,11 @@ export default {
         );
         const customerUpdate = new CustomerUpdate();
         if ($(this.$refs.container).find("#firstName").val().trim() === "") {
-          this.errorField = [
-            ...this.errorField,
-            { firstName: "Tên không được phép để trống" },
-          ];
           this.$store.commit("setState", "fail");
-          this.$store.commit("setMessage", "Tên không được phép để trống");
+          this.$store.commit(
+            "setMessage",
+            StatusCode.MessageError.EmptyFirstName
+          );
           emitter.emit("showToast");
         } else {
           this.handleMappingData(customerUpdate);
@@ -1479,7 +1508,6 @@ export default {
         this.openForm();
       }
       this.customerEdit = this.$store.state.customerUpdated;
-      console.log(this.customerEdit);
     },
     /**
      * TODO: click vào button Lưu và thêm
@@ -1494,15 +1522,15 @@ export default {
      * ! Created by LVKIEN 10/09/2022
      */
     openForm() {
-      if (this.$route.name === "TiemNang") {
+      if (this.$route.name === "Potential") {
         this.$store.commit("setFormState", true);
       }
     },
     /**
-     * Lấy giá trị dropdown gán vào 1 object
-     * @param {*} capitalizeValue
-     * @param {*} object
-     * created by LVKIEN 28/08/2022
+     * TODO: Lấy giá trị dropdown gán vào 1 object
+     * @param {*} capitalizeValue : giá trị của ref dropdown
+     * @param {*} object : object cần gán giá trị
+     * !Created by LVKIEN 28/08/2022
      */
     getValueDropdown(capitalizeValue, object) {
       try {
@@ -1524,40 +1552,50 @@ export default {
       }
     },
     /**
-     * TODO: Kiểm tra xem có lỗi nào không
-     * ! Created by LVKIEN 10/09/2022
+     * TODO: Xử lý format dữ liệu trước khi gửi api, những trường không điền hoặc chỉ có khoảng trắng -> null
+     * @param data : Object đầu vào
+     * !Created by LVKIEN 28/08/2022
      */
-    checkEmptyError() {
-      let result = true;
-      for (const key in this.errorField) {
-        const itemKey = Object.keys(this.errorField[key]);
-        if (this.errorField[key][itemKey] !== "") {
-          result = false;
-          break;
-        }
-      }
-      return result;
-    },
-    // check xem liệu object có trống hay ko
-    checkEmptyObject(data) {
-      let checkEmpty = true;
-      if (data) {
+    formatData(data) {
+      try {
         const dataKeys = Object.keys(data);
         dataKeys.forEach((key) => {
-          if (data[key] !== null && data[key] !== "") {
-            checkEmpty = false;
+          if (data[key] === 0 || (data[key] + "").trim() === "") {
+            data[key] = null;
           }
         });
+      } catch (error) {
+        console.log(error);
       }
-      return checkEmpty;
     },
-    formatData(data) {
-      const dataKeys = Object.keys(data);
-      dataKeys.forEach((key) => {
-        if (data[key] === 0 || data[key] === "") {
-          data[key] = null;
+    async handleGetCustomer() {
+      try {
+        const response = await axiosInstance({
+          method: "put",
+          url: "Customers",
+          params: {
+            pageSize: 1,
+            pageIndex: 0,
+          },
+          data: [
+            {
+              name: "PotentialCode",
+              type: 1,
+              value: this.$refs["potentialCode"].name,
+            },
+          ],
+        })
+          .then((res) => res.data)
+          .catch((error) => error.response.data);
+        if (response.flag) {
+          this.editForm = true;
+          setTimeout(() => {
+            this.customerEdit = response.data.customers[0];
+          }, 100);
         }
-      });
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };

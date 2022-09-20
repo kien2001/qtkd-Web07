@@ -16,12 +16,12 @@
 <script>
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
-import StatusCode from '@/js/StatusCode';
+import StatusCode from '@/config/StatusCode';
 import { ref } from "vue";
 import emitter from "@/js/emitter";
 
 export default {
-    name: "TheDatePicker",
+    name: "BaseDatePicker",
     /**
      * TODO: Khởi tạo format ngày tháng năm, hàm set giá trị và value của date
      * !Created by LVKIEN 10/9/2022

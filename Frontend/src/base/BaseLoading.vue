@@ -27,7 +27,7 @@
 </style>
 <script>
 export default {
-    name:"TheLoading",
+    name:"BaseLoading",
     props:["position"]
 }
 </script>
