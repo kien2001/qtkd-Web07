@@ -12,8 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class Department
     {
+        #region Department
+
         public int DepartmentId { get; set; }    // Id phòng ban
         public string? DepartmentName { get; set; } // Tên phòng ban
+
+        #endregion
 
         public Department(int departmentId, string departmentName)
         {

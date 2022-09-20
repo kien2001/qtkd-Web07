@@ -27,11 +27,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult get()
         {
             Result countryResult = _countryRepository.Get();
-            if (!countryResult.Flag)
-            {
-                return BadRequest(countryResult);
-            }
-            return Ok(countryResult);
+            return StatusCode(countryResult.StatusCode, countryResult);
+
         }
     }
 }

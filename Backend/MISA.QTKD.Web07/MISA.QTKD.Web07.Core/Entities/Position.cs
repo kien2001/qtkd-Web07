@@ -12,8 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class Position
     {
+        #region Position
+
         public int PositionId { get; set; }// Id Vị trí
         public string? PositionName { get; set; }// Tên vị trí
+
+        #endregion
 
         public Position(int positionId, string positionName)
         {

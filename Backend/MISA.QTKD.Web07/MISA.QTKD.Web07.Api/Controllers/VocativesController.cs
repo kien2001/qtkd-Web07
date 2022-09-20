@@ -27,11 +27,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get()
         {
             Result vocativeResult = _vocativeRepository.Get();
-            if (!vocativeResult.Flag)
-            {
-                return BadRequest(vocativeResult);
-            }
-            return Ok(vocativeResult);
+            return StatusCode(vocativeResult.StatusCode, vocativeResult);
+
         }
 
     }

@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
+    /// <summary>
+    /// Class dùng để lấy dữ liệu về table cho Frontend
+    /// </summary>
+    /// Created by LVKIEN 13/09/2022
     public class CustomerTable
     {
+        #region CustomerTable
+
         public Guid CustomerId { get; set; } // Id khách hàng
 
         public string? FullName { get; set; } // Họ và tên
@@ -90,6 +96,9 @@ namespace Entities
 
 
         public string? RevenueName { get; set; } // Tên Doanh số (thuộc Organizaiton)
+
+
+        #endregion
 
         public CustomerTable(Guid customerId, string? fullName, string? companyPhoneNum, string? customerPhoneNum, string? customerEmail, string? companyEmail, string? organizationName, string? description, bool? sharingUse, string? facebook, string? layout, string? owner, int? vocative, string? vocativeName, string? departmentName, string? positionName, string? sourceName, string? addressName, string? cityName, string? districtName, string? wardName, string? typeName, string? domain, string? revenueName)
         {

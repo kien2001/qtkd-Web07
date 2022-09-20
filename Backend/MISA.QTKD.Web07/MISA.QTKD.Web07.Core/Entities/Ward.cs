@@ -12,9 +12,14 @@ namespace Entities
     /// Created by LVKIEN 17/05/2022
     public class Ward
     {
+        #region Ward
+
         public int WardId { get; set; }// Id xã
 
         public string? WardName { get; set; } // Tên xã
+
+
+        #endregion
 
         public Ward(int wardId, string wardName)
         {

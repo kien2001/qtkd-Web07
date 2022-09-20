@@ -27,11 +27,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult get()
         {
             Result sourceResult = _sourceRepository.Get();
-            if (!sourceResult.Flag)
-            {
-                return BadRequest(sourceResult);
-            }
-            return Ok(sourceResult);
+            return StatusCode(sourceResult.StatusCode, sourceResult);
+
         }
     }
 }

@@ -27,11 +27,9 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get()
         {
             Result departmentResult = _departmentRepository.Get();
-            if (departmentResult.Flag == false)
-            {
-                return BadRequest(departmentResult);
-            }
-            return Ok(departmentResult);
+            
+            return StatusCode(departmentResult.StatusCode, departmentResult);
+
         }
     }
 }

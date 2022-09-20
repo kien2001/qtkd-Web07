@@ -12,8 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class City
     {
+        #region CityFields
+
         public int CityId { get; set; } // Id thành phố
         public string? CityName { get; set; } // Tên thành phố
+
+        #endregion
 
         public City(int cityId, string cityName)
         {

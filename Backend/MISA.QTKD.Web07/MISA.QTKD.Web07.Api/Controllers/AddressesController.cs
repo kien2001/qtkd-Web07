@@ -27,11 +27,8 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Get()
         {
             Result addressResult = _addressRepository.Get();
-            if (!addressResult.Flag)
-            {
-                return BadRequest(addressResult);
-            }
-            return Ok(addressResult);
+            return StatusCode(addressResult.StatusCode, addressResult);
+            //return Ok(addressResult);
         }
         /// <summary>
         /// Api thêm 1 bản ghi về bảng Address
@@ -43,11 +40,9 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult Post(Address address)
         {
             Result addressResult = _addressRepository.Insert(address);
-            if (!addressResult.Flag)
-            {
-                return BadRequest(addressResult);
-            }
-            return Ok(addressResult);
+            return StatusCode(addressResult.StatusCode, addressResult);
+
+
         }
 
         /// <summary>
@@ -59,11 +54,9 @@ namespace MISA.QTKD.Web07.Api.Controllers
         public IActionResult UpdateMultiple(UpdatedMultiple<int> updatedMultiple)
         {
             Result addressResult = _addressRepository.UpdateMultiple(updatedMultiple);
-            if (addressResult.Flag == false)
-            {
-                return BadRequest(addressResult);
-            }
-            return Ok(addressResult);
+            return StatusCode(addressResult.StatusCode, addressResult);
+
+
         }
     }
 }

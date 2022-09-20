@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Enums;
 
 namespace Entities
 {
+    /// <summary>
+    /// Dữ liệu của FrontEnd filter gửi lên
+    /// </summary>
+    /// Created by LVKIEN 13/08/2022
     public class FilterObject
     {
-      
+
+        #region FilterObject
 
         /// <summary>
         /// Tên cột 
@@ -18,11 +24,17 @@ namespace Entities
         /// <summary>
         /// Loại lọc
         /// </summary>
-        public int Type { get; set; }
+        public FilterMethod Type { get; set; }
 
+        /// <summary>
+        /// Dữ liệu
+        /// </summary>
         public dynamic? Value { get; set; }
 
-        public FilterObject(string name, int type, dynamic? value)
+        #endregion
+
+
+        public FilterObject(string name, FilterMethod type, dynamic? value)
         {
             Name = name;
             Type = type;

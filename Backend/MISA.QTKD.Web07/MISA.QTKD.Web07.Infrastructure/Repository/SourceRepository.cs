@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using MISA.QTKD.Web07.Core.Entities;
 using MySqlConnector;
 using  Constants;
-
+using Resources.Vi;
 namespace Repository
 {
     public class SourceRepository : ISourceRepository
@@ -37,24 +37,30 @@ namespace Repository
                 if (!sourceArray.Any())
                 {
                     result.Data = new { };
-                    result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                    result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                    result.DevMsg.Add( CodeError.NotValue);
+                    result.UserMsg.Add( MessageError.NotValue);
+                    result.StatusCode = StatusCode.Status404NotFound;
+
                     result.Flag = false;
 
                 }
                 else
                 {
                     result.Data = sourceArray;
-                    result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                    result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                    result.DevMsg.Add( CodeSuccess.GetSuccess);
+                    result.UserMsg.Add( MessageSuccess.GetSuccess);
+                    result.StatusCode = StatusCode.Status200OK;
+
                     result.Flag = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Data = ex.Message;
-                result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                result.DevMsg.Add( CodeError.ProcessError);
+                result.UserMsg.Add( MessageError.ProcessError);
+                result.StatusCode = StatusCode.Status500InternalServerError;
+
                 result.Flag = false;
             }
             return result;

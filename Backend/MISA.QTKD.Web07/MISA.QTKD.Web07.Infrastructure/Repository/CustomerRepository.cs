@@ -16,6 +16,7 @@ using Constants;
 using Enums;
 using System.Collections;
 using System.Reflection;
+using Resources.Vi;
 
 namespace Repository
 {
@@ -60,15 +61,19 @@ namespace Repository
                     if (checkSuccess == false)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.DeletedFail);
-                        result.UserMsg.Add(FailMessage.MessageError.DeleteFail);
+                        result.DevMsg.Add( CodeError.DeletedFail);
+                        result.UserMsg.Add( MessageError.DeleteFail);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
                     }
                     else
                     {
                         result.Data = count;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.DeleteSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.DeleteSuccess);
+                        result.DevMsg.Add( CodeSuccess.DeleteSuccess);
+                        result.UserMsg.Add( MessageSuccess.DeleteSuccess);
+                        result.StatusCode = StatusCode.Status200OK;
+
                         result.Flag = true;
                     }
                     mySqlTransaction.Commit();
@@ -77,15 +82,17 @@ namespace Repository
                 {
 
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                     mySqlTransaction.Rollback();
                 }
             }
 
-             
+
             return result;
         }
         /// <summary>
@@ -149,16 +156,20 @@ namespace Repository
                     if (res == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
-                        result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+                        result.DevMsg.Add( CodeError.UpdateFailed);
+                        result.UserMsg.Add( MessageError.UpdateFail);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
                     }
                     else
                     {
 
                         result.Data = res;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
+                        result.DevMsg.Add( CodeSuccess.UpdateSuccess);
+                        result.UserMsg.Add( MessageSuccess.UpdateSuccess);
+                        result.StatusCode = StatusCode.Status200OK;
+
                         result.Flag = true;
                     }
                     mySqlTransaction.Commit();
@@ -167,8 +178,10 @@ namespace Repository
                 {
 
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                     mySqlTransaction.Rollback();
@@ -231,8 +244,10 @@ namespace Repository
                     if (multipleResults == null)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                        result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                        result.DevMsg.Add( CodeError.NotValue);
+                        result.UserMsg.Add( MessageError.NotValue);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
                     }
                     else
@@ -243,15 +258,19 @@ namespace Repository
                         if (totalCount == 0)
                         {
                             result.Data = new { };
-                            result.DevMsg.Add(FailMessage.CodeError.NotFound);
-                            result.UserMsg.Add(FailMessage.MessageError.NotFound);
+                            result.DevMsg.Add( CodeError.NotFound);
+                            result.UserMsg.Add( MessageError.NotFound);
+                            result.StatusCode = StatusCode.Status404NotFound;
+
                             result.Flag = false;
                         }
                         else
                         {
                             result.Data = new { customers = customerTable, totalCount };
-                            result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                            result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                            result.DevMsg.Add( CodeSuccess.GetSuccess);
+                            result.UserMsg.Add( MessageSuccess.GetSuccess);
+                            result.StatusCode = StatusCode.Status200OK;
+
                             result.Flag = true;
                         }
 
@@ -261,13 +280,15 @@ namespace Repository
                 {
 
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
                 }
             }
 
-            
+
             return result;
         }
 
@@ -327,16 +348,20 @@ namespace Repository
                     if (res == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.InsertFailed);
-                        result.UserMsg.Add(FailMessage.MessageError.InsertFail);
+                        result.DevMsg.Add( CodeError.InsertFailed);
+                        result.UserMsg.Add( MessageError.InsertFail);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
 
                     }
                     else
                     {
                         result.Data = res;
-                        result.DevMsg.Add(SuccessMessage.CodeSuccess.InsertSuccess);
-                        result.UserMsg.Add(SuccessMessage.MessageSuccess.InsertSuccess);
+                        result.DevMsg.Add( CodeSuccess.InsertSuccess);
+                        result.UserMsg.Add( MessageSuccess.InsertSuccess);
+                        result.StatusCode = StatusCode.Status201Created;
+
                         result.Flag = true;
                     }
                     mySqlTransaction.Commit();
@@ -345,15 +370,17 @@ namespace Repository
                 {
 
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                     mySqlTransaction.Rollback();
                 }
             }
 
-               
+
             return result;
         }
 
@@ -411,8 +438,10 @@ namespace Repository
                     if (updateCustomerRes == 0)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
-                        result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+                        result.DevMsg.Add( CodeError.UpdateFailed);
+                        result.UserMsg.Add( MessageError.UpdateFail);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
                     }
                     else
@@ -427,20 +456,24 @@ namespace Repository
                         dynamicParameters.Add("@v_CustomerId", customerId);
                         dynamicParameters.Add("@v_ModifiedAt", DateTime.Now);
 
-                        int updateOrgaPotentialRes = mySqlConnection.QueryFirstOrDefault<int>(sql: updatePotOrgaProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure, transaction:mySqlTransaction);
+                        int updateOrgaPotentialRes = mySqlConnection.QueryFirstOrDefault<int>(sql: updatePotOrgaProc, param: dynamicParameters, commandType: System.Data.CommandType.StoredProcedure, transaction: mySqlTransaction);
 
                         if (updateOrgaPotentialRes == 0)
                         {
                             result.Data = new { };
-                            result.DevMsg.Add(FailMessage.CodeError.UpdateFailed);
-                            result.UserMsg.Add(FailMessage.MessageError.UpdateFail);
+                            result.DevMsg.Add( CodeError.UpdateFailed);
+                            result.UserMsg.Add( MessageError.UpdateFail);
+                            result.StatusCode = StatusCode.Status400BadRequest;
+
                             result.Flag = false;
                         }
                         else
                         {
                             result.Data = updateOrgaPotentialRes;
-                            result.DevMsg.Add(SuccessMessage.CodeSuccess.UpdateSuccess);
-                            result.UserMsg.Add(SuccessMessage.MessageSuccess.UpdateSuccess);
+                            result.DevMsg.Add( CodeSuccess.UpdateSuccess);
+                            result.UserMsg.Add( MessageSuccess.UpdateSuccess);
+                            result.StatusCode = StatusCode.Status200OK;
+
                             result.Flag = true;
                         }
                         mySqlTransaction.Commit();
@@ -450,15 +483,17 @@ namespace Repository
                 catch (Exception ex)
                 {
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                     mySqlTransaction.Rollback();
                 }
             }
 
-             
+
             return result;
         }
 
@@ -506,8 +541,10 @@ namespace Repository
                     if (multipleResults == null)
                     {
                         result.Data = new { };
-                        result.DevMsg.Add(FailMessage.CodeError.NotValue);
-                        result.UserMsg.Add(FailMessage.MessageError.NotValue);
+                        result.DevMsg.Add( CodeError.NotValue);
+                        result.UserMsg.Add( MessageError.NotValue);
+                        result.StatusCode = StatusCode.Status400BadRequest;
+
                         result.Flag = false;
                     }
                     else
@@ -518,15 +555,19 @@ namespace Repository
                         if (totalCount == 0)
                         {
                             result.Data = new { };
-                            result.DevMsg.Add(FailMessage.CodeError.NotFound);
-                            result.UserMsg.Add(FailMessage.MessageError.NotFound);
+                            result.DevMsg.Add( CodeError.NotFound);
+                            result.UserMsg.Add( MessageError.NotFound);
+                            result.StatusCode = StatusCode.Status404NotFound;
+
                             result.Flag = false;
                         }
                         else
                         {
                             result.Data = customerTable;
-                            result.DevMsg.Add(SuccessMessage.CodeSuccess.GetSuccess);
-                            result.UserMsg.Add(SuccessMessage.MessageSuccess.GetSuccess);
+                            result.DevMsg.Add( CodeSuccess.GetSuccess);
+                            result.UserMsg.Add( MessageSuccess.GetSuccess);
+                            result.StatusCode = StatusCode.Status200OK;
+
                             result.Flag = true;
                         }
 
@@ -536,14 +577,16 @@ namespace Repository
                 {
 
                     result.Data = ex.Message;
-                    result.DevMsg.Add(FailMessage.CodeError.ProcessError);
-                    result.UserMsg.Add(FailMessage.MessageError.ProcessError);
+                    result.DevMsg.Add( CodeError.ProcessError);
+                    result.UserMsg.Add( MessageError.ProcessError);
+                    result.StatusCode = StatusCode.Status500InternalServerError;
+
                     result.Flag = false;
 
                 }
             }
 
-              
+
             return result;
         }
 
@@ -586,7 +629,7 @@ namespace Repository
                 return result;
             }
         }
-     
+
 
 
         /// <summary>
@@ -612,27 +655,27 @@ namespace Repository
                         switch (item.Type)
                         {
                             // Là
-                            case 1:
+                            case FilterMethod.Is:
                                 query = $"({item.Name} = '{value}')";
                                 break;
                             // Chứa
-                            case 2:
+                            case FilterMethod.Include:
                                 query = $"({item.Name} LIKE '%{value}%')";
                                 break;
                             // Không là
-                            case 3:
+                            case FilterMethod.NotIs:
                                 query = $"({item.Name} != '{value}')";
                                 break;
                             // Không chứa
-                            case 4:
+                            case FilterMethod.NotInclude:
                                 query = $"({item.Name} NOT LIKE '%{value}%')";
                                 break;
                             // Không Trống
-                            case 5:
+                            case FilterMethod.NotEmpty:
                                 query = $"({item.Name} IS NOT NULL OR {item.Name} != ' ')";
                                 break;
                             // Trống
-                            case 6:
+                            case FilterMethod.Empty:
                                 query = $"({item.Name} IS NULL OR {item.Name} = ' ')";
                                 break;
                             default:
@@ -641,52 +684,72 @@ namespace Repository
                     }
                     else if (JsonValueKind.Array == item.Value.ValueKind)
                     {
-                        var valueList = JsonSerializer.Deserialize<List<string>>(item.Value);
+                        List<string> valueList = JsonSerializer.Deserialize<List<string>>(item.Value);
                         switch (item.Type)
                         {
                             // Là
-                            case 1:
+                            case FilterMethod.Is:
                                 List<string> tempArr = new();
                                 foreach (string itemValue in valueList)
                                 {
-                                    string tempValue = $"({item.Name} = '{itemValue}')";
+                                    string tempValue;
+                                    if (itemValue.Trim() == "0" || itemValue.Trim() == "Không chọn")
+                                    {
+                                        tempValue = $"({item.Name} IS NULL OR {item.Name} = ' ')";
+                                    }
+                                    else
+                                    {
+                                        tempValue = $"({item.Name} = '{itemValue}')";
+                                    }
                                     tempArr.Add(tempValue);
                                 }
                                 query = $"({string.Join(" OR ", tempArr)})";
                                 break;
                             // Chứa
-                            case 2:
+                            case FilterMethod.Include:
                                 query = $"({item.Name} LIKE '%{item.Value}%')";
                                 break;
                             // Không là
-                            case 3:
+                            case FilterMethod.NotIs:
                                 List<string> tempArrOther = new();
                                 foreach (string itemValue in valueList)
                                 {
-                                    string tempValue = $"({item.Name} != '{itemValue}')";
+                                    //string tempValue = $"({item.Name} != '{itemValue}')";
+                                    string tempValue;
+                                    if (itemValue.Trim() == "0" || itemValue.Trim() == "Không chọn")
+                                    {
+                                        tempValue = $"({item.Name} IS NOT NULL OR {item.Name} != ' ')";
+                                    }
+                                    else
+                                    {
+                                        tempValue = $"(NOT {item.Name} <=> '{itemValue}')";
+                                    }
                                     tempArrOther.Add(tempValue);
                                 }
-                                query = $"({string.Join(" OR ", tempArrOther)})";
+                                query = $"({string.Join(" AND ", tempArrOther)})";
                                 break;
                             // Không chứa
-                            case 4:
+                            case FilterMethod.NotInclude:
                                 query = $"({item.Name} NOT LIKE '%{item.Value}%')";
                                 break;
                             // Trống
-                            case 5:
+                            case FilterMethod.NotEmpty:
                                 query = $"({item.Name} IS NULL OR {item.Name} = ' ')";
                                 break;
                             // không trống
-                            case 6:
+                            case FilterMethod.Empty:
                                 query = $"({item.Name} IS NOT NULL OR {item.Name} != ' ')";
                                 break;
                             default:
                                 break;
                         }
                     }
-
+                    
                     andConditions.Add(query);
                 }
+
+                
+
             }
             if (andConditions.Count > 0)
             {

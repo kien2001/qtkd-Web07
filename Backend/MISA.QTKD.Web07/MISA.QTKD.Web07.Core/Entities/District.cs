@@ -12,8 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class District
     {
+        #region District
+
         public int DistrictId { get; set; } // Id Huyện
         public string? DistrictName { get; set; }// TÊn huyện
+
+        #endregion
 
         public District(int districtId, string districtName)
         {

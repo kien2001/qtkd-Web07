@@ -12,8 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class Country
     {
+        #region CountryFields
+
         public int CountryId { get; set; } // Id quốc gia
         public string? CountryName { get; set; } // Tên quốc gia
+
+        #endregion
 
         public Country(int countryId, string countryName)
         {

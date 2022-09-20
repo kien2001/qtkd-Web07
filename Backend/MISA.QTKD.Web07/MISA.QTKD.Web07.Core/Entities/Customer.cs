@@ -13,6 +13,7 @@ namespace Entities
     /// Created By: LVKien (08/11/2022)
     public class Customer
     {
+        #region CustomerField
 
         public Guid CustomerId { get; set; } // Id khách hàng
         
@@ -59,16 +60,19 @@ namespace Entities
 
         public bool? DisableMail { get; set; }// Không gửi mai(0- có thể gửi mail, 1- không thể gửi mail)
 
-        public int? Gender { get; set; }// GIới tính(1- nam, 2- nữ, _ - khác)
 
-        public string? GenderName { 
+        public Enums.Gender? Gender { get; set; }// GIới tính(1- nam, 2- nữ, _ - khác)
+
+        public string? GenderName
+        {
             get
             {
                 return Gender switch
                 {
-                    1 => "Nam",
-                    2 => "Nữ",
-                    _ => "Khác",
+                    Enums.Gender.Male => "Nam",
+                    Enums.Gender.Female => "Nữ",
+                    Enums.Gender.Other => "Khác",
+                    _ => ""
                 };
             }
             set { }
@@ -144,7 +148,15 @@ namespace Entities
 
         public string? ModifiedBy { get; set; } // Người sửa đổi gần nhất
 
-        public Customer(Guid customerId, Guid? potentialId, string? fullName,  string? potentialName, string? lastMiddleName, string firstName, string? companyPhoneNum, string? customerPhoneNum, string? otherPhoneNum, string? customerEmail, string? companyEmail, string? taxCode, string? zalo, int? addressId, int? organizationId, string? organizationName, string? description, bool? sharingUse, bool? disableCall, bool? disableMail, int? gender, string? genderName, DateTime? dateOfBirth, string? facebook, string? layout, string? owner, int? vocative, string? vocativeName, string? departmentName, int? departmentId, int? positionId, string? positionName, int? sourceId, string? sourceName, string? addressName, string? cityName, string? districtName, string? wardName, string? typeName, string? domain, string? revenueName, DateTime? createdAt, string? createdBy, DateTime? modifiedAt, string? modifiedBy)
+        #endregion
+
+        
+
+        public Customer()
+        {
+        }
+
+        public Customer(Guid customerId, Guid? potentialId, string? potentialName, string? lastMiddleName, string firstName, string? fullName, string? companyPhoneNum, string? customerPhoneNum, string? otherPhoneNum, string? customerEmail, string? companyEmail, string? taxCode, string? zalo, int? addressId, int? organizationId, string? organizationName, string? description, bool? sharingUse, bool? disableCall, bool? disableMail, Enums.Gender? gender, string? genderName, DateTime? dateOfBirth, string? facebook, string? layout, string? owner, int? vocative, string? vocativeName, string? departmentName, int? departmentId, int? positionId, string? positionName, int? sourceId, string? sourceName, string? addressName, string? cityName, string? districtName, string? wardName, string? typeName, string? domain, string? revenueName, DateTime? createdAt, string? createdBy, DateTime? modifiedAt, string? modifiedBy)
         {
             CustomerId = customerId;
             PotentialId = potentialId;
@@ -192,11 +204,5 @@ namespace Entities
             ModifiedAt = modifiedAt;
             ModifiedBy = modifiedBy;
         }
-
-        public Customer()
-        {
-        }
-
-
     }
 }

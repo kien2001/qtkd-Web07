@@ -12,9 +12,12 @@ namespace MISA.QTKD.Web07.Core.Entities
     /// Created by LVKIEN 17/05/2022
     public class Source
     {
+        #region Source
 
         public int SourceId { get; set; } // Id nguồn gốc
         public string? SourceName { get; set; } // Tên nguồn gốc
+
+        #endregion
 
         public Source(int sourceId, string sourceName)
         {
