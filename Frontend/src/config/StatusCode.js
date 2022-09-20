@@ -33,7 +33,7 @@ const StatusCode = {
         NotValidEmail: "Email không hợp lệ",
         NotValidPhone: "Số điện thoại không hợp lệ",
         DuplicateTaxCode: "Mã số thuế đã bị trùng. Vui lòng đổi mã khác!",
-        DuplicatePotentialCode: "Mã tiềm năng bị trùng",
+        DuplicatePotentialCode: "Giá trị của Mã tiềm năng bị trùng",
         DuplicateBankAccount: "Tài khoản này đã có người sử dụng. Vui lòng đổi tài khoản khác!",
         NotExists: "không được bỏ trống!",
         NotFound: "Bản ghi đã chọn không tồn tại!",
@@ -44,7 +44,10 @@ const StatusCode = {
         DeleteFail: "Xóa bản ghi thất bại.",
         UpdateFail: "Cập nhật thông tin thất bại.",
         ExportExcelError: "Xuất khẩu excel thất bại.",
-        NotValidDateError : "Ngày không được lớn hơn hiện tại."
+        NotValidDateError : "Ngày không được lớn hơn hiện tại.",
+        NotChooseCountryError: "Bạn chưa chọn quốc gia",
+        NotChooseCityError: "Bạn chưa chọn tỉnh/thành phố",
+        NotChooseDistrictError: "Bạn chưa chọn quận/huyện",
     },
     MessageSuccess:
     {

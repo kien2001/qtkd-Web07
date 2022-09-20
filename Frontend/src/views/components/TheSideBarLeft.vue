@@ -20,9 +20,9 @@ div<template>
         >
           <div class="icon-item icon-checkbox icon icon-small"></div>
           <div class="item-content">{{ option.name }}</div>
-          <TheDropDown
+          <BaseDropDown
             @selected="getSelectedType"
-            @mousedown="showOption1"
+            @click="showOption1"
             :showInput="false"
             :name-value="option.id"
             placeholder="Không chọn"
@@ -30,9 +30,9 @@ div<template>
             v-if="option.type === 1"
             :fetchDataWhenClick="false"
           />
-          <TheDropDown
+          <BaseDropDown
             @selected="getSelectedType"
-            @mousedown="showOption2"
+            @click="showOption2"
             :showInput="false"
             :name-value="option.id"
             placeholder="Không chọn"
@@ -40,8 +40,8 @@ div<template>
             v-else
             :fetchDataWhenClick="false"
           />
-          <TheInputForm id="input" ref="input" />
-          <TheComboBox
+          <BaseInputForm id="input" ref="input" />
+          <BaseComboBox
             :options="
               async () => {
                 return await this.getDataComboBox(option.url);
@@ -54,13 +54,13 @@ div<template>
     </div>
     <Transition name="fade" mode="out-in">
       <div class="sidebar-left-footer" v-if="showButton">
-        <TheButton
+        <BaseButton
           name="Bỏ lọc"
           color="#fff"
           colorHover="#D0D8FB"
           @clickBtn="removeAllFilters"
         />
-        <TheButton
+        <BaseButton
           name="Áp dụng"
           color="#4262F0"
           colorHover="#2B4EEE"
@@ -76,13 +76,9 @@ div<template>
 </template>
 <script>
 import $ from "jquery";
-import handleClickFilterItem from "../js/checkbox";
-import { handleToggleSideBar } from "../js/toggleSideBar";
-import {
-  fieldMappingOptions,
-  optionType1,
-  optionType2,
-} from "../js/config";
+import handleClickFilterItem from "@/js/checkbox";
+import { handleToggleSideBar } from "@/js/toggleSideBar";
+import { fieldMappingOptions, optionType1, optionType2 } from "../../js/config";
 // import InputForm from "../components/InputForm.vue";
 import emitter from "@/js/emitter";
 import axiosInstance from "@/js/axios";
@@ -439,11 +435,11 @@ export default {
         { id: 1, name: "Là" },
         { id: 3, name: "Không là" },
       ];
-      
+
       this.$refs["option1"].forEach((option1) => {
         if ($(option1.$el).attr("name-value") !== "Vocative") {
           option1.setOptions(this.option1);
-        }else{
+        } else {
           option1.setOptions(optionsVocative);
         }
       });
@@ -478,6 +474,9 @@ export default {
           this.$store.commit("setListFilter", []);
           this.isFiltered = false;
         }
+        $(this.$refs.sidebarLeft)
+          .find("[current-active]")
+          .removeAttr("current-active");
       } catch (error) {
         console.log(error);
       }
@@ -543,7 +542,7 @@ export default {
               })
             );
           }
-          result.unshift({value: "Không chọn", label:"Không chọn", id: 0})
+          result.unshift({ value: "Không chọn", label: "Không chọn", id: 0 });
         } else {
           this.$store.commit("setState", "fail");
           this.$store.commit("setMessage", response.userMsg);
@@ -636,7 +635,6 @@ export default {
 .filter-option-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .filter-option-item {
@@ -645,6 +643,8 @@ export default {
   align-items: center;
   flex-wrap: wrap;
   padding: 6px 8px 6px 10px;
+  transition: background-color 0.2s ease;
+  margin-bottom: 6px;
 }
 .filter-option-item[current-active]{
   background-color: #F0F2F4;
@@ -680,6 +680,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  z-index: 100;
 }
 
 .toggle {
@@ -706,17 +707,17 @@ export default {
   height: 100%;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url("../assets/img/toggle-left.svg");
+  background-image: url("@/assets/img/toggle-left.svg");
 }
 
 .btn-toggle[toggle] {
   transform: rotate(180deg);
 }
-.icon-small{
-  width:16px;
-  height:16px;
+.icon-small {
+  width: 16px;
+  height: 16px;
 }
 .icon-search {
-    background-image: url("../assets/img/search1.svg");
+  background-image: url("@/assets/img/search1.svg");
 }
 </style>

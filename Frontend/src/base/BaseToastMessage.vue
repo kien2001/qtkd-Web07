@@ -7,7 +7,7 @@
 </template>
 <script>
 export default {
-    name: "TheToastMessage",
+    name: "BaseToastMessage",
     data(){
         return{
             animateToast: null,

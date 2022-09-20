@@ -8,7 +8,7 @@
 <script>
 import $ from 'jquery'
 export default {
-  name: 'TheTooltip',
+  name: 'BaseTooltip',
   props: {
     tooltipText: {
       type: String,

@@ -196,12 +196,13 @@ export default {
 .header {
   display: flex;
   flex-direction: column;
-  --imgUrl: url("../assets/img/icon_toggle.svg");
+  --imgUrl: url("../../assets/img/icon_toggle.svg");
 }
 
 /* =======Header-logo ========== */
 .header-logo {
   padding: 5px;
+  padding-left: 10px;
   flex-basis: 45px;
   display: flex;
   justify-content: space-between;
@@ -218,14 +219,14 @@ export default {
   align-self: center;
   width: 24px;
   height: 24px;
-  background-image: url("../assets/img/icon_toggle.svg");
+  background-image: url("../../assets/img/icon_toggle.svg");
   background-repeat: no-repeat;
   cursor: pointer;
 }
 
 .header-icon-left .icon-logo {
   align-self: center;
-  background-image: url("../assets/img/Logo_Ban_hang.svg");
+  background-image: url("../../assets/img/Logo_Ban_hang.svg");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -289,7 +290,7 @@ export default {
 }
 
 .icon-search {
-    background-image: url("../assets/img/search1.svg");
+    background-image: url("../../assets/img/search1.svg");
 }
 
 .input-icon {
@@ -305,7 +306,7 @@ export default {
   display: flex;
   align-items: center;
   flex-basis: 31px;
-  padding-left: 7px;
+  padding-left: 10px;
   box-shadow: 0px 4px 8px -4px rgba(31, 34, 41, 0.16);
 }
 
@@ -323,27 +324,29 @@ export default {
   height: 100%;
   align-items: center;
 }
-
-.header-menu a:not(.router-link-active.router-link-exact-active) .header-menu-item:hover{
-  border-radius: 4px;
-  background-color: #d3d7de;
+.header-menu-item::before
+{
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  height: 1.5px;
+  width: 100%;
+  transform: scaleX(0);
+  background-color: #5a76f2;
+  transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.router-link-active.router-link-exact-active .header-menu-item{
-  border-bottom: 2px solid #5a76f2;
+.header-menu a:not(.router-link-active.router-link-exact-active) .header-menu-item:hover::before
+{
+  transform: scaleX(1);
+}
+
+.router-link-active.router-link-exact-active .header-menu-item::before{
+  transform: scaleX(1);
 }
 
 .router-link-active.router-link-exact-active .header-menu-item > .item-content{
-    color: #4262f0 !important;
-}
-
-
-/* .header-menu-item.active:not(.header-menu > .header-menu-item:last-child) {
-  border-bottom: 2px solid #5a76f2;
-} */
-
-.header-menu-item.active > .item-content {
-  color: #4262f0 !important;
+    color: #2B4EEE !important;
 }
 
 .header-menu > .header-menu-item:last-child {

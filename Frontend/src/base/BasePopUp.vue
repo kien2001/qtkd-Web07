@@ -9,8 +9,8 @@
                 {{ text }}
             </div>
             <div class="pop-up__footer">
-                <TheButton name="Huỷ bỏ" border="#D3D7DE" color="#fff" @clickBtn="closePopUp" colorHover="#E2E4E9" />
-                <TheButton name="Đồng ý" :color="colorBtn" :colorHover="colorHoverBtn" colorText="#FFFFFF"
+                <BaseButton name="Huỷ bỏ" border="#D3D7DE" color="#fff" @clickBtn="closePopUp" colorHover="#E2E4E9" />
+                <BaseButton name="Đồng ý" :color="colorBtn" :colorHover="colorHoverBtn" colorText="#FFFFFF"
                     @click="handleClick" />
             </div>
         </div>
@@ -82,7 +82,7 @@
 </style>
 <script>
 export default {
-    name: "ThePopUp",
+    name: "BasePopUp",
     data() {
         return {
             isShow: false

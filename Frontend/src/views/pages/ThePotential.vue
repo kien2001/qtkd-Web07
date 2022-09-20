@@ -46,21 +46,40 @@
             @mouseleave="removeEditWhenHover"
           >
             <div class="td" @click="openEditForm"></div>
-            <div class="td icon icon-checkbox"></div>
+            <div
+              class="td icon icon-checkbox"
+              @click.stop.prevent="checkInput"
+            ></div>
             <div class="td"></div>
             <div class="td">
               {{ customer.vocativeName !== "" ? customer.vocativeName : "-" }}
             </div>
-            <div class="td">{{ customer.fullName || "-" }}</div>
+            <div class="td text-blue">{{ customer.fullName || "-" }}</div>
             <div class="td">{{ customer.positionName || "-" }}</div>
-            <div class="td call-background">
+            <div
+              class="td"
+              :class="customer.customerPhoneNum ? 'text-blue call-background' : ''"
+            >
               {{ customer.customerPhoneNum || "-" }}
             </div>
-            <div class="td call-background">
+            <div
+              class="td"
+              :class="customer.companyPhoneNum ? 'text-blue call-background' : ''"
+            >
               {{ customer.companyPhoneNum || "-" }}
             </div>
-            <div class="td">{{ customer.companyEmail || "-" }}</div>
-            <div class="td">{{ customer.customerEmail || "-" }}</div>
+            <div
+              class="td"
+              :class="customer.companyEmail ? 'text-blue' : ''"
+            >
+              {{ customer.companyEmail || "-" }}
+            </div>
+            <div
+              class="td"
+              :class="customer.customerEmail ? 'text-blue' : ''"
+            >
+              {{ customer.customerEmail || "-" }}
+            </div>
             <div class="td">{{ customer.organizationName || "-" }}</div>
             <div class="td">{{ customer.addressName || "-" }}</div>
             <div class="td">{{ customer.cityName || "-" }}</div>
@@ -90,7 +109,7 @@
         </div>
         <div v-if="showNoValue" class="not-value">Không có dữ liệu</div>
       </div>
-      <TheLoading v-if="isLoading" position="absolute" />
+      <BaseLoading v-if="isLoading" position="absolute" />
     </table>
     <div class="table-paging paging">
       <div class="paging-left">
@@ -98,12 +117,12 @@
       </div>
       <div class="paging-right">
         <div class="paging-center-left">
-          <TheDropDown
+          <BaseDropDown
             @selected="getNumPerPage"
             id="limit-num"
             :showInput="false"
             placeholder="10 Bản ghi trên trang"
-            @mousedown="showLimitNum"
+            @click="showLimitNum"
             ref="limit-num"
             color="#1f2229"
             :fetchDataWhenClick="false"
@@ -136,10 +155,10 @@
       </div>
     </div>
     <Transition name="fade">
-      <TheFormSubmit v-if="showForm" />
+      <BaseFormSubmit v-if="showForm" />
     </Transition>
     <Transition duration="550" name="nested">
-      <TheUpdateMultipleForm v-if="getEditMultipleForm" />
+      <BaseUpdateMultipleForm v-if="getEditMultipleForm" />
     </Transition>
   </div>
 </template>
@@ -241,17 +260,6 @@ export default {
   created() {
     emitter.on("deselectAll", this.removeCheckAll);
   },
-  /**
-   * Thêm sự kiện cho checkbox
-   * Created by LVKIEN 30/08/2022
-   */
-  updated() {
-    const checkboxItems = $(".td.icon.icon-checkbox").toArray();
-    checkboxItems.forEach((item) => {
-      $(item).unbind();
-      $(item).click(this.checkInput);
-    });
-  },
   mounted() {
     this.$refs["limit-num"].selected = {
       id: 10,
@@ -269,7 +277,6 @@ export default {
      */
     async getListFilter(newValue) {
       this.pageCurrent = 1;
-      // this.listToast = [...this.listToast, {message: "failt", state: "fail"}]
       await this.getDataPaging(this.getKeyWordSearch, newValue);
     },
     /**
@@ -290,22 +297,10 @@ export default {
       if (newValue) {
         // reset lại biến isDeleted
         this.$store.commit("setIsDeleted", false);
-        // bỏ hết các ô checked
-        const checkAllBtn = this.$refs["check-all"];
-        $(checkAllBtn).removeAttr("all-checked");
-        $(checkAllBtn).removeClass("icon-all-checked");
-        $(checkAllBtn).addClass("icon-checkbox");
-        const checkboxItems = $(this.$refs.table).find("[checked]").toArray();
-        checkboxItems.forEach((item) => {
-          $(item).removeAttr("checked");
-          $(item).children(".td.icon").removeClass("icon-checkbox-checked");
-          $(item).children(".td.icon").addClass("icon-checkbox");
-          $(item).css("background-color", "#fff");
-        });
+        this.removeCheckAll();
         // reset mảng listchecked
         this.listChecked = [];
         // gọi lại api để lấy dữ liệu customer mới nhất
-        this.pageCurrent = 1;
         await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
       }
     },
@@ -318,8 +313,10 @@ export default {
       if (newValue) {
         // reset lại biến isUpdated
         this.$store.commit("setIsUpdated", false);
+        this.pageCurrent = 1;
         // gọi lại api để lấy dữ liệu customer mới nhất
         await this.getDataPaging(this.getKeyWordSearch, this.getListFilter);
+        // khi check-all được check
       }
     },
     /**
@@ -367,6 +364,12 @@ export default {
     },
   },
   methods: {
+    checkNotValueField(value) {
+      if (value) {
+        return true;
+      }
+      return false;
+    },
     /**
      * Gọi API phân trang
      * @param {*} keySearch
@@ -487,12 +490,8 @@ export default {
           $(item).removeAttr("checked");
           $(item).children(".td.icon").removeClass("icon-checkbox-checked");
           $(item).children(".td.icon").addClass("icon-checkbox");
-          $(item).css("background-color", "#fff");
         });
-        const listChecked = $(this.$refs.table).find("[checked]").toArray();
-        if (listChecked.length <= 0) {
-          this.listChecked = [];
-        }
+        this.listChecked = [];
       }
     },
     /**
@@ -599,40 +598,38 @@ export default {
      * !Created by LVKIEN 10/09/2022
      */
     returnFirstPage() {
-      this.pageCurrent = 1;
-      // if (this.pageCurrent <= this.numberPerPage) {
-      //     this.pageCurrent = 1;
-      // }
-      // else {
-      //     this.pageCurrent = this.pageCurrent - this.numberPerPage;
-      // }
+      if (this.pageCurrent !== 1) {
+        this.pageCurrent = 1;
+        this.removeCheckAll();
+      }
     },
     /**
      * TODO: Xử lý khi click vào button trở về trang trước
      * !Created by LVKIEN 10/09/2022
      */
     returnPrevPage() {
-      if (this.pageCurrent * this.numberPerPage <= this.numberPerPage) {
-        this.pageCurrent = 1;
-      } else {
-        this.pageCurrent = this.pageCurrent - 1;
+      if (this.pageCurrent !== 1) {
+        if (this.pageCurrent * this.numberPerPage <= this.numberPerPage) {
+          this.pageCurrent = 1;
+        } else {
+          this.pageCurrent = this.pageCurrent - 1;
+        }
+        this.removeCheckAll();
       }
-      // if (this.pageCurrent > 1) {
-      //     this.pageCurrent = this.pageCurrent - 1;
-      // }
-      // else {
-      //     this.pageCurrent = 1;
-      // }
     },
     /**
      * TODO: Xử lý khi click vào button sang trang kế tiếp
      * !Created by LVKIEN 10/09/2022
      */
     toNextPage() {
-      if (this.pageCurrent * this.numberPerPage < this.totalCount) {
-        this.pageCurrent = this.pageCurrent + 1;
-      } else {
-        this.pageCurrent = this.pageCurrent;
+      const maxPage = Math.ceil(this.totalCount / this.numberPerPage);
+      if (this.pageCurrent !== maxPage) {
+        if (this.pageCurrent * this.numberPerPage <= this.totalCount) {
+          this.pageCurrent = this.pageCurrent + 1;
+        } else {
+          this.pageCurrent = this.pageCurrent;
+        }
+        this.removeCheckAll();
       }
     },
     /**
@@ -640,7 +637,11 @@ export default {
      * !Created by LVKIEN 10/09/2022
      */
     toLastPage() {
-      this.pageCurrent = Math.ceil(this.totalCount / this.numberPerPage);
+      const maxPage = Math.ceil(this.totalCount / this.numberPerPage);
+      if (this.pageCurrent !== maxPage) {
+        this.pageCurrent = maxPage;
+        this.removeCheckAll();
+      }
     },
   },
 };
@@ -703,13 +704,7 @@ div.paging-center-left .dropdown .dropdown-container {
   background-color: #fff;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
+.text-blue {
+  color: #2b4eee;
 }
 </style>

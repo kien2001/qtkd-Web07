@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="box-content">
-        <TheDropDown
+        <BaseDropDown
           @selected="getSelectedUpdateFilter"
           id="field"
           :showInput="true"
@@ -18,15 +18,15 @@
           ref="listField"
         />
         <Transition name="slide-up" mode="out-in">
-          <TheInputForm
+          <BaseInputForm
             :isDisabled="isDisabled"
             id="input"
             ref="input"
             :isTel="isTel"
             :isEmail="isEmail"
-            v-if="typeUpdateData === 0"
+            v-if="updateDataType === 0"
           />
-          <TheDropDown
+          <BaseDropDown
             @selected="getUpdatedOption"
             :showInput="true"
             placeholder="-Không chọn-"
@@ -34,9 +34,9 @@
             :fetchDataWhenClick="true"
             :name="typeDropdown"
             ref="dropdown"
-            v-else-if="typeUpdateData === 1"
+            v-else-if="updateDataType === 1"
           />
-          <TheComboBox
+          <BaseComboBox
             :options="
               async () => {
                 return await this.getDataComboBox(this.prefixDomainName);
@@ -48,42 +48,33 @@
         </Transition>
       </div>
       <div class="box-footer">
-        <TheButton
+        <BaseButton
           name="Huỷ bỏ"
           color="#fff"
           @clickBtn="closeUpdateMultipleForm"
           colorHover="#D0D8FB"
         />
-        <TheButton
+        <BaseButton
           name="Cập nhật"
           color="#4262F0"
           colorHover="#2B4EEE"
           colorText="#FFFFFF"
           :disabled="isDisabled"
-          @clickBtn="updateMultiple"
+          @clickBtn="sendRequestUpdateMultiple"
           ref="update-btn"
         />
       </div>
     </div>
-     <ThePopUp
-    text="Bạn có chắc chắn muốn sửa các tiềm năng này không?"
-    colorBtn="#31B491"
-    colorHoverBtn="#2EA888"
-    ref="showConfirm"
-    @handlePopUp="sendRequestUpdateMultiple"
-  />
   </div>
- 
 </template>
 
 <style scoped>
-  
 .nested-enter-active .box-main,
-.nested-leave-active .box-main { 
+.nested-leave-active .box-main {
   transition: all 0.3s ease-in-out;
 }
 .nested-enter-active .box-main {
-	transition-delay: 0.25s;
+  transition-delay: 0.25s;
 }
 
 .nested-enter-from .box-main,
@@ -91,7 +82,6 @@
   transform: translateY(-600px);
   opacity: 0.001;
 }
-
 
 .slide-up-enter-active,
 .slide-up-leave-active {
@@ -133,8 +123,6 @@
   flex-direction: column;
   justify-content: space-between;
   border-radius: 4px;
-  /* transition: all 0.5s ease; */
-  /* transform: translateY(-300px); */
 }
 
 .box-header {
@@ -198,10 +186,12 @@
 <script>
 import $ from "jquery";
 import axiosInstance from "@/js/axios";
+import setMaxLengthInput from "../config/maxLength";
+import typeUpdateData from "@/config/typeUpdateData";
 import { fieldOptions, fieldDropdownOptions } from "../js/config";
 import emitter from "@/js/emitter";
 export default {
-  name: "TheUpdateMultipleForm",
+  name: "BaseUpdateMultipleForm",
   data() {
     return {
       message: "",
@@ -209,14 +199,18 @@ export default {
       selectedUpdateFilter: {},
       selectedUpdateOption: {},
       isDisabled: true,
-      typeUpdateData: 0, // typeUpdateData = 0 =>Input, =1 => Dropdown, =2 => ComboBox
+      updateDataType: typeUpdateData.input, // typeUpdateData = 0 =>Input, =1 => Dropdown, =2 => ComboBox
       typeDropdown: "",
       prefixDomainName: "Organizations/Domains",
       isTel: null,
-      isEmail: null
+      isEmail: null,
     };
   },
   methods: {
+    /**
+     * TODO: close form update multiple
+     * !Created by LVKIEN 20/09/2022
+     */
     closeUpdateMultipleForm() {
       this.$store.commit("setEditMultipleRow", false);
     },
@@ -231,17 +225,8 @@ export default {
       }
     },
     /**
-     * Click vào button Update
-     * Created by LVKIEN 30/08/2022
-     */
-    updateMultiple() {
-      if (!$(this.$refs["update-btn"].$el).children().hasClass("disabled")) {
-        this.$refs.showConfirm.isShow = true;
-      }
-    },
-    /**
-     * Gọi api để update nhiều bản ghi
-     * Created by LVKIEn 29/08/2022
+     * TODO: Gọi api để update nhiều bản ghi
+     * !Created by LVKIEn 29/08/2022
      */
     async sendRequestUpdateMultiple() {
       const keyObject = this.$refs.dropdown?.selected
@@ -249,13 +234,14 @@ export default {
         : null;
       try {
         if (
-          (!$(this.$refs.input.$el).find("input").hasClass("error") &&
-          this.$refs.input?.name) ||
+          (this.$refs.input &&
+            !$(this.$refs.input.$el).find("input").hasClass("error") &&
+            this.$refs.input?.name) ||
           this.$refs.domainNames?.value ||
-          keyObject?.length > 0 
+          keyObject?.length > 0
         ) {
           let resultUpdateObj = null;
-          if (this.typeUpdateData === 0) {
+          if (this.updateDataType === typeUpdateData.input) {
             const inputValue = $(this.$refs.container).find("#input").val();
             switch (this.selectedUpdateFilter?.name) {
               case "Họ và tên":
@@ -307,7 +293,7 @@ export default {
               default:
                 break;
             }
-          } else if (this.typeUpdateData === 1) {
+          } else if (this.updateDataType === typeUpdateData.dropdown) {
             switch (this.selectedUpdateFilter?.name) {
               case "Xưng hô":
                 resultUpdateObj = {
@@ -381,7 +367,6 @@ export default {
                 Object.keys(resultUpdateObj[nameTable])[0]
               ].toString(),
           };
-          console.log(dataUpdate);
           // xử lý lấy tên bảng
           const capitalizeTable = this.capitalizeFirstLetter(nameTable);
           console.log(capitalizeTable);
@@ -397,7 +382,6 @@ export default {
             this.$store.commit("setState", "success");
             this.$store.commit("setMessage", "Thành công");
             emitter.emit("showToast");
-
             this.$store.commit("setIsUpdated", true);
           } else {
             this.$store.commit("setState", "fail");
@@ -410,27 +394,29 @@ export default {
           emitter.emit("showToast");
         }
       } catch (error) {
-        this.$store.commit("setState", "fail");
-        this.$store.commit("setMessage", error);
-        emitter.emit("showToast");
+        console.log(error);
       }
     },
     /**
-     * lấy về dữ liệu cho Combobox
-     * Created by LVKIEn 29/08/2022
+     * TODO: lấy về dữ liệu cho Combobox
+     * !Created by LVKIEn 29/08/2022
      */
     async getDataComboBox(prefix) {
-      let result = null;
-      const response = await axiosInstance
-        .get(prefix)
-        .then((res) => res.data)
-        .catch((error) => error.response.data);
-      if (response.flag) {
-        result = this.formatDataComboBox(response.data);
-      } else {
-        console.log(response.userMsg);
+      try {
+        let result = null;
+        const response = await axiosInstance
+          .get(prefix)
+          .then((res) => res.data)
+          .catch((error) => error.response.data);
+        if (response.flag) {
+          result = this.formatDataComboBox(response.data);
+        } else {
+          console.log(response.userMsg);
+        }
+        return result;
+      } catch (error) {
+        console.log(error);
       }
-      return result;
     },
     /**
      * xử lý dữ liệu theo format của combobox
@@ -474,23 +460,27 @@ export default {
      * Created by LVKIEn 30/08/2022
      */
     handleGetName(name) {
-      const nameArr = name.split(" ");
-      if (nameArr.length === 1) {
-        return { FirstName: nameArr[0] };
-      } else if (nameArr.length === 2) {
-        return {
-          LastMiddleName: nameArr[0],
-          FirstName: nameArr[1],
-        };
-      } else {
-        let lastMiddleName = "";
-        for (let i = 0; i < nameArr.length - 1; i++) {
-          lastMiddleName += nameArr[i] + " ";
+      try {
+        const nameArr = name.split(" ");
+        if (nameArr.length === 1) {
+          return { FirstName: nameArr[0] };
+        } else if (nameArr.length === 2) {
+          return {
+            LastMiddleName: nameArr[0],
+            FirstName: nameArr[1],
+          };
+        } else {
+          let lastMiddleName = "";
+          for (let i = 0; i < nameArr.length - 1; i++) {
+            lastMiddleName += nameArr[i] + " ";
+          }
+          return {
+            LastMiddleName: lastMiddleName.trim(),
+            FirstName: nameArr[nameArr.length - 1],
+          };
         }
-        return {
-          LastMiddleName: lastMiddleName.trim(),
-          FirstName: nameArr[nameArr.length - 1],
-        };
+      } catch (error) {
+        console.log(error);
       }
     },
     /**
@@ -502,16 +492,27 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
   },
+  /**
+   * TODO: Nạp dữ liệu cho dropdown các trường có thể update
+   * !Created by LVKIEN 20/09/2022
+   */
   mounted() {
-    fieldOptions.sort((a, b) => a.localeCompare(b));
-    let count = 0;
-    const options = fieldOptions.map((option) => {
-      count++;
-      return { id: count, name: option };
-    });
-    this.$refs.listField.setOptions(options);
+    try {
+      fieldOptions.sort((a, b) => a.localeCompare(b));
+      let count = 0;
+      const options = fieldOptions.map((option) => {
+        count++;
+        return { id: count, name: option };
+      });
+      this.$refs.listField.setOptions(options);
+    } catch (error) {
+      console.log(error);
+    }
   },
   computed: {
+    getListIdChecked() {
+      return this.$store.state.listIdChecked;
+    },
     /**
      * Lấy về 1 object chứa các mảng id của customer, address, organization để update
      * Created by LVKien 30/08/2022
@@ -541,13 +542,12 @@ export default {
      * @param {*} oldValue
      * Created by LVKIEn 30/08/2022
      */
-    selectedUpdateFilter(newValue, oldValue) {
+    selectedUpdateFilter(newValue) {
       if (newValue) {
-        console.log(newValue);
         this.isDisabled = false;
         if (newValue.name) {
           if (fieldDropdownOptions.includes(newValue.name)) {
-            this.typeUpdateData = 1;
+            this.updateDataType = typeUpdateData.dropdown;
             switch (newValue.name) {
               case "Xưng hô":
                 this.typeDropdown = "Vocatives";
@@ -577,16 +577,15 @@ export default {
                 break;
             }
           } else if (newValue.name === "Lĩnh vực") {
-            this.typeUpdateData = 2;
+            this.updateDataType = typeUpdateData.combobox;
           } else {
-            this.typeUpdateData = 0;
-            if(newValue.name.includes("ĐT")){
-              this.isTel = true
-              this.isEmail = false
-            }
-            else if(newValue.name.includes("Email")){
-              this.isEmail = true
-              this.isTel = false
+            this.updateDataType = typeUpdateData.input;
+            if (newValue.name.includes("ĐT")) {
+              this.isTel = true;
+              this.isEmail = false;
+            } else if (newValue.name.includes("Email")) {
+              this.isEmail = true;
+              this.isTel = false;
             }
           }
         }

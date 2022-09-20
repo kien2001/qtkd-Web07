@@ -86,11 +86,11 @@
 }
 </style>
 <script>
-import StatusCode from "../js/StatusCode";
+import StatusCode from "@/config/StatusCode";
 import { validateEmail, validatePhoneNumber } from "../js/handleValidate";
 import $ from "jquery";
 export default {
-  name: "TheInputForm",
+  name: "BaseInputForm",
   data() {
     return {
       name: "",
@@ -201,10 +201,14 @@ export default {
   },
   watch: {
     name(newValue) {
-      if (newValue.length === 0) {
-        this.isClear = false;
-      } else {
-        this.isClear = true;
+      if(newValue){
+        if (newValue.length === 0) {
+          this.isClear = false;
+        } else {
+          this.isClear = true;
+        }
+      }else{
+          this.isClear = false;
       }
     },
   },

@@ -1,14 +1,10 @@
 <template>
   <div class="main">
-    <FunctionTool />
-    <SideBarLeft v-if="this.$route.name === 'Potential'" />
-    <MainContent />
-    <SideBarRight v-if="this.$route.name === 'Potential'" />
-    <TheToastMessage
-      :message="getMessage"
-      :state="getState"
-      ref="toast"
-    />
+    <TheFunctionTool />
+    <TheSideBarLeft v-if="this.$route.name === 'Potential'" />
+    <TheMainContent />
+    <TheSideBarRight v-if="this.$route.name === 'Potential'" />
+    <BaseToastMessage :message="getMessage" :state="getState" ref="toast" />
   </div>
 </template>
 <style scoped>
@@ -37,14 +33,19 @@
 }
 </style>
 <script>
-import SideBarLeft from "@/views/TheSideBarLeft.vue";
-import FunctionTool from "@/views/TheFunctionTool.vue";
-import MainContent from "@/views/TheMainContent.vue";
-import SideBarRight from "@/views/TheSideBarRight.vue";
+import TheSideBarLeft from "@/views/components/TheSideBarLeft.vue";
+import TheSideBarRight from "@/views/components/TheSideBarRight.vue";
+import TheFunctionTool from "@/views/components/TheFunctionTool.vue";
+import TheMainContent from "@/views/components/TheMainContent.vue";
 import emitter from "@/js/emitter";
 export default {
   name: "MainComp",
-  components: { SideBarLeft, SideBarRight, FunctionTool, MainContent },
+  components: {
+    TheSideBarLeft,
+    TheSideBarRight,
+    TheFunctionTool,
+    TheMainContent,
+  },
   computed: {
     getMessage() {
       return this.$store.state.message;
@@ -53,8 +54,8 @@ export default {
       return this.$store.state.state;
     },
   },
-  mounted(){
+  mounted() {
     emitter.on("showToast", this.$refs.toast.showAnimateToast);
-  }
+  },
 };
 </script>
